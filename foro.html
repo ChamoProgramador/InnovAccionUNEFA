@@ -2,183 +2,561 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>Foro Global - Mi Foro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Foro - Publica tus Comentarios</title>
+  <!-- Estilos para la interfaz (morado con acentos dorados) -->
   <style>
-    /* Estilos básicos */
     body {
       font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      padding: 20px;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
     }
-    .foro-container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 15px 20px 30px;
+    #container {
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: #ffffff;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      overflow: hidden;
     }
-    h1 {
+    header {
+      background-color: #6a0dad; /* Morado */
+      color: #fff;
+      padding: 15px;
       text-align: center;
-      color: #333;
     }
-    form {
-      margin-bottom: 30px;
+    h1, h2 {
+      margin: 0 0 10px;
     }
-    form input, form textarea {
-      width: 100%;
+    /* Botones de navegación */
+    #navButtons {
+      text-align: center;
       padding: 10px;
-      margin: 5px 0 15px;
+      background-color: #ececec;
+    }
+    .nav-btn {
+      background-color: #ffd700; /* Dorado */
+      border: none;
+      color: #333;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .nav-btn:hover {
+      background-color: #e6c200;
+    }
+    /* Secciones de autenticación */
+    .authSection {
+      margin: 15px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+    }
+    .authSection form input[type="text"],
+    .authSection form input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    form input[type="file"] {
-      padding: 3px;
-    }
-    form button {
-      background: #333;
-      color: #fff;
+    .authSection form button {
+      background-color: #ffd700;
       border: none;
-      padding: 10px 25px;
-      font-size: 1em;
+      color: #333;
+      padding: 10px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+    .authSection form button:hover {
+      background-color: #e6c200;
+    }
+    /* Información del usuario logueado */
+    #userInfo {
+      padding: 15px;
+      text-align: center;
+      background-color: #ececec;
+      display: none;
+    }
+    #userInfo p {
+      margin: 5px 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #logoutBtn {
+      background-color: #ff4d4d;
+      border: none;
+      color: #fff;
+      padding: 8px 12px;
       border-radius: 4px;
       cursor: pointer;
     }
-    form button:hover {
-      background: #555;
+    #logoutBtn:hover {
+      background-color: #e60000;
     }
-    .comentarios {
-      margin-top: 20px;
+    /* Sección para publicar comentarios */
+    #commentSection {
+      margin: 15px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+      display: none;
     }
-    .comentario {
-      border-bottom: 1px solid #ccc;
+    #commentSection form textarea,
+    #commentSection form input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    #commentSection form button {
+      background-color: #ffd700;
+      border: none;
+      color: #333;
+      padding: 10px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+    #commentSection form button:hover {
+      background-color: #e6c200;
+    }
+    /* Feed de comentarios global */
+    #commentsFeed {
+      margin: 15px;
+      padding: 15px;
+    }
+    .comment {
+      border-bottom: 1px solid #ddd;
       padding: 10px 0;
+      position: relative;
     }
-    .comentario:last-child {
+    .comment:last-child {
       border-bottom: none;
     }
-    .comentario h3 {
-      margin: 0 0 5px;
-      color: #444;
+    .comment h3 {
+      margin: 0;
+      color: #6a0dad;
     }
-    .comentario p {
-      margin: 5px 0;
+    .comment p {
+      margin: 8px 0;
     }
-    .comentario img {
+    .comment img {
       max-width: 100%;
-      height: auto;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: #ff4d4d;
+      border: none;
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .delete-btn:hover {
+      background-color: #e60000;
+    }
+    /* Estilos para responder a comentarios */
+    .reply-btn {
+      background-color: #6a0dad;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    .reply-btn:hover {
+      opacity: 0.8;
+    }
+    .replyForm {
+      margin: 10px 0;
+    }
+    .replyForm textarea {
+      width: 100%;
+      padding: 6px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .replyForm button {
+      background-color: #ffd700;
+      border: none;
+      color: #333;
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .replyForm button:hover {
+      background-color: #e6c200;
+    }
+    .replies {
+      margin-left: 20px;
       margin-top: 10px;
-      border-radius: 5px;
+    }
+    .reply {
+      background-color: #f0f0f0;
+      padding: 5px 10px;
+      border-left: 2px solid #6a0dad;
+      margin-top: 5px;
+      border-radius: 4px;
     }
   </style>
+  <!-- Cargar Firebase (versión compat para facilitar integración) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
 <body>
-  <div class="foro-container">
-    <h1>Foro</h1>
-
-    <!-- Formulario para ingresar comentarios -->
-    <form id="foroForm">
-      <input type="text" id="username" placeholder="Tu nombre de usuario" required>
-      <textarea id="commentText" placeholder="Tu comentario" rows="4" required></textarea>
-      <input type="file" id="imageInput" accept="image/*">
-      <button type="submit">Publicar</button>
-    </form>
-
-    <!-- Aquí se mostrarán los comentarios publicados -->
-    <div id="comentarios" class="comentarios">
-      <!-- Los comentarios se agregarán aquí -->
+  <div id="container">
+    <header>
+      <h1>Foro Global</h1>
+    </header>
+    <!-- Botones de navegación -->
+    <div id="navButtons">
+      <button class="nav-btn" onclick="window.history.back()">Regresar</button>
+      <button class="nav-btn" onclick="window.location.href='index.html'">Inicio</button>
+    </div>
+    <!-- Sección de Registro -->
+    <div class="authSection" id="registerSection">
+      <h2>Registrarse</h2>
+      <form id="registerForm">
+        <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
+        <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
+        <button type="submit">Registrarse</button>
+      </form>
+    </div>
+    <!-- Sección de Inicio de Sesión (Usuario) -->
+    <div class="authSection" id="loginSection">
+      <h2>Iniciar Sesión (Usuario)</h2>
+      <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+    </div>
+    <!-- Sección de Inicio de Sesión (Administrador) -->
+    <div class="authSection" id="adminSection">
+      <h2>Iniciar Sesión Administrador</h2>
+      <form id="adminLoginForm">
+        <input type="text" id="adminUsername" placeholder="Nombre de usuario admin" required>
+        <input type="password" id="adminPassword" placeholder="Contraseña admin" required>
+        <button type="submit">Iniciar Sesión Admin</button>
+      </form>
+    </div>
+    <!-- Información del usuario logueado -->
+    <div id="userInfo">
+      <p id="welcomeMsg"></p>
+      <button id="logoutBtn">Cerrar Sesión</button>
+    </div>
+    <!-- Sección para publicar comentarios -->
+    <div id="commentSection">
+      <h2>Publicar Comentario</h2>
+      <form id="commentForm">
+        <textarea id="commentText" placeholder="Escribe tu comentario..." rows="3" required></textarea>
+        <input type="file" id="commentImage" accept="image/*">
+        <button type="submit">Publicar Comentario</button>
+      </form>
+    </div>
+    <!-- Feed global de comentarios -->
+    <div id="commentsFeed">
+      <h2>Comentarios</h2>
+      <div id="comments"></div>
     </div>
   </div>
 
   <script>
-    // Función para renderizar un comentario en el DOM
-    function renderComentario(comentario) {
-      const comentarioDiv = document.createElement('div');
-      comentarioDiv.classList.add('comentario');
+    /*********************
+     * CONFIGURACIÓN DE FIREBASE
+     *********************/
+    // Reemplaza los valores siguientes por los datos de tu proyecto (desde Firebase Console, sección "Tus apps")
+    const firebaseConfig = {
+      apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+  authDomain: "innovaccionunefa.firebaseapp.com",
+  databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
+  projectId: "innovaccionunefa",
+  storageBucket: "innovaccionunefa.firebasestorage.app",
+  messagingSenderId: "613542800676",
+  appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
+  measurementId: "G-LLK0GLWS1G"
+};
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-      // Nombre de usuario
-      const title = document.createElement('h3');
-      title.textContent = comentario.username || 'Anónimo';
-      comentarioDiv.appendChild(title);
+    /*********************
+     * VARIABLES GLOBALES DE SESIÓN
+     *********************/
+    let currentUser = null;          // Nombre del usuario logueado
+    let currentUserIsAdmin = false;    // Bandera para modo administrador
 
-      // Comentario de texto
-      const commentPara = document.createElement('p');
-      commentPara.textContent = comentario.text;
-      comentarioDiv.appendChild(commentPara);
-
-      // Imagen (si existe)
-      if (comentario.imageData) {
-        const img = document.createElement('img');
-        img.src = comentario.imageData;
-        comentarioDiv.appendChild(img);
-      }
-
-      return comentarioDiv;
-    }
-
-    // Función para cargar comentarios desde localStorage
-    function cargarComentarios() {
-      const comentariosDiv = document.getElementById('comentarios');
-      comentariosDiv.innerHTML = ''; // Limpia el contenedor antes de renderizar
-
-      // Obtener la lista de comentarios almacenada en localStorage (o un array vacío)
-      const comentariosGuardados = JSON.parse(localStorage.getItem('comentarios')) || [];
-      comentariosGuardados.forEach(comentario => {
-        comentariosDiv.appendChild(renderComentario(comentario));
-      });
-    }
-
-    // Función para guardar un comentario en localStorage
-    function guardarComentario(comentario) {
-      const comentariosGuardados = JSON.parse(localStorage.getItem('comentarios')) || [];
-      comentariosGuardados.push(comentario);
-      localStorage.setItem('comentarios', JSON.stringify(comentariosGuardados));
-    }
-
-    // Manejador del envío del formulario
-    document.getElementById('foroForm').addEventListener('submit', function(e) {
+    /*********************
+     * REGISTRO DE USUARIOS
+     *********************/
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
-      const username = document.getElementById('username').value.trim();
-      const commentText = document.getElementById('commentText').value.trim();
-      const imageInput = document.getElementById('imageInput');
-
-      const nuevoComentario = {
-        username: username,
-        text: commentText,
-        imageData: null,  // Aquí se almacenará la imagen en Data URL (si se carga)
-        timestamp: new Date().toISOString()
-      };
-
-      // Función para después de procesar la imagen (o si no hay imagen)
-      function procesarComentario() {
-        // Guarda en localStorage
-        guardarComentario(nuevoComentario);
-
-        // Renderízalo agregándolo al contenedor
-        document.getElementById('comentarios').appendChild(renderComentario(nuevoComentario));
-
-        // Reinicia el formulario
-        document.getElementById('foroForm').reset();
+      const username = document.getElementById("regUsername").value.trim();
+      const password = document.getElementById("regPassword").value;
+      if (password.length < 8) {
+        alert("La contraseña debe tener al menos 8 caracteres.");
+        return;
       }
+      // Verificar si el nombre de usuario ya existe
+      db.ref("users/" + username).get().then(function(snapshot) {
+        if (snapshot.exists()) {
+          alert("El nombre de usuario ya está en uso. Por favor, elige otro.");
+        } else {
+          // Registrar el usuario en la base de datos
+          db.ref("users/" + username).set({ password: password })
+            .then(function() {
+              alert("Registro exitoso. Ahora puedes iniciar sesión.");
+              document.getElementById("registerForm").reset();
+            })
+            .catch(function(error) {
+              alert("Error en el registro: " + error.message);
+            });
+        }
+      });
+    });
 
-      // Si se adjunta una imagen, procesarla
-      if (imageInput.files && imageInput.files[0]) {
-        const file = imageInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          nuevoComentario.imageData = e.target.result;
-          procesarComentario();
-        };
-        reader.readAsDataURL(file);
+    /*********************
+     * INICIO DE SESIÓN DE USUARIO
+     *********************/
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      // Buscar el usuario en la base de datos
+      db.ref("users/" + username).get().then(function(snapshot) {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          if (userData.password === password) {
+            currentUser = username;
+            currentUserIsAdmin = false;
+            onLoginSuccess();
+          } else {
+            alert("Contraseña incorrecta.");
+          }
+        } else {
+          alert("El usuario no está registrado.");
+        }
+      });
+    });
+
+    /*********************
+     * INICIO DE SESIÓN DE ADMINISTRADOR
+     *********************/
+    document.getElementById("adminLoginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const username = document.getElementById("adminUsername").value.trim();
+      const password = document.getElementById("adminPassword").value;
+      // Credenciales fijas para administrador
+      if (username === "ChamoProgramador" && password === "29072024") {
+        currentUser = username;
+        currentUserIsAdmin = true;
+        onLoginSuccess();
       } else {
-        procesarComentario();
+        alert("Credenciales de administrador incorrectas.");
       }
     });
 
-    // Cargar comentarios al iniciar la página
-    document.addEventListener('DOMContentLoaded', cargarComentarios);
+    /*********************
+     * FUNCIÓN AL INICIAR SESIÓN CON ÉXITO
+     *********************/
+    function onLoginSuccess() {
+      // Ocultar las secciones de autenticación
+      document.getElementById("registerSection").style.display = "none";
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("adminSection").style.display = "none";
+      // Mostrar la información del usuario y la sección para comentar
+      document.getElementById("userInfo").style.display = "block";
+      document.getElementById("commentSection").style.display = "block";
+      document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
+    }
+
+    /*********************
+     * CERRAR SESIÓN
+     *********************/
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+      currentUser = null;
+      currentUserIsAdmin = false;
+      // Volver a mostrar los formularios de autenticación
+      document.getElementById("registerSection").style.display = "block";
+      document.getElementById("loginSection").style.display = "block";
+      document.getElementById("adminSection").style.display = "block";
+      document.getElementById("userInfo").style.display = "none";
+      document.getElementById("commentSection").style.display = "none";
+    });
+
+    /*********************
+     * PUBLICAR COMENTARIO
+     *********************/
+    document.getElementById("commentForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const text = document.getElementById("commentText").value.trim();
+      const fileInput = document.getElementById("commentImage");
+      const comment = {
+        username: currentUser,
+        text: text,
+        imageData: null,
+        timestamp: Date.now()
+      };
+
+      function postComment() {
+        // Publicar el comentario usando push para asignar una clave única
+        db.ref("comments").push(comment, function(error) {
+          if (error) {
+            alert("Error al publicar el comentario.");
+          } else {
+            document.getElementById("commentForm").reset();
+          }
+        });
+      }
+
+      // Procesar imagen (si se adjunta)
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          comment.imageData = e.target.result;
+          postComment();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        postComment();
+      }
+    });
+
+    /*********************
+     * MOSTRAR COMENTARIOS GLOBAL CON RESPUESTAS
+     *********************/
+    db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
+      const commentsDiv = document.getElementById("comments");
+      commentsDiv.innerHTML = ""; // Limpiar el feed antes de recargar
+      snapshot.forEach(function(childSnapshot) {
+        const key = childSnapshot.key;
+        const commentData = childSnapshot.val();
+        const commentElem = document.createElement("div");
+        commentElem.className = "comment";
+
+        // Si el usuario es administrador, mostrar botón para eliminar
+        if (currentUserIsAdmin) {
+          const delBtn = document.createElement("button");
+          delBtn.className = "delete-btn";
+          delBtn.textContent = "Eliminar";
+          delBtn.onclick = function() {
+            if (confirm("¿Desea eliminar este comentario?")) {
+              db.ref("comments").child(key).remove();
+            }
+          };
+          commentElem.appendChild(delBtn);
+        }
+
+        // Mostrar el nombre y comentario
+        const h3 = document.createElement("h3");
+        h3.textContent = commentData.username;
+        commentElem.appendChild(h3);
+
+        const p = document.createElement("p");
+        p.textContent = commentData.text;
+        commentElem.appendChild(p);
+
+        // Mostrar la imagen si existe
+        if (commentData.imageData) {
+          const img = document.createElement("img");
+          img.src = commentData.imageData;
+          commentElem.appendChild(img);
+        }
+
+        // Agregar botón "Responder" si hay un usuario logueado
+        if (currentUser) {
+          const replyBtn = document.createElement("button");
+          replyBtn.className = "reply-btn";
+          replyBtn.textContent = "Responder";
+          replyBtn.onclick = function() {
+            // Si ya existe un formulario de respuesta en este comentario, lo elimina
+            let existingForm = commentElem.querySelector(".replyForm");
+            if (existingForm) {
+              existingForm.remove();
+            } else {
+              // Crear un formulario para responder
+              const replyForm = document.createElement("form");
+              replyForm.className = "replyForm";
+              
+              const replyTextarea = document.createElement("textarea");
+              replyTextarea.placeholder = "Escribe tu respuesta...";
+              replyTextarea.required = true;
+              replyTextarea.rows = 2;
+              replyForm.appendChild(replyTextarea);
+              
+              const submitReplyBtn = document.createElement("button");
+              submitReplyBtn.textContent = "Enviar Respuesta";
+              submitReplyBtn.type = "submit";
+              replyForm.appendChild(submitReplyBtn);
+              
+              replyForm.onsubmit = function(ev) {
+                ev.preventDefault();
+                const replyContent = replyTextarea.value.trim();
+                if (replyContent !== "") {
+                  const reply = {
+                    username: currentUser,
+                    text: replyContent,
+                    timestamp: Date.now()
+                  };
+                  // Guardar la respuesta en el nodo "replies" del comentario
+                  db.ref("comments/" + key + "/replies").push(reply, function(error) {
+                    if (!error) {
+                      replyTextarea.value = "";
+                      replyForm.remove();
+                    } else {
+                      alert("Error al enviar respuesta.");
+                    }
+                  });
+                }
+              };
+              
+              commentElem.appendChild(replyForm);
+            }
+          };
+          commentElem.appendChild(replyBtn);
+        }
+
+        // Mostrar las respuestas si existen
+        if (commentData.replies) {
+          const repliesDiv = document.createElement("div");
+          repliesDiv.className = "replies";
+          for (let replyKey in commentData.replies) {
+            const replyData = commentData.replies[replyKey];
+            const replyElem = document.createElement("div");
+            replyElem.className = "reply";
+            replyElem.innerHTML = "<strong>" + replyData.username + ":</strong> " + replyData.text;
+            repliesDiv.appendChild(replyElem);
+          }
+          commentElem.appendChild(repliesDiv);
+        }
+
+        commentsDiv.appendChild(commentElem);
+      });
+    });
   </script>
 </body>
 </html>
