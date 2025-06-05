@@ -2,44 +2,144 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Foro - Mi Proyecto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Foro - Publica tus Comentarios</title>
   <style>
+    /* Estilos básicos */
     body {
       font-family: Arial, sans-serif;
       background: #f7f7f7;
       padding: 20px;
-      color: #333;
+    }
+    .foro-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 15px 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
       text-align: center;
+      color: #333;
     }
-    header, footer {
-      background: #333;
-      color: #fff;
+    form {
+      margin-bottom: 30px;
+    }
+    form input, form textarea {
+      width: 100%;
       padding: 10px;
-    }
-    a {
-      text-decoration: none;
-      color: #fff;
-      background: #333;
-      padding: 10px 15px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
       border-radius: 4px;
     }
-    a:hover {
+    form input[type="file"] {
+      padding: 3px;
+    }
+    form button {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 10px 25px;
+      font-size: 1em;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    form button:hover {
       background: #555;
     }
-    .content {
-      margin: 40px 0;
+    .comentarios {
+      margin-top: 20px;
+    }
+    .comentario {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .comentario:last-child {
+      border-bottom: none;
+    }
+    .comentario h3 {
+      margin: 0 0 5px;
+      color: #444;
+    }
+    .comentario p {
+      margin: 5px 0;
+    }
+    .comentario img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 10px;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h2>Foro</h2>
-  </header>
-  <div class="content">
-    <p>Participa en el foro y comparte tus opiniones o pregunta sobre los temas relevantes al proyecto.</p>
-    <!-- Aquí podrías agregar elementos o incluir un enlace a un foro externo -->
+  <div class="foro-container">
+    <h1>Foro</h1>
+
+    <!-- Formulario para ingresar comentarios -->
+    <form id="foroForm">
+      <input type="text" id="username" placeholder="Tu nombre de usuario" required>
+      <textarea id="commentText" placeholder="Tu comentario" rows="4" required></textarea>
+      <input type="file" id="imageInput" accept="image/*">
+      <button type="submit">Publicar</button>
+    </form>
+
+    <!-- Aquí se mostrarán los comentarios publicados -->
+    <div id="comentarios" class="comentarios">
+      <!-- Comentarios se agregarán aquí -->
+    </div>
   </div>
+
+  <script>
+    // Manejador del evento submit del formulario
+    document.getElementById('foroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Obtener los valores ingresados
+      const username = document.getElementById('username').value.trim();
+      const commentText = document.getElementById('commentText').value.trim();
+      const imageInput = document.getElementById('imageInput');
+      
+      // Crear contenedor para el comentario
+      const comentarioDiv = document.createElement('div');
+      comentarioDiv.classList.add('comentario');
+      
+      // Título con el nombre de usuario
+      const title = document.createElement('h3');
+      title.textContent = username || 'Anónimo';
+      comentarioDiv.appendChild(title);
+      
+      // Contenido del comentario
+      const commentPara = document.createElement('p');
+      commentPara.textContent = commentText;
+      comentarioDiv.appendChild(commentPara);
+      
+      // Si se adjunta una imagen, la mostramos usando FileReader
+      if (imageInput.files && imageInput.files[0]) {
+        const file = imageInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const img = document.createElement('img');
+          img.src = e.target.result; // La imagen se carga como Data URL
+          comentarioDiv.appendChild(img);
+          
+          // Agregar el comentario al contenedor de comentarios
+          document.getElementById('comentarios').appendChild(comentarioDiv);
+        }
+        reader.readAsDataURL(file);
+      } else {
+        // Si no hay imagen, lo agregamos directamente
+        document.getElementById('comentarios').appendChild(comentarioDiv);
+      }
+      
+      // Reiniciar el formulario para el siguiente comentario
+      this.reset();
+    });
+  </script>
+</body>
+</html>
   <footer>
     <a href="index.html">Volver a la Página Principal</a>
   </footer>
