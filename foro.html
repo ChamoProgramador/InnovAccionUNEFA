@@ -5,9 +5,9 @@
   <title>Foro Global - Mi Foro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* ==============================
-       Estilo general (minimalista)
-       ============================== */
+    /* ------------------------------
+       Estilos Generales y Contenedor
+       ------------------------------ */
     body {
       font-family: Arial, sans-serif;
       background-color: #000;
@@ -24,9 +24,9 @@
       overflow: hidden;
       padding-bottom: 20px;
     }
-    /* ==============================
-       Header, navegación y botones de auth 
-       ============================== */
+    /* ------------------------------
+       Header, Navegación y Botones de Auth
+       ------------------------------ */
     header {
       position: relative;
       background-color: #8B0000; /* Vinotinto */
@@ -38,6 +38,7 @@
       margin: 0;
       font-size: 28px;
     }
+    /* Botones de navegación en la esquina superior izquierda */
     #navButtons {
       position: absolute;
       top: 10px;
@@ -56,6 +57,7 @@
     #navButtons button:hover {
       background-color: #e6c200;
     }
+    /* Botones de autenticación en la esquina superior derecha */
     #authButtons {
       position: absolute;
       top: 10px;
@@ -74,9 +76,9 @@
     #authButtons button:hover {
       background-color: #e6c200;
     }
-    /* ==============================
-       Modales para autenticación
-       ============================== */
+    /* ------------------------------
+       Modales para Login y Registro
+       ------------------------------ */
     .modal {
       display: none;
       position: fixed;
@@ -133,9 +135,9 @@
     .authForm button:hover {
       background-color: #e6c200;
     }
-    /* ==============================
-       Zona de usuario activo y Comentarios
-       ============================== */
+    /* ------------------------------
+       Zona de Usuario Activo y Caja de Comentarios
+       ------------------------------ */
     #userInfo {
       padding: 15px;
       text-align: center;
@@ -166,6 +168,7 @@
       text-align: center;
       margin-bottom: 10px;
     }
+    /* Campos del formulario de comentario */
     #commentSection label {
       display: block;
       margin-bottom: 5px;
@@ -219,9 +222,9 @@
     #commentSection button:hover {
       background-color: #e6c200;
     }
-    /* ==============================
-       Barra de búsqueda y ordenamiento
-       ============================== */
+    /* ------------------------------
+       Barra de Búsqueda, Filtro y Ordenamiento
+       ------------------------------ */
     #searchBar {
       text-align: center;
       margin: 15px;
@@ -236,9 +239,9 @@
       font-size: 16px;
       margin-right: 10px;
     }
-    /* ==============================
-       Feed de comentarios
-       ============================== */
+    /* ------------------------------
+       Feed de Comentarios
+       ------------------------------ */
     #commentsFeed {
       margin: 15px;
       padding: 15px;
@@ -274,7 +277,7 @@
       border-radius: 4px;
       margin-top: 8px;
     }
-    /* Botones de Like/Dislike y contadores */
+    /* Botones de Like y Dislike */
     .like-btn, .dislike-btn {
       background-color: #ffd700;
       border: none;
@@ -308,7 +311,7 @@
     .delete-btn:hover {
       background-color: #e60000;
     }
-    /* Botón Responder */
+    /* Botón para Responder */
     .reply-btn {
       background-color: #8B0000;
       border: none;
@@ -405,13 +408,13 @@
       </div>
     </div>
 
-    <!-- Zona de usuario activo -->
+    <!-- Zona de Usuario Activo -->
     <div id="userInfo">
       <p id="welcomeMsg"></p>
       <button id="logoutBtn">Cerrar Sesión</button>
     </div>
 
-    <!-- Caja de comentarios -->
+    <!-- Caja de Comentarios -->
     <div id="commentSection">
       <h2>Publicar Comentario</h2>
       <form id="commentForm">
@@ -430,7 +433,7 @@
       </form>
     </div>
 
-    <!-- Barra de búsqueda, filtro y ordenamiento -->
+    <!-- Barra de Búsqueda, Filtro y Ordenamiento -->
     <div id="searchBar">
       <input type="text" id="searchInput" placeholder="Buscar por título o usuario...">
       <select id="filterCategory">
@@ -446,7 +449,7 @@
       </select>
     </div>
 
-    <!-- Feed de comentarios -->
+    <!-- Feed de Comentarios -->
     <div id="commentsFeed">
       <h2>Comentarios</h2>
       <div id="comments"></div>
@@ -454,15 +457,14 @@
   </div>
 
   <script>
-    // Ejecutar una vez que el DOM esté completamente cargado
+    // Esperamos que el DOM se cargue completamente
     document.addEventListener("DOMContentLoaded", function() {
-
       /*********************
        * CONFIGURACIÓN DE FIREBASE
        *********************/
-      /* Reemplaza estos valores con los de tu proyecto de Firebase (sección "Tus apps") */
+      /* Reemplaza los siguientes valores con los de tu proyecto (desde Firebase Console, "Tus apps") */
       const firebaseConfig = {
-        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+       apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
   databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
   projectId: "innovaccionunefa",
@@ -492,7 +494,7 @@
       cargarComentarios();
 
       /*********************
-       * Función: Al iniciar sesión con éxito
+       * Función: onLoginSuccess
        *********************/
       function onLoginSuccess() {
         localStorage.setItem("currentUser", currentUser);
@@ -519,7 +521,7 @@
       });
 
       /*********************
-       * Apertura y cierre de modales
+       * Apertura y Cierre de Modales
        *********************/
       document.getElementById("openLogin").addEventListener("click", function() {
         console.log("Se hizo clic en Iniciar Sesión");
@@ -621,7 +623,7 @@
           timestamp: Date.now(),
           likes: 0,
           dislikes: 0,
-          votes: {}  // Controla que cada usuario vote solo una vez
+          votes: {} // Objeto para controlar votos de cada usuario
         };
         function postComment() {
           db.ref("comments").push(comment, function(error) {
@@ -646,7 +648,7 @@
       });
 
       /*********************
-       * Cargar Comentarios desde Firebase
+       * Cargar Comentarios de Firebase
        *********************/
       function cargarComentarios() {
         db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
@@ -661,7 +663,8 @@
       }
 
       /*********************
-       * Función para mostrar comentarios (con filtros y ordenamiento)
+       * Función para mostrar comentarios filtrados y ordenados
+       * Filtros: búsqueda, categoría; Orden: recientes, respuestas, likes
        *********************/
       function displayComments(commentsArray) {
         const searchQuery = document.getElementById("searchInput").value.toLowerCase();
@@ -690,13 +693,14 @@
           filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
         }
 
+        // Renderizamos los comentarios
         const commentsDiv = document.getElementById("comments");
         commentsDiv.innerHTML = "";
         filtered.forEach(function(comment) {
           const commentElem = document.createElement("div");
           commentElem.className = "comment";
 
-          // Botón de eliminar (para admin)
+          // Botón Eliminar para admin
           if (currentUserIsAdmin) {
             const delBtn = document.createElement("button");
             delBtn.className = "delete-btn";
@@ -714,6 +718,7 @@
           titleElem.className = "commentTitle";
           titleElem.textContent = comment.title;
           commentElem.appendChild(titleElem);
+
           const catElem = document.createElement("div");
           catElem.className = "commentCategory";
           catElem.textContent = comment.category;
@@ -736,7 +741,7 @@
             commentElem.appendChild(img);
           }
 
-          // Botones de Like y Dislike (con votación única)
+          // Botones de Like y Dislike con control de voto único
           const likeBtn = document.createElement("button");
           likeBtn.className = "like-btn";
           likeBtn.textContent = "Like";
@@ -745,18 +750,20 @@
               alert("Debes iniciar sesión para votar.");
               return;
             }
+            // Comprobar si el usuario ya votó
             db.ref("comments/" + comment.key + "/votes/" + currentUser).once("value")
               .then(function(snap) {
                 if (snap.exists()) {
                   alert("Ya has votado en este comentario.");
                 } else {
                   let currentLikes = comment.likes || 0;
-                  db.ref("comments/" + comment.key).update({ likes: currentLikes + 1 });
-                  db.ref("comments/" + comment.key + "/votes/" + currentUser).set("like");
+                  db.ref("comments").child(comment.key).update({ likes: currentLikes + 1 });
+                  db.ref("comments").child(comment.key).child("votes").child(currentUser).set("like");
                 }
               });
           };
           commentElem.appendChild(likeBtn);
+          
           const dislikeBtn = document.createElement("button");
           dislikeBtn.className = "dislike-btn";
           dislikeBtn.textContent = "Dislike";
@@ -771,22 +778,25 @@
                   alert("Ya has votado en este comentario.");
                 } else {
                   let currentDislikes = comment.dislikes || 0;
-                  db.ref("comments/" + comment.key).update({ dislikes: currentDislikes + 1 });
-                  db.ref("comments/" + comment.key + "/votes/" + currentUser).set("dislike");
+                  db.ref("comments").child(comment.key).update({ dislikes: currentDislikes + 1 });
+                  db.ref("comments").child(comment.key).child("votes").child(currentUser).set("dislike");
                 }
               });
           };
           commentElem.appendChild(dislikeBtn);
+          
+          // Mostrar contadores de likes y dislikes
           const likeCount = document.createElement("span");
           likeCount.className = "like-count";
           likeCount.textContent = "Likes: " + (comment.likes || 0);
           commentElem.appendChild(likeCount);
+          
           const dislikeCount = document.createElement("span");
           dislikeCount.className = "dislike-count";
           dislikeCount.textContent = "Dislikes: " + (comment.dislikes || 0);
           commentElem.appendChild(dislikeCount);
 
-          // Botón para responder
+          // Botón para Responder
           if (currentUser) {
             const replyBtn = document.createElement("button");
             replyBtn.className = "reply-btn";
@@ -832,7 +842,7 @@
             commentElem.appendChild(replyBtn);
           }
 
-          // Mostrar respuestas existentes (si hay)
+          // Mostrar respuestas existentes
           if (comment.replies) {
             const repliesDiv = document.createElement("div");
             repliesDiv.className = "replies";
