@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <title>Foro Global - Mi Foro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Estilos personalizados para un look minimalista (inspirado en 4chan) -->
+  <!-- Estilos generales, navegación y modales -->
   <style>
-    /* Estilo general */
+    /* Estilo general: fondo negro, texto claro */
     body {
       font-family: Arial, sans-serif;
-      background-color: #000; /* Fondo negro */
+      background-color: #000;
       color: #eee;
       margin: 0;
       padding: 0;
@@ -24,42 +24,92 @@
       overflow: hidden;
       padding-bottom: 20px;
     }
-    /* Header en tono vinotinto */
+    /* Header: título, navegación y botones de autenticación */
     header {
-      background-color: #8B0000;
+      position: relative;
+      background-color: #8B0000; /* Vinotinto */
       color: #fff;
       padding: 15px;
       text-align: center;
     }
-    h1, h2 {
-      margin: 0 0 10px;
+    header h1 {
+      margin: 0;
+      font-size: 28px;
     }
-    /* Zona de autenticación en dos columnas */
-    #authContainer {
-      display: flex;
-      flex-wrap: wrap;
-      background-color: #111;
-      padding: 20px;
+    /* Contenedor de navegación: botones para regresar y menú de inicio */
+    #navButtons {
+      position: absolute;
+      left: 10px;
+      top: 10px;
     }
-    .authColumn {
-      flex: 1;
-      min-width: 300px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-    .authColumn h2 {
-      text-align: center;
-      border-bottom: 1px solid #444;
-      padding-bottom: 10px;
-      margin-bottom: 10px;
-    }
-    /* Estilos para formularios de autenticación */
-    .authForm {
-      background-color: #333;
-      padding: 15px;
-      border: 1px solid #444;
+    #navButtons button {
+      background-color: #ffd700;
+      border: none;
+      color: #333;
+      padding: 6px 10px;
+      margin-right: 5px;
       border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
     }
+    #navButtons button:hover {
+      background-color: #e6c200;
+    }
+    /* Botones de autenticación en la esquina superior derecha */
+    #authButtons {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    #authButtons button {
+      background-color: #ffd700;
+      border: none;
+      color: #333;
+      padding: 8px 12px;
+      margin-left: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #authButtons button:hover {
+      background-color: #e6c200;
+    }
+    /* Modal: contenedor overlay */
+    .modal {
+      display: none; /* Oculto por defecto */
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+    /* Modal content: cuadro pequeño centrado */
+    .modal-content {
+      background-color: #222;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #444;
+      width: 300px;
+      border-radius: 4px;
+      position: relative;
+    }
+    /* Botón de cierre de modal */
+    .close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #eee;
+      cursor: pointer;
+    }
+    .close:hover, .close:focus {
+      color: #fff;
+    }
+    /* Formularios dentro de los modales */
     .authForm input[type="text"],
     .authForm input[type="password"] {
       width: 100%;
@@ -84,14 +134,14 @@
     .authForm button:hover {
       background-color: #e6c200;
     }
-    /* Zona de sesión activa */
+    /* Zona de usuario activo (visible tras iniciar sesión) */
     #userInfo {
       padding: 15px;
       text-align: center;
       background-color: #333;
       display: none;
     }
-    #logoutBtn {
+    #userInfo button {
       background-color: #ff4d4d;
       border: none;
       color: #fff;
@@ -100,32 +150,37 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    #logoutBtn:hover {
+    #userInfo button:hover {
       background-color: #e60000;
     }
-    /* Zona para publicar comentarios (más grande) */
+    /* Caja de comentarios estética: mayor espacio, borde en vinotinto */
     #commentSection {
       margin: 15px;
       padding: 20px;
-      border: 1px solid #444;
-      border-radius: 4px;
+      border: 2px solid #8B0000;
+      border-radius: 8px;
       background-color: #333;
       display: none;
     }
+    #commentSection h2 {
+      margin: 0 0 10px;
+      text-align: center;
+    }
     #commentSection textarea {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #555;
+      padding: 12px;
+      border: none;
       border-radius: 4px;
       background: #111;
       color: #eee;
       box-sizing: border-box;
       font-size: 16px;
-      min-height: 100px;
+      min-height: 120px;
+      resize: vertical;
+      margin-bottom: 10px;
     }
     #commentSection input[type="file"] {
-      margin: 8px 0;
+      margin-bottom: 10px;
     }
     #commentSection button {
       background-color: #ffd700;
@@ -140,7 +195,7 @@
     #commentSection button:hover {
       background-color: #e6c200;
     }
-    /* Feed de comentarios */
+    /* Feed de comentarios global */
     #commentsFeed {
       margin: 15px;
       padding: 15px;
@@ -160,6 +215,7 @@
     }
     .comment p {
       margin: 8px 0;
+      line-height: 1.4;
     }
     .comment img {
       max-width: 100%;
@@ -181,7 +237,6 @@
     .delete-btn:hover {
       background-color: #e60000;
     }
-    /* Botón y formulario para responder a comentarios */
     .reply-btn {
       background-color: #8B0000;
       color: #fff;
@@ -190,6 +245,8 @@
       border-radius: 4px;
       cursor: pointer;
       margin-top: 5px;
+      display: inline-block;
+      font-size: 14px;
     }
     .reply-btn:hover {
       opacity: 0.8;
@@ -216,6 +273,7 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
+      width: 100%;
     }
     .replyForm button:hover {
       background-color: #e6c200;
@@ -241,21 +299,22 @@
   <div id="container">
     <header>
       <h1>Foro Global</h1>
+      <!-- Botones de navegación -->
+      <div id="navButtons">
+        <button onclick="window.history.back()">Regresar</button>
+        <button onclick="window.location.href='index.html'">Inicio</button>
+      </div>
+      <!-- Botones de autenticación (se muestran si no hay sesión activa) -->
+      <div id="authButtons">
+        <button id="openLogin">Iniciar Sesión</button>
+        <button id="openRegister">Registrarse</button>
+      </div>
     </header>
 
-    <!-- Zona de autenticación unificada en dos columnas -->
-    <div id="authContainer">
-      <!-- Columna de Registro -->
-      <div class="authColumn">
-        <h2>Registrar</h2>
-        <form id="registerForm" class="authForm">
-          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
-          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
-          <button type="submit">Registrarse</button>
-        </form>
-      </div>
-      <!-- Columna de Inicio de Sesión unificado -->
-      <div class="authColumn">
+    <!-- Modal de Inicio de Sesión -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="loginClose">&times;</span>
         <h2>Iniciar Sesión</h2>
         <form id="loginForm" class="authForm">
           <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
@@ -265,13 +324,26 @@
       </div>
     </div>
 
-    <!-- Zona de usuario activo -->
+    <!-- Modal de Registro -->
+    <div id="registerModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="registerClose">&times;</span>
+        <h2>Registrarse</h2>
+        <form id="registerForm" class="authForm">
+          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
+          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
+          <button type="submit">Registrarse</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Zona para mostrar sesión activa -->
     <div id="userInfo">
       <p id="welcomeMsg"></p>
       <button id="logoutBtn">Cerrar Sesión</button>
     </div>
 
-    <!-- Caja de comentarios (más grande) -->
+    <!-- Caja de comentarios -->
     <div id="commentSection">
       <h2>Publicar Comentario</h2>
       <form id="commentForm">
@@ -292,17 +364,16 @@
     /*********************
      * CONFIGURACIÓN DE FIREBASE
      *********************/
-    /* Reemplaza el siguiente bloque con los datos de tu proyecto obtenidos de Firebase Console (sección "Tus apps") */
+    /* Reemplaza el siguiente bloque con los datos de tu proyecto obtenidos desde Firebase Console ("Tus apps") */
     const firebaseConfig = {
-     apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
-  authDomain: "innovaccionunefa.firebaseapp.com",
-  databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
-  projectId: "innovaccionunefa",
-  storageBucket: "innovaccionunefa.firebasestorage.app",
-  messagingSenderId: "613542800676",
-  appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
-  measurementId: "G-LLK0GLWS1G"
-};
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_PROYECTO.firebaseapp.com",
+      databaseURL: "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+      projectId: "TU_PROYECTO",
+      storageBucket: "TU_PROYECTO.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -310,10 +381,10 @@
     /*********************
      * VARIABLES GLOBALES DE SESIÓN
      *********************/
-    let currentUser = null;          // Nombre del usuario logueado
-    let currentUserIsAdmin = false;    // Flag para determinar si es admin
+    let currentUser = null;
+    let currentUserIsAdmin = false;
 
-    // Al cargar la página, reestablece la sesión usando localStorage (si existe)
+    // Al cargar la página, reestablecer la sesión desde localStorage (si existe)
     document.addEventListener("DOMContentLoaded", function() {
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
@@ -326,12 +397,14 @@
     });
 
     /*********************
-     * FUNCIÓN AL INICIAR SESIÓN CON ÉXITO
+     * Función: Al iniciar sesión con éxito
      *********************/
     function onLoginSuccess() {
       localStorage.setItem("currentUser", currentUser);
       localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
-      document.getElementById("authContainer").style.display = "none";
+      document.getElementById("authButtons").style.display = "none";
+      document.getElementById("loginModal").style.display = "none";
+      document.getElementById("registerModal").style.display = "none";
       document.getElementById("userInfo").style.display = "block";
       document.getElementById("commentSection").style.display = "block";
       document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
@@ -345,10 +418,34 @@
       currentUserIsAdmin = false;
       localStorage.removeItem("currentUser");
       localStorage.removeItem("currentUserIsAdmin");
-      document.getElementById("authContainer").style.display = "flex";
+      document.getElementById("authButtons").style.display = "block";
       document.getElementById("userInfo").style.display = "none";
       document.getElementById("commentSection").style.display = "none";
     });
+
+    /*********************
+     * Apertura y cierre de modales
+     *********************/
+    document.getElementById("openLogin").onclick = function() {
+      document.getElementById("loginModal").style.display = "block";
+    };
+    document.getElementById("openRegister").onclick = function() {
+      document.getElementById("registerModal").style.display = "block";
+    };
+    document.getElementById("loginClose").onclick = function() {
+      document.getElementById("loginModal").style.display = "none";
+    };
+    document.getElementById("registerClose").onclick = function() {
+      document.getElementById("registerModal").style.display = "none";
+    };
+    window.onclick = function(event) {
+      if (event.target == document.getElementById("loginModal")) {
+        document.getElementById("loginModal").style.display = "none";
+      }
+      if (event.target == document.getElementById("registerModal")) {
+        document.getElementById("registerModal").style.display = "none";
+      }
+    };
 
     /*********************
      * Registro de Usuarios
@@ -369,6 +466,7 @@
             .then(function() {
               alert("Registro exitoso. Ahora puedes iniciar sesión.");
               document.getElementById("registerForm").reset();
+              document.getElementById("registerModal").style.display = "none";
             })
             .catch(function(error) {
               alert("Error en el registro: " + error.message);
@@ -378,20 +476,19 @@
     });
 
     /*********************
-     * Inicio de Sesión Unificado (Usuario y Admin)
+     * Inicio de Sesión (Unificado: Admin y Usuario)
      *********************/
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value;
-      
-      // Primero, verificar si las credenciales corresponden a administrador
+      // Verificar credenciales de administrador
       if (username === "ChamoProgramador" && password === "29072024") {
         currentUser = username;
         currentUserIsAdmin = true;
         onLoginSuccess();
       } else {
-        // Sino, verificar en la base de datos de usuarios
+        // Si no es admin, se consulta la BD para verificar el usuario
         db.ref("users/" + username).get().then(function(snapshot) {
           if (snapshot.exists()) {
             const userData = snapshot.val();
@@ -405,14 +502,14 @@
           } else {
             alert("El usuario no está registrado.");
           }
-        }).catch(error => {
-          console.error("Error al intentar iniciar sesión:", error);
+        }).catch(function(error) {
+          console.error("Error en el inicio de sesión:", error);
         });
       }
     });
 
     /*********************
-     * Publicar Comentario
+     * Publicar Comentario (con opción de imagen)
      *********************/
     document.getElementById("commentForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -447,7 +544,7 @@
     });
 
     /*********************
-     * Cargar y Mostrar Comentarios (con respuestas)
+     * Cargar y Mostrar Comentarios (incluyendo respuestas)
      *********************/
     function cargarComentarios() {
       db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
@@ -459,7 +556,7 @@
           const commentElem = document.createElement("div");
           commentElem.className = "comment";
 
-          // Botón para eliminar (sólo para administradores)
+          // Botón "Eliminar" (solo para admin)
           if (currentUserIsAdmin) {
             const delBtn = document.createElement("button");
             delBtn.className = "delete-btn";
@@ -486,7 +583,7 @@
             commentElem.appendChild(img);
           }
 
-          // Botón para responder (visible si existe sesión)
+          // Botón para responder (visible si hay sesión)
           if (currentUser) {
             const replyBtn = document.createElement("button");
             replyBtn.className = "reply-btn";
@@ -545,7 +642,6 @@
             }
             commentElem.appendChild(repliesDiv);
           }
-
           commentsDiv.appendChild(commentElem);
         });
       });
