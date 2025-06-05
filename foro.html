@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       /* ===============================
-         Estilos Generales y Contenedor
-         =============================== */
+          Estilos Generales y Contenedor
+          =============================== */
       body {
         font-family: Arial, sans-serif;
         background-color: #000;
@@ -25,11 +25,11 @@
         padding-bottom: 20px;
       }
       /* ===============================
-         Header, Navegación y Botones de Autenticación
-         =============================== */
+          Header, Navegación y Botones de Autenticación
+          =============================== */
       header {
         position: relative;
-        background-color: #8B0000; /* Vinotinto */
+        background-color: #8b0000; /* Vinotinto */
         color: #fff;
         padding: 15px;
         text-align: center;
@@ -75,8 +75,8 @@
         background-color: #e6c200;
       }
       /* ===============================
-         Modales (Login y Registro)
-         =============================== */
+          Modales (Login y Registro)
+          =============================== */
       .modal {
         display: none;
         position: fixed;
@@ -134,8 +134,8 @@
         background-color: #e6c200;
       }
       /* ===============================
-         Zona de Usuario Activo y Comentarios
-         =============================== */
+          Zona de Usuario Activo y Comentarios
+          =============================== */
       #userInfo {
         padding: 15px;
         text-align: center;
@@ -158,7 +158,7 @@
         margin: 15px;
         padding: 20px;
         background-color: #333;
-        border: 2px solid #8B0000;
+        border: 2px solid #8b0000;
         border-radius: 8px;
         display: none;
       }
@@ -221,8 +221,8 @@
         background-color: #e6c200;
       }
       /* ===============================
-         Barra de Búsqueda, Filtros y Ordenamiento
-         =============================== */
+          Barra de Búsqueda, Filtros y Ordenamiento
+          =============================== */
       #searchBar {
         text-align: center;
         margin: 15px;
@@ -238,8 +238,8 @@
         margin-right: 10px;
       }
       /* ===============================
-         Feed de Comentarios
-         =============================== */
+          Feed de Comentarios
+          =============================== */
       #commentsFeed {
         margin: 15px;
         padding: 15px;
@@ -254,7 +254,7 @@
       }
       .comment h3 {
         margin: 0 0 5px;
-        color: #8B0000;
+        color: #8b0000;
       }
       .comment .commentTitle {
         font-size: 18px;
@@ -314,7 +314,7 @@
       }
       /* Botón para Responder */
       .reply-btn {
-        background-color: #8B0000;
+        background-color: #8b0000;
         border: none;
         padding: 5px 10px;
         border-radius: 4px;
@@ -361,7 +361,7 @@
       .reply {
         background-color: #444;
         padding: 5px 10px;
-        border-left: 2px solid #8B0000;
+        border-left: 2px solid #8b0000;
         border-radius: 4px;
         margin-top: 5px;
       }
@@ -369,7 +369,6 @@
   </head>
   <body>
     <div id="container">
-      <!-- HEADER -->
       <header>
         <h1>Foro Global</h1>
         <div id="navButtons">
@@ -382,7 +381,6 @@
         </div>
       </header>
 
-      <!-- MODAL DE INICIAR SESIÓN -->
       <div id="loginModal" class="modal">
         <div class="modal-content">
           <span class="close" id="loginClose">&times;</span>
@@ -395,7 +393,6 @@
         </div>
       </div>
 
-      <!-- MODAL DE REGISTRO -->
       <div id="registerModal" class="modal">
         <div class="modal-content">
           <span class="close" id="registerClose">&times;</span>
@@ -408,13 +405,11 @@
         </div>
       </div>
 
-      <!-- ZONA DE USUARIO ACTIVO -->
       <div id="userInfo">
         <p id="welcomeMsg"></p>
         <button id="logoutBtn">Cerrar Sesión</button>
       </div>
 
-      <!-- CAJA DE COMENTARIOS -->
       <div id="commentSection">
         <h2>Publicar Comentario</h2>
         <form id="commentForm">
@@ -433,7 +428,6 @@
         </form>
       </div>
 
-      <!-- BARRA DE BÚSQUEDA, FILTRO Y ORDENAMIENTO -->
       <div id="searchBar">
         <input type="text" id="searchInput" placeholder="Buscar por título o usuario..." />
         <select id="filterCategory">
@@ -449,21 +443,23 @@
         </select>
       </div>
 
-      <!-- FEED DE COMENTARIOS -->
       <div id="commentsFeed">
         <h2>Comentarios</h2>
         <div id="comments"></div>
       </div>
     </div>
 
-    <!-- SCRIPT: Todo se asigna en DOMContentLoaded para asegurar que los elementos existan -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // *******************************
         // CONFIGURACIÓN DE FIREBASE (Reemplaza estos valores por los de tu proyecto)
         // *******************************
         const firebaseConfig = {
-           apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+          apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
   databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
   projectId: "innovaccionunefa",
@@ -555,21 +551,24 @@
             alert("La contraseña debe tener al menos 8 caracteres.");
             return;
           }
-          db.ref("users/" + username).get().then(function (snapshot) {
-            if (snapshot.exists()) {
-              alert("El nombre de usuario ya está en uso. Elige otro.");
-            } else {
-              db.ref("users/" + username).set({ password: password })
-                .then(function () {
-                  alert("Registro exitoso. Ahora puedes iniciar sesión.");
-                  document.getElementById("registerForm").reset();
-                  document.getElementById("registerModal").style.display = "none";
-                })
-                .catch(function (error) {
-                  alert("Error en el registro: " + error.message);
-                });
-            }
-          });
+          db.ref("users/" + username)
+            .get()
+            .then(function (snapshot) {
+              if (snapshot.exists()) {
+                alert("El nombre de usuario ya está en uso. Elige otro.");
+              } else {
+                db.ref("users/" + username)
+                  .set({ password: password })
+                  .then(function () {
+                    alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                    document.getElementById("registerForm").reset();
+                    document.getElementById("registerModal").style.display = "none";
+                  })
+                  .catch(function (error) {
+                    alert("Error en el registro: " + error.message);
+                  });
+              }
+            });
         });
 
         // *******************************
@@ -585,22 +584,25 @@
             currentUserIsAdmin = true;
             onLoginSuccess();
           } else {
-            db.ref("users/" + username).get().then(function (snapshot) {
-              if (snapshot.exists()) {
-                const userData = snapshot.val();
-                if (userData.password === password) {
-                  currentUser = username;
-                  currentUserIsAdmin = false;
-                  onLoginSuccess();
+            db.ref("users/" + username)
+              .get()
+              .then(function (snapshot) {
+                if (snapshot.exists()) {
+                  const userData = snapshot.val();
+                  if (userData.password === password) {
+                    currentUser = username;
+                    currentUserIsAdmin = false;
+                    onLoginSuccess();
+                  } else {
+                    alert("Contraseña incorrecta.");
+                  }
                 } else {
-                  alert("Contraseña incorrecta.");
+                  alert("El usuario no está registrado.");
                 }
-              } else {
-                alert("El usuario no está registrado.");
-              }
-            }).catch(function (error) {
-              console.error("Error en el inicio de sesión:", error);
-            });
+              })
+              .catch(function (error) {
+                console.error("Error en el inicio de sesión:", error);
+              });
           }
         });
 
@@ -623,7 +625,7 @@
             timestamp: Date.now(),
             likes: 0,
             dislikes: 0,
-            votes: {}
+            votes: {},
           };
           function postComment() {
             db.ref("comments").push(comment, function (error) {
@@ -651,15 +653,17 @@
         // Cargar Comentarios desde Firebase
         // *******************************
         function cargarComentarios() {
-          db.ref("comments").orderByChild("timestamp").on("value", function (snapshot) {
-            allComments = [];
-            snapshot.forEach(function (childSnapshot) {
-              let comment = childSnapshot.val();
-              comment.key = childSnapshot.key;
-              allComments.push(comment);
+          db.ref("comments")
+            .orderByChild("timestamp")
+            .on("value", function (snapshot) {
+              allComments = [];
+              snapshot.forEach(function (childSnapshot) {
+                let comment = childSnapshot.val();
+                comment.key = childSnapshot.key;
+                allComments.push(comment);
+              });
+              displayComments(allComments);
             });
-            displayComments(allComments);
-          });
         }
 
         // *******************************
@@ -677,7 +681,7 @@
             if (categoryFilter !== "Todas" && comment.category !== categoryFilter) return false;
             return true;
           });
-          
+
           // Ordenamiento: recientes, respuestas, likes
           const orderKey = document.getElementById("orderSelect").value;
           if (orderKey === "recientes") {
@@ -691,13 +695,13 @@
           } else if (orderKey === "likes") {
             filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
           }
-          
+
           const commentsDiv = document.getElementById("comments");
           commentsDiv.innerHTML = "";
           filtered.forEach(function (comment) {
             const commentElem = document.createElement("div");
             commentElem.className = "comment";
-            
+
             // Botón de eliminar (solo para admin)
             if (currentUserIsAdmin) {
               const delBtn = document.createElement("button");
@@ -710,7 +714,7 @@
               };
               commentElem.appendChild(delBtn);
             }
-            
+
             // Título y Categoría
             const titleElem = document.createElement("div");
             titleElem.className = "commentTitle";
@@ -720,24 +724,24 @@
             catElem.className = "commentCategory";
             catElem.textContent = comment.category;
             commentElem.appendChild(catElem);
-            
+
             // Autor
             const authorElem = document.createElement("h3");
             authorElem.textContent = comment.username;
             commentElem.appendChild(authorElem);
-            
+
             // Texto
             const textElem = document.createElement("p");
             textElem.textContent = comment.text;
             commentElem.appendChild(textElem);
-            
+
             // Imagen (si existe)
             if (comment.imageData) {
               const img = document.createElement("img");
               img.src = comment.imageData;
               commentElem.appendChild(img);
             }
-            
+
             // Botones Like / Dislike — Control de voto único
             const likeBtn = document.createElement("button");
             likeBtn.className = "like-btn";
@@ -757,16 +761,12 @@
                     db.ref("comments").child(comment.key).update({
                       likes: currentLikes + 1,
                     });
-                    db.ref("comments")
-                      .child(comment.key)
-                      .child("votes")
-                      .child(currentUser)
-                      .set("like");
+                    db.ref("comments").child(comment.key).child("votes").child(currentUser).set("like");
                   }
                 });
             };
             commentElem.appendChild(likeBtn);
-            
+
             const dislikeBtn = document.createElement("button");
             dislikeBtn.className = "dislike-btn";
             dislikeBtn.textContent = "Dislike";
@@ -785,16 +785,12 @@
                     db.ref("comments").child(comment.key).update({
                       dislikes: currentDislikes + 1,
                     });
-                    db.ref("comments")
-                      .child(comment.key)
-                      .child("votes")
-                      .child(currentUser)
-                      .set("dislike");
+                    db.ref("comments").child(comment.key).child("votes").child(currentUser).set("dislike");
                   }
                 });
             };
             commentElem.appendChild(dislikeBtn);
-            
+
             // Contadores de Like y Dislike
             const likeCount = document.createElement("span");
             likeCount.className = "like-count";
@@ -804,7 +800,7 @@
             dislikeCount.className = "dislike-count";
             dislikeCount.textContent = "Dislikes: " + (comment.dislikes || 0);
             commentElem.appendChild(dislikeCount);
-            
+
             // Botón para responder
             if (currentUser) {
               const replyBtn = document.createElement("button");
@@ -850,7 +846,7 @@
               };
               commentElem.appendChild(replyBtn);
             }
-            
+
             // Mostrar respuestas existentes
             if (comment.replies) {
               const repliesDiv = document.createElement("div");
@@ -859,13 +855,12 @@
                 const replyData = comment.replies[replyKey];
                 const replyElem = document.createElement("div");
                 replyElem.className = "reply";
-                replyElem.innerHTML =
-                  "<strong>" + replyData.username + ":</strong> " + replyData.text;
+                replyElem.innerHTML = "<strong>" + replyData.username + ":</strong> " + replyData.text;
                 repliesDiv.appendChild(replyElem);
               }
               commentElem.appendChild(repliesDiv);
             }
-            
+
             commentsDiv.appendChild(commentElem);
           });
         }
@@ -881,8 +876,6 @@
           displayComments(allComments);
         });
       });
-    });
-  </script>
-  <!-- Fin del DOMContentLoaded -->
-  </body>
+    </script>
+    </body>
 </html>
