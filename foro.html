@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <title>Foro Global - Mi Foro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Estilos para la interfaz -->
+  <!-- Estilos personalizados para un look minimalista (inspirado en 4chan) -->
   <style>
-    /* Fondo general negro, texto claro y tipografía minimalista */
+    /* Estilo general */
     body {
       font-family: Arial, sans-serif;
       background-color: #000; /* Fondo negro */
@@ -16,49 +16,52 @@
     }
     /* Contenedor principal */
     #container {
-      max-width: 900px;
+      max-width: 1200px;
       margin: 20px auto;
-      background-color: #222; /* Panel oscuro */
+      background-color: #222;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
       overflow: hidden;
       padding-bottom: 20px;
     }
     /* Header en tono vinotinto */
     header {
-      background-color: #8B0000; /* Vinotinto */
+      background-color: #8B0000;
       color: #fff;
       padding: 15px;
       text-align: center;
     }
-    h1, h2 { margin: 0 0 10px; }
-    /* Botones de navegación */
-    #navButtons {
-      text-align: center;
+    h1, h2 {
+      margin: 0 0 10px;
+    }
+    /* Zona de autenticación en dos columnas */
+    #authContainer {
+      display: flex;
+      flex-wrap: wrap;
+      background-color: #111;
+      padding: 20px;
+    }
+    .authColumn {
+      flex: 1;
+      min-width: 300px;
       padding: 10px;
+      box-sizing: border-box;
+    }
+    .authColumn h2 {
+      text-align: center;
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    /* Estilos para formularios de autenticación */
+    .authForm {
       background-color: #333;
-    }
-    .nav-btn {
-      background-color: #ffd700; /* Dorado */
-      border: none;
-      color: #333;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .nav-btn:hover { background-color: #e6c200; }
-    /* Secciones de autenticación (Registro, Login y Admin) */
-    .authSection {
-      margin: 15px;
       padding: 15px;
       border: 1px solid #444;
-      border-radius: 6px;
-      background-color: #333;
+      border-radius: 4px;
     }
-    .authSection form input[type="text"],
-    .authSection form input[type="password"] {
+    .authForm input[type="text"],
+    .authForm input[type="password"] {
       width: 100%;
       padding: 8px;
       margin: 8px 0;
@@ -67,7 +70,7 @@
       background: #111;
       color: #eee;
     }
-    .authSection form button {
+    .authForm button {
       background-color: #ffd700;
       border: none;
       color: #333;
@@ -78,18 +81,15 @@
       font-size: 16px;
       margin-top: 8px;
     }
-    .authSection form button:hover { background-color: #e6c200; }
-    /* Información del usuario logueado */
+    .authForm button:hover {
+      background-color: #e6c200;
+    }
+    /* Zona de sesión activa */
     #userInfo {
       padding: 15px;
       text-align: center;
       background-color: #333;
       display: none;
-    }
-    #userInfo p {
-      margin: 5px 0;
-      font-size: 18px;
-      font-weight: bold;
     }
     #logoutBtn {
       background-color: #ff4d4d;
@@ -98,56 +98,69 @@
       padding: 8px 12px;
       border-radius: 4px;
       cursor: pointer;
+      margin-top: 10px;
     }
-    #logoutBtn:hover { background-color: #e60000; }
-    /* Sección para publicar comentarios */
+    #logoutBtn:hover {
+      background-color: #e60000;
+    }
+    /* Zona para publicar comentarios (más grande) */
     #commentSection {
       margin: 15px;
-      padding: 15px;
+      padding: 20px;
       border: 1px solid #444;
-      border-radius: 6px;
+      border-radius: 4px;
       background-color: #333;
       display: none;
     }
-    #commentSection form textarea,
-    #commentSection form input[type="file"] {
+    #commentSection textarea {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin: 8px 0;
       border: 1px solid #555;
       border-radius: 4px;
       background: #111;
       color: #eee;
       box-sizing: border-box;
+      font-size: 16px;
+      min-height: 100px;
     }
-    #commentSection form button {
+    #commentSection input[type="file"] {
+      margin: 8px 0;
+    }
+    #commentSection button {
       background-color: #ffd700;
       border: none;
       color: #333;
       padding: 10px;
       width: 100%;
       border-radius: 4px;
-      cursor: pointer;
       font-size: 16px;
-      margin-top: 8px;
+      cursor: pointer;
     }
-    #commentSection form button:hover { background-color: #e6c200; }
-    /* Feed global de comentarios */
+    #commentSection button:hover {
+      background-color: #e6c200;
+    }
+    /* Feed de comentarios */
     #commentsFeed {
       margin: 15px;
       padding: 15px;
     }
     .comment {
       border-bottom: 1px solid #444;
-      padding: 10px 0;
+      padding: 10px;
       position: relative;
+      margin-bottom: 10px;
     }
-    .comment:last-child { border-bottom: none; }
+    .comment:last-child {
+      border-bottom: none;
+    }
     .comment h3 {
       margin: 0;
-      color: #8B0000; /* Vinotinto para nombres */
+      color: #8B0000;
     }
-    .comment p { margin: 8px 0; }
+    .comment p {
+      margin: 8px 0;
+    }
     .comment img {
       max-width: 100%;
       border-radius: 4px;
@@ -165,10 +178,12 @@
       cursor: pointer;
       font-size: 12px;
     }
-    .delete-btn:hover { background-color: #e60000; }
-    /* Botón para responder a comentarios */
+    .delete-btn:hover {
+      background-color: #e60000;
+    }
+    /* Botón y formulario para responder a comentarios */
     .reply-btn {
-      background-color: #8B0000; /* Vinotinto */
+      background-color: #8B0000;
       color: #fff;
       border: none;
       padding: 5px 10px;
@@ -176,10 +191,11 @@
       cursor: pointer;
       margin-top: 5px;
     }
-    .reply-btn:hover { opacity: 0.8; }
-    /* Formulario de respuesta */
+    .reply-btn:hover {
+      opacity: 0.8;
+    }
     .replyForm {
-      margin: 10px 0;
+      margin-top: 10px;
     }
     .replyForm textarea {
       width: 100%;
@@ -187,10 +203,10 @@
       margin: 5px 0;
       border: 1px solid #555;
       border-radius: 4px;
-      box-sizing: border-box;
       resize: vertical;
       background: #111;
       color: #eee;
+      box-sizing: border-box;
     }
     .replyForm button {
       background-color: #ffd700;
@@ -201,7 +217,9 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .replyForm button:hover { background-color: #e6c200; }
+    .replyForm button:hover {
+      background-color: #e6c200;
+    }
     .replies {
       margin-left: 20px;
       margin-top: 10px;
@@ -209,13 +227,13 @@
     .reply {
       background-color: #444;
       padding: 5px 10px;
-      border-left: 2px solid #8B0000; /* Vinotinto */
+      border-left: 2px solid #8B0000;
       margin-top: 5px;
       border-radius: 4px;
     }
   </style>
-  
-  <!-- Cargar Firebase (versión compat para facilitar integración) -->
+
+  <!-- Cargar Firebase (versión compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
@@ -224,71 +242,57 @@
     <header>
       <h1>Foro Global</h1>
     </header>
-    
-    <!-- Botones de navegación -->
-    <div id="navButtons">
-      <button class="nav-btn" onclick="window.history.back()">Regresar</button>
-      <button class="nav-btn" onclick="window.location.href='index.html'">Inicio</button>
+
+    <!-- Zona de autenticación unificada en dos columnas -->
+    <div id="authContainer">
+      <!-- Columna de Registro -->
+      <div class="authColumn">
+        <h2>Registrar</h2>
+        <form id="registerForm" class="authForm">
+          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
+          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
+          <button type="submit">Registrarse</button>
+        </form>
+      </div>
+      <!-- Columna de Inicio de Sesión unificado -->
+      <div class="authColumn">
+        <h2>Iniciar Sesión</h2>
+        <form id="loginForm" class="authForm">
+          <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+          <input type="password" id="loginPassword" placeholder="Contraseña" required>
+          <button type="submit">Iniciar Sesión</button>
+        </form>
+      </div>
     </div>
-    
-    <!-- Zona de Registro -->
-    <div class="authSection" id="registerSection">
-      <h2>Registrarse</h2>
-      <form id="registerForm">
-        <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
-        <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
-        <button type="submit">Registrarse</button>
-      </form>
-    </div>
-    
-    <!-- Zona de Inicio de Sesión (Usuario) -->
-    <div class="authSection" id="loginSection">
-      <h2>Iniciar Sesión (Usuario)</h2>
-      <form id="loginForm">
-        <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
-        <input type="password" id="loginPassword" placeholder="Contraseña" required>
-        <button type="submit">Iniciar Sesión</button>
-      </form>
-    </div>
-    
-    <!-- Zona de Inicio de Sesión (Administrador) -->
-    <div class="authSection" id="adminSection">
-      <h2>Iniciar Sesión Administrador</h2>
-      <form id="adminLoginForm">
-        <input type="text" id="adminUsername" placeholder="Nombre de usuario admin" required>
-        <input type="password" id="adminPassword" placeholder="Contraseña admin" required>
-        <button type="submit">Iniciar Sesión Admin</button>
-      </form>
-    </div>
-    
-    <!-- Información del usuario logueado (se muestra tras login) -->
+
+    <!-- Zona de usuario activo -->
     <div id="userInfo">
       <p id="welcomeMsg"></p>
       <button id="logoutBtn">Cerrar Sesión</button>
     </div>
-    
-    <!-- Zona para publicar comentarios -->
+
+    <!-- Caja de comentarios (más grande) -->
     <div id="commentSection">
       <h2>Publicar Comentario</h2>
       <form id="commentForm">
-        <textarea id="commentText" placeholder="Escribe tu comentario..." rows="3" required></textarea>
+        <textarea id="commentText" placeholder="Escribe tu comentario..." required></textarea>
         <input type="file" id="commentImage" accept="image/*">
         <button type="submit">Publicar Comentario</button>
       </form>
     </div>
-    
-    <!-- Feed global de comentarios (se cargan desde Firebase) -->
+
+    <!-- Feed de comentarios -->
     <div id="commentsFeed">
       <h2>Comentarios</h2>
       <div id="comments"></div>
     </div>
   </div>
-  
+
   <script>
     /*********************
      * CONFIGURACIÓN DE FIREBASE
      *********************/
-    /* Reemplaza los datos a continuación con los de tu proyecto (copiados de Firebase Console "Tus apps") */
+    /* Reemplaza el siguiente bloque con los datos de tu proyecto obtenidos de Firebase Console (sección "Tus apps") */
     const firebaseConfig = {
      apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
@@ -300,17 +304,16 @@
   measurementId: "G-LLK0GLWS1G"
 };
 
-    // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     /*********************
      * VARIABLES GLOBALES DE SESIÓN
      *********************/
-    let currentUser = null;          // Usuario logueado (nombre)
-    let currentUserIsAdmin = false;    // Flag para saber si es admin
+    let currentUser = null;          // Nombre del usuario logueado
+    let currentUserIsAdmin = false;    // Flag para determinar si es admin
 
-    // Al cargar la página, reestablecer la sesión si hay datos en localStorage
+    // Al cargar la página, reestablece la sesión usando localStorage (si existe)
     document.addEventListener("DOMContentLoaded", function() {
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
@@ -319,47 +322,36 @@
         currentUserIsAdmin = (storedIsAdmin === "true");
         onLoginSuccess();
       }
-      // Cargar los comentarios
       cargarComentarios();
     });
 
     /*********************
-     * FUNCIÓN: Al iniciar sesión con éxito (guarda sesión en localStorage)
+     * FUNCIÓN AL INICIAR SESIÓN CON ÉXITO
      *********************/
     function onLoginSuccess() {
       localStorage.setItem("currentUser", currentUser);
       localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
-
-      // Ocultar las secciones de autenticación
-      document.getElementById("registerSection").style.display = "none";
-      document.getElementById("loginSection").style.display = "none";
-      document.getElementById("adminSection").style.display = "none";
-
-      // Mostrar la info del usuario y la zona de comentarios
+      document.getElementById("authContainer").style.display = "none";
       document.getElementById("userInfo").style.display = "block";
       document.getElementById("commentSection").style.display = "block";
       document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
     }
 
     /*********************
-     * Cerrar sesión
+     * Cerrar Sesión
      *********************/
     document.getElementById("logoutBtn").addEventListener("click", function() {
       currentUser = null;
       currentUserIsAdmin = false;
       localStorage.removeItem("currentUser");
       localStorage.removeItem("currentUserIsAdmin");
-
-      // Mostrar nuevamente las secciones de autenticación
-      document.getElementById("registerSection").style.display = "block";
-      document.getElementById("loginSection").style.display = "block";
-      document.getElementById("adminSection").style.display = "block";
+      document.getElementById("authContainer").style.display = "flex";
       document.getElementById("userInfo").style.display = "none";
       document.getElementById("commentSection").style.display = "none";
     });
 
     /*********************
-     * Registro de usuarios
+     * Registro de Usuarios
      *********************/
     document.getElementById("registerForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -369,7 +361,6 @@
         alert("La contraseña debe tener al menos 8 caracteres.");
         return;
       }
-      // Verificar que el usuario no exista en la BD
       db.ref("users/" + username).get().then(function(snapshot) {
         if (snapshot.exists()) {
           alert("El nombre de usuario ya está en uso. Elige otro.");
@@ -387,46 +378,41 @@
     });
 
     /*********************
-     * Inicio de sesión (usuario)
+     * Inicio de Sesión Unificado (Usuario y Admin)
      *********************/
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value;
-      db.ref("users/" + username).get().then(function(snapshot) {
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          if (userData.password === password) {
-            currentUser = username;
-            currentUserIsAdmin = false;
-            onLoginSuccess();
-          } else {
-            alert("Contraseña incorrecta.");
-          }
-        } else {
-          alert("El usuario no está registrado.");
-        }
-      });
-    });
-
-    /*********************
-     * Inicio de sesión (administrador)
-     *********************/
-    document.getElementById("adminLoginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const username = document.getElementById("adminUsername").value.trim();
-      const password = document.getElementById("adminPassword").value;
+      
+      // Primero, verificar si las credenciales corresponden a administrador
       if (username === "ChamoProgramador" && password === "29072024") {
         currentUser = username;
         currentUserIsAdmin = true;
         onLoginSuccess();
       } else {
-        alert("Credenciales de administrador incorrectas.");
+        // Sino, verificar en la base de datos de usuarios
+        db.ref("users/" + username).get().then(function(snapshot) {
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            if (userData.password === password) {
+              currentUser = username;
+              currentUserIsAdmin = false;
+              onLoginSuccess();
+            } else {
+              alert("Contraseña incorrecta.");
+            }
+          } else {
+            alert("El usuario no está registrado.");
+          }
+        }).catch(error => {
+          console.error("Error al intentar iniciar sesión:", error);
+        });
       }
     });
 
     /*********************
-     * Publicar comentario (con opción de adjuntar imagen)
+     * Publicar Comentario
      *********************/
     document.getElementById("commentForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -438,7 +424,6 @@
         imageData: null,
         timestamp: Date.now()
       };
-
       function postComment() {
         db.ref("comments").push(comment, function(error) {
           if (error) {
@@ -448,7 +433,6 @@
           }
         });
       }
-
       if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         const reader = new FileReader();
@@ -463,19 +447,19 @@
     });
 
     /*********************
-     * Cargar y mostrar comentarios (con respuestas)
+     * Cargar y Mostrar Comentarios (con respuestas)
      *********************/
     function cargarComentarios() {
       db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
         const commentsDiv = document.getElementById("comments");
-        commentsDiv.innerHTML = ""; // Limpiar feed
+        commentsDiv.innerHTML = "";
         snapshot.forEach(function(childSnapshot) {
           const key = childSnapshot.key;
           const commentData = childSnapshot.val();
           const commentElem = document.createElement("div");
           commentElem.className = "comment";
 
-          // Si el usuario es administrador, mostrar botón "Eliminar"
+          // Botón para eliminar (sólo para administradores)
           if (currentUserIsAdmin) {
             const delBtn = document.createElement("button");
             delBtn.className = "delete-btn";
@@ -488,22 +472,21 @@
             commentElem.appendChild(delBtn);
           }
 
-          // Mostrar nombre y comentario
           const h3 = document.createElement("h3");
           h3.textContent = commentData.username;
           commentElem.appendChild(h3);
+
           const p = document.createElement("p");
           p.textContent = commentData.text;
           commentElem.appendChild(p);
 
-          // Mostrar imagen, si existe
           if (commentData.imageData) {
             const img = document.createElement("img");
             img.src = commentData.imageData;
             commentElem.appendChild(img);
           }
 
-          // Botón para responder (visible si hay sesión activa)
+          // Botón para responder (visible si existe sesión)
           if (currentUser) {
             const replyBtn = document.createElement("button");
             replyBtn.className = "reply-btn";
@@ -549,7 +532,7 @@
             commentElem.appendChild(replyBtn);
           }
 
-          // Mostrar respuestas, si existen
+          // Mostrar respuestas existentes
           if (commentData.replies) {
             const repliesDiv = document.createElement("div");
             repliesDiv.className = "replies";
