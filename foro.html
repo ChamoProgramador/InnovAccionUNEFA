@@ -87,61 +87,98 @@
 
     <!-- Aquí se mostrarán los comentarios publicados -->
     <div id="comentarios" class="comentarios">
-      <!-- Comentarios se agregarán aquí -->
+      <!-- Los comentarios se agregarán aquí -->
     </div>
   </div>
 
   <script>
-    // Manejador del evento submit del formulario
+    // Función para renderizar un comentario en el DOM
+    function renderComentario(comentario) {
+      const comentarioDiv = document.createElement('div');
+      comentarioDiv.classList.add('comentario');
+
+      // Nombre de usuario
+      const title = document.createElement('h3');
+      title.textContent = comentario.username || 'Anónimo';
+      comentarioDiv.appendChild(title);
+
+      // Comentario de texto
+      const commentPara = document.createElement('p');
+      commentPara.textContent = comentario.text;
+      comentarioDiv.appendChild(commentPara);
+
+      // Imagen (si existe)
+      if (comentario.imageData) {
+        const img = document.createElement('img');
+        img.src = comentario.imageData;
+        comentarioDiv.appendChild(img);
+      }
+
+      return comentarioDiv;
+    }
+
+    // Función para cargar comentarios desde localStorage
+    function cargarComentarios() {
+      const comentariosDiv = document.getElementById('comentarios');
+      comentariosDiv.innerHTML = ''; // Limpia el contenedor antes de renderizar
+
+      // Obtener la lista de comentarios almacenada en localStorage (o un array vacío)
+      const comentariosGuardados = JSON.parse(localStorage.getItem('comentarios')) || [];
+      comentariosGuardados.forEach(comentario => {
+        comentariosDiv.appendChild(renderComentario(comentario));
+      });
+    }
+
+    // Función para guardar un comentario en localStorage
+    function guardarComentario(comentario) {
+      const comentariosGuardados = JSON.parse(localStorage.getItem('comentarios')) || [];
+      comentariosGuardados.push(comentario);
+      localStorage.setItem('comentarios', JSON.stringify(comentariosGuardados));
+    }
+
+    // Manejador del envío del formulario
     document.getElementById('foroForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
-      // Obtener los valores ingresados
+
       const username = document.getElementById('username').value.trim();
       const commentText = document.getElementById('commentText').value.trim();
       const imageInput = document.getElementById('imageInput');
-      
-      // Crear contenedor para el comentario
-      const comentarioDiv = document.createElement('div');
-      comentarioDiv.classList.add('comentario');
-      
-      // Título con el nombre de usuario
-      const title = document.createElement('h3');
-      title.textContent = username || 'Anónimo';
-      comentarioDiv.appendChild(title);
-      
-      // Contenido del comentario
-      const commentPara = document.createElement('p');
-      commentPara.textContent = commentText;
-      comentarioDiv.appendChild(commentPara);
-      
-      // Si se adjunta una imagen, la mostramos usando FileReader
+
+      const nuevoComentario = {
+        username: username,
+        text: commentText,
+        imageData: null,  // Aquí se almacenará la imagen en Data URL (si se carga)
+        timestamp: new Date().toISOString()
+      };
+
+      // Función para después de procesar la imagen (o si no hay imagen)
+      function procesarComentario() {
+        // Guarda en localStorage
+        guardarComentario(nuevoComentario);
+
+        // Renderízalo agregándolo al contenedor
+        document.getElementById('comentarios').appendChild(renderComentario(nuevoComentario));
+
+        // Reinicia el formulario
+        document.getElementById('foroForm').reset();
+      }
+
+      // Si se adjunta una imagen, procesarla
       if (imageInput.files && imageInput.files[0]) {
         const file = imageInput.files[0];
         const reader = new FileReader();
-        
         reader.onload = function(e) {
-          const img = document.createElement('img');
-          img.src = e.target.result; // La imagen se carga como Data URL
-          comentarioDiv.appendChild(img);
-          
-          // Agregar el comentario al contenedor de comentarios
-          document.getElementById('comentarios').appendChild(comentarioDiv);
-        }
+          nuevoComentario.imageData = e.target.result;
+          procesarComentario();
+        };
         reader.readAsDataURL(file);
       } else {
-        // Si no hay imagen, lo agregamos directamente
-        document.getElementById('comentarios').appendChild(comentarioDiv);
+        procesarComentario();
       }
-      
-      // Reiniciar el formulario para el siguiente comentario
-      this.reset();
     });
+
+    // Cargar comentarios al iniciar la página
+    document.addEventListener('DOMContentLoaded', cargarComentarios);
   </script>
-</body>
-</html>
-  <footer>
-    <a href="index.html">Volver a la Página Principal</a>
-  </footer>
 </body>
 </html>
