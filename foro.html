@@ -107,7 +107,7 @@
     .close:hover, .close:focus {
       color: #fff;
     }
-    /* Formularios en los modales */
+    /* Formularios dentro de los modales */
     .authForm input[type="text"],
     .authForm input[type="password"] {
       width: 100%;
@@ -164,7 +164,7 @@
       margin: 0 0 10px;
       text-align: center;
     }
-    /* Campo para Título */
+    /* Campo para Título del comentario */
     #commentSection label {
       display: block;
       margin-bottom: 5px;
@@ -180,7 +180,7 @@
       color: #eee;
       font-size: 16px;
     }
-    /* Campo para Categoría */
+    /* Campo para Selección de Categoría */
     #commentSection select.commentCategory {
       width: 100%;
       padding: 10px;
@@ -220,7 +220,7 @@
     #commentSection button:hover {
       background-color: #e6c200;
     }
-    /* Barra de búsqueda y ordenamiento */
+    /* Barra de búsqueda, filtro de categoría y ordenamiento */
     #searchBar {
       margin: 15px;
       text-align: center;
@@ -280,7 +280,7 @@
       border-radius: 4px;
       margin-top: 8px;
     }
-    /* Likes y Dislikes */
+    /* Likes y Dislikes: botones y contadores */
     .like-btn, .dislike-btn {
       background-color: #ffd700;
       border: none;
@@ -465,15 +465,13 @@
   </div>
 
   <script>
-    // Esperamos a que el DOM esté completamente cargado
     document.addEventListener("DOMContentLoaded", function() {
-
       /*********************
        * CONFIGURACIÓN DE FIREBASE
        *********************/
-      /* Reemplaza este bloque con los datos de tu proyecto (desde Firebase Console "Tus apps") */
+      /* Reemplaza este bloque con los datos de tu proyecto obtenidos desde Firebase Console ("Tus apps") */
       const firebaseConfig = {
-        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+       apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
   databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
   projectId: "innovaccionunefa",
@@ -493,7 +491,7 @@
       let currentUserIsAdmin = false;
       let allComments = [];
 
-      // Reestablecer la sesión si existe
+      // Reestablecer la sesión si existe en localStorage
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
       if (storedUser) {
@@ -616,7 +614,7 @@
       });
 
       /*********************
-       * Publicar Comentario (con título, categoría, texto, imagen y contadores de likes/dislikes)
+       * Publicar Comentario (con título, categoría, texto, imagen, likes/dislikes)
        *********************/
       document.getElementById("commentForm").addEventListener("submit", function(e) {
         e.preventDefault();
@@ -632,7 +630,8 @@
           imageData: null,
           timestamp: Date.now(),
           likes: 0,
-          dislikes: 0
+          dislikes: 0,
+          votes: {}  // Objeto para almacenar los votos de cada usuario (ej. { "user1": "like", "user2": "dislike" })
         };
         function postComment() {
           db.ref("comments").push(comment, function(error) {
@@ -651,203 +650,4 @@
             postComment();
           };
           reader.readAsDataURL(file);
-        } else {
-          postComment();
-        }
-      });
-
-      /*********************
-       * Cargar Comentarios desde Firebase
-       *********************/
-      function cargarComentarios() {
-        db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
-          allComments = [];
-          snapshot.forEach(function(childSnapshot) {
-            let comment = childSnapshot.val();
-            comment.key = childSnapshot.key;
-            allComments.push(comment);
-          });
-          displayComments(allComments);
-        });
-      }
-
-      /*********************
-       * Función para mostrar comentarios filtrados y ordenados
-       *********************/
-      function displayComments(commentsArray) {
-        // Filtrar según búsqueda y categoría
-        const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-        const categoryFilter = document.getElementById("filterCategory").value;
-        let filtered = commentsArray.filter(function(comment) {
-          if (searchQuery) {
-            const titleMatch = comment.title && comment.title.toLowerCase().includes(searchQuery);
-            const usernameMatch = comment.username && comment.username.toLowerCase().includes(searchQuery);
-            if (!titleMatch && !usernameMatch) return false;
-          }
-          if (categoryFilter !== "Todas" && comment.category !== categoryFilter) return false;
-          return true;
-        });
-
-        // Ordenar según la selección
-        const orderKey = document.getElementById("orderSelect").value;
-        if (orderKey === "recientes") {
-          filtered.sort((a, b) => b.timestamp - a.timestamp);
-        } else if (orderKey === "respuestas") {
-          filtered.sort((a, b) => {
-            const resA = a.replies ? Object.keys(a.replies).length : 0;
-            const resB = b.replies ? Object.keys(b.replies).length : 0;
-            return resB - resA;
-          });
-        } else if (orderKey === "likes") {
-          filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-        }
-
-        const commentsDiv = document.getElementById("comments");
-        commentsDiv.innerHTML = "";
-        filtered.forEach(function(comment) {
-          const commentElem = document.createElement("div");
-          commentElem.className = "comment";
-
-          // Botón Eliminar (solo para admin)
-          if (currentUserIsAdmin) {
-            const delBtn = document.createElement("button");
-            delBtn.className = "delete-btn";
-            delBtn.textContent = "Eliminar";
-            delBtn.onclick = function() {
-              if (confirm("¿Desea eliminar este comentario?")) {
-                db.ref("comments").child(comment.key).remove();
-              }
-            };
-            commentElem.appendChild(delBtn);
-          }
-
-          // Mostrar título y categoría
-          const titleElem = document.createElement("div");
-          titleElem.className = "commentTitle";
-          titleElem.textContent = comment.title;
-          commentElem.appendChild(titleElem);
-          const catElem = document.createElement("div");
-          catElem.className = "commentCategory";
-          catElem.textContent = comment.category;
-          commentElem.appendChild(catElem);
-
-          // Mostrar nombre del autor
-          const authorElem = document.createElement("h3");
-          authorElem.textContent = comment.username;
-          commentElem.appendChild(authorElem);
-
-          // Mostrar texto del comentario
-          const textElem = document.createElement("p");
-          textElem.textContent = comment.text;
-          commentElem.appendChild(textElem);
-
-          // Mostrar imagen (si existe)
-          if (comment.imageData) {
-            const img = document.createElement("img");
-            img.src = comment.imageData;
-            commentElem.appendChild(img);
-          }
-
-          // Botones de Like y Dislike y sus contadores
-          const likeBtn = document.createElement("button");
-          likeBtn.className = "like-btn";
-          likeBtn.textContent = "Like";
-          likeBtn.onclick = function() {
-            let currentLikes = comment.likes || 0;
-            db.ref("comments").child(comment.key).update({ likes: currentLikes + 1 });
-          };
-          commentElem.appendChild(likeBtn);
-          const dislikeBtn = document.createElement("button");
-          dislikeBtn.className = "dislike-btn";
-          dislikeBtn.textContent = "Dislike";
-          dislikeBtn.onclick = function() {
-            let currentDislikes = comment.dislikes || 0;
-            db.ref("comments").child(comment.key).update({ dislikes: currentDislikes + 1 });
-          };
-          commentElem.appendChild(dislikeBtn);
-          const likeCount = document.createElement("span");
-          likeCount.className = "like-count";
-          likeCount.textContent = "Likes: " + (comment.likes || 0);
-          commentElem.appendChild(likeCount);
-          const dislikeCount = document.createElement("span");
-          dislikeCount.className = "dislike-count";
-          dislikeCount.textContent = "Dislikes: " + (comment.dislikes || 0);
-          commentElem.appendChild(dislikeCount);
-
-          // Botón para responder (si hay sesión activa)
-          if (currentUser) {
-            const replyBtn = document.createElement("button");
-            replyBtn.className = "reply-btn";
-            replyBtn.textContent = "Responder";
-            replyBtn.onclick = function() {
-              let existingForm = commentElem.querySelector(".replyForm");
-              if (existingForm) {
-                existingForm.remove();
-              } else {
-                const replyForm = document.createElement("form");
-                replyForm.className = "replyForm";
-                const replyTextarea = document.createElement("textarea");
-                replyTextarea.placeholder = "Escribe tu respuesta...";
-                replyTextarea.required = true;
-                replyTextarea.rows = 2;
-                replyForm.appendChild(replyTextarea);
-                const submitReplyBtn = document.createElement("button");
-                submitReplyBtn.type = "submit";
-                submitReplyBtn.textContent = "Enviar Respuesta";
-                replyForm.appendChild(submitReplyBtn);
-                replyForm.onsubmit = function(ev) {
-                  ev.preventDefault();
-                  const replyContent = replyTextarea.value.trim();
-                  if (replyContent !== "") {
-                    const reply = {
-                      username: currentUser,
-                      text: replyContent,
-                      timestamp: Date.now()
-                    };
-                    db.ref("comments/" + comment.key + "/replies").push(reply, function(error) {
-                      if (!error) {
-                        replyTextarea.value = "";
-                        replyForm.remove();
-                      } else {
-                        alert("Error al enviar respuesta.");
-                      }
-                    });
-                  }
-                };
-                commentElem.appendChild(replyForm);
-              }
-            };
-            commentElem.appendChild(replyBtn);
-          }
-
-          // Mostrar respuestas existentes (si hay)
-          if (comment.replies) {
-            const repliesDiv = document.createElement("div");
-            repliesDiv.className = "replies";
-            for (let replyKey in comment.replies) {
-              const replyData = comment.replies[replyKey];
-              const replyElem = document.createElement("div");
-              replyElem.className = "reply";
-              replyElem.innerHTML = "<strong>" + replyData.username + ":</strong> " + replyData.text;
-              repliesDiv.appendChild(replyElem);
-            }
-            commentElem.appendChild(repliesDiv);
-          }
-          commentsDiv.appendChild(commentElem);
-        });
-      }
-
-      // Eventos para filtros: búsqueda, categoría y ordenamiento
-      document.getElementById("searchInput").addEventListener("input", function() {
-        displayComments(allComments);
-      });
-      document.getElementById("filterCategory").addEventListener("change", function() {
-        displayComments(allComments);
-      });
-      document.getElementById("orderSelect").addEventListener("change", function() {
-        displayComments(allComments);
-      });
-    });
-  </script>
-</body>
-</html>
+        } else
