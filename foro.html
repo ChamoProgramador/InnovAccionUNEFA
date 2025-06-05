@@ -1,470 +1,469 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Foro Global - Mi Foro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    /* ------------------------------
-       Estilos Generales y Contenedor
-       ------------------------------ */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #000;
-      color: #eee;
-      margin: 0;
-      padding: 0;
-    }
-    #container {
-      max-width: 1200px;
-      margin: 20px auto;
-      background-color: #222;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
-      overflow: hidden;
-      padding-bottom: 20px;
-    }
-    /* ------------------------------
-       Header, Navegación y Botones de Auth
-       ------------------------------ */
-    header {
-      position: relative;
-      background-color: #8B0000; /* Vinotinto */
-      color: #fff;
-      padding: 15px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-    /* Botones de navegación en la esquina superior izquierda */
-    #navButtons {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-    #navButtons button {
-      background-color: #ffd700;
-      border: none;
-      padding: 6px 10px;
-      margin-right: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #333;
-    }
-    #navButtons button:hover {
-      background-color: #e6c200;
-    }
-    /* Botones de autenticación en la esquina superior derecha */
-    #authButtons {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-    #authButtons button {
-      background-color: #ffd700;
-      border: none;
-      padding: 8px 12px;
-      margin-left: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      color: #333;
-    }
-    #authButtons button:hover {
-      background-color: #e6c200;
-    }
-    /* ------------------------------
-       Modales para Login y Registro
-       ------------------------------ */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.8);
-    }
-    .modal-content {
-      background-color: #222;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #444;
-      width: 300px;
-      border-radius: 4px;
-      position: relative;
-      text-align: center;
-    }
-    .close {
-      position: absolute;
-      top: 5px;
-      right: 10px;
-      font-size: 28px;
-      font-weight: bold;
-      color: #eee;
-      cursor: pointer;
-    }
-    .close:hover {
-      color: #fff;
-    }
-    .authForm input[type="text"],
-    .authForm input[type="password"] {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
-      color: #eee;
-    }
-    .authForm button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      background-color: #ffd700;
-      color: #333;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 8px;
-    }
-    .authForm button:hover {
-      background-color: #e6c200;
-    }
-    /* ------------------------------
-       Zona de Usuario Activo y Caja de Comentarios
-       ------------------------------ */
-    #userInfo {
-      padding: 15px;
-      text-align: center;
-      background-color: #333;
-      display: none;
-    }
-    #userInfo button {
-      background-color: #ff4d4d;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-      color: #fff;
-    }
-    #userInfo button:hover {
-      background-color: #e60000;
-    }
-    #commentSection {
-      margin: 15px;
-      padding: 20px;
-      background-color: #333;
-      border: 2px solid #8B0000;
-      border-radius: 8px;
-      display: none;
-    }
-    #commentSection h2 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    /* Campos del formulario de comentario */
-    #commentSection label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    #commentSection input.commentTitle {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
-      color: #eee;
-      font-size: 16px;
-    }
-    #commentSection select.commentCategory {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
-      color: #eee;
-      font-size: 16px;
-    }
-    #commentSection textarea {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 4px;
-      background: #111;
-      color: #eee;
-      font-size: 16px;
-      min-height: 120px;
-      resize: vertical;
-      margin-bottom: 10px;
-    }
-    #commentSection input[type="file"] {
-      margin-bottom: 10px;
-    }
-    #commentSection button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      background-color: #ffd700;
-      color: #333;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    #commentSection button:hover {
-      background-color: #e6c200;
-    }
-    /* ------------------------------
-       Barra de Búsqueda, Filtro y Ordenamiento
-       ------------------------------ */
-    #searchBar {
-      text-align: center;
-      margin: 15px;
-    }
-    #searchBar input,
-    #searchBar select {
-      padding: 8px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
-      color: #eee;
-      font-size: 16px;
-      margin-right: 10px;
-    }
-    /* ------------------------------
-       Feed de Comentarios
-       ------------------------------ */
-    #commentsFeed {
-      margin: 15px;
-      padding: 15px;
-    }
-    .comment {
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 10px;
-      position: relative;
-    }
-    .comment h3 {
-      margin: 0 0 5px;
-      color: #8B0000;
-    }
-    .comment .commentTitle {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 3px;
-    }
-    .comment .commentCategory {
-      font-size: 12px;
-      color: #ccc;
-      margin-bottom: 5px;
-    }
-    .comment p {
-      line-height: 1.4;
-      margin: 8px 0;
-    }
-    .comment img {
-      max-width: 100%;
-      border-radius: 4px;
-      margin-top: 8px;
-    }
-    /* Botones de Like y Dislike */
-    .like-btn, .dislike-btn {
-      background-color: #ffd700;
-      border: none;
-      padding: 4px 8px;
-      margin-right: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #333;
-    }
-    .like-btn:hover, .dislike-btn:hover {
-      background-color: #e6c200;
-    }
-    .like-count, .dislike-count {
-      font-size: 12px;
-      margin-right: 10px;
-    }
-    /* Botón Eliminar (solo admin) */
-    .delete-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background-color: #ff4d4d;
-      border: none;
-      padding: 5px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #fff;
-    }
-    .delete-btn:hover {
-      background-color: #e60000;
-    }
-    /* Botón para Responder */
-    .reply-btn {
-      background-color: #8B0000;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      color: #fff;
-      margin-top: 5px;
-    }
-    .reply-btn:hover {
-      opacity: 0.8;
-    }
-    .replyForm {
-      margin-top: 10px;
-    }
-    .replyForm textarea {
-      width: 100%;
-      padding: 6px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      resize: vertical;
-      background: #111;
-      color: #eee;
-      font-size: 14px;
-      box-sizing: border-box;
-      margin-bottom: 5px;
-    }
-    .replyForm button {
-      background-color: #ffd700;
-      border: none;
-      padding: 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      width: 100%;
-      color: #333;
-    }
-    .replyForm button:hover {
-      background-color: #e6c200;
-    }
-    .replies {
-      margin-left: 20px;
-      margin-top: 10px;
-    }
-    .reply {
-      background-color: #444;
-      padding: 5px 10px;
-      border-left: 2px solid #8B0000;
-      border-radius: 4px;
-      margin-top: 5px;
-    }
-  </style>
-</head>
-<body>
-  <div id="container">
-    <header>
-      <h1>Foro Global</h1>
-      <!-- Botones de navegación (izquierda) -->
-      <div id="navButtons">
-        <button onclick="window.history.back()">Regresar</button>
-        <button onclick="window.location.href='index.html'">Inicio</button>
-      </div>
-      <!-- Botones de autenticación (derecha) -->
-      <div id="authButtons">
-        <button id="openLogin">Iniciar Sesión</button>
-        <button id="openRegister">Registrarse</button>
-      </div>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Foro Global - Mi Foro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* ===============================
+         Estilos Generales y Contenedor
+         =============================== */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #000;
+        color: #eee;
+        margin: 0;
+        padding: 0;
+      }
+      #container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: #222;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+        overflow: hidden;
+        padding-bottom: 20px;
+      }
+      /* ===============================
+         Header, Navegación y Botones de Autenticación
+         =============================== */
+      header {
+        position: relative;
+        background-color: #8B0000; /* Vinotinto */
+        color: #fff;
+        padding: 15px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+      #navButtons {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+      #navButtons button {
+        background-color: #ffd700;
+        border: none;
+        padding: 6px 10px;
+        margin-right: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #333;
+      }
+      #navButtons button:hover {
+        background-color: #e6c200;
+      }
+      #authButtons {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+      #authButtons button {
+        background-color: #ffd700;
+        border: none;
+        padding: 8px 12px;
+        margin-left: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+      }
+      #authButtons button:hover {
+        background-color: #e6c200;
+      }
+      /* ===============================
+         Modales (Login y Registro)
+         =============================== */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      .modal-content {
+        background-color: #222;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #444;
+        width: 300px;
+        border-radius: 4px;
+        position: relative;
+        text-align: center;
+      }
+      .close {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #eee;
+        cursor: pointer;
+      }
+      .close:hover {
+        color: #fff;
+      }
+      .authForm input[type="text"],
+      .authForm input[type="password"] {
+        width: 100%;
+        padding: 8px;
+        margin: 8px 0;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: #111;
+        color: #eee;
+      }
+      .authForm button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #ffd700;
+        color: #333;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 8px;
+      }
+      .authForm button:hover {
+        background-color: #e6c200;
+      }
+      /* ===============================
+         Zona de Usuario Activo y Comentarios
+         =============================== */
+      #userInfo {
+        padding: 15px;
+        text-align: center;
+        background-color: #333;
+        display: none;
+      }
+      #userInfo button {
+        background-color: #ff4d4d;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+        color: #fff;
+      }
+      #userInfo button:hover {
+        background-color: #e60000;
+      }
+      #commentSection {
+        margin: 15px;
+        padding: 20px;
+        background-color: #333;
+        border: 2px solid #8B0000;
+        border-radius: 8px;
+        display: none;
+      }
+      #commentSection h2 {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      /* Campos del formulario de comentario */
+      #commentSection label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      #commentSection input.commentTitle {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: #111;
+        color: #eee;
+        font-size: 16px;
+      }
+      #commentSection select.commentCategory {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: #111;
+        color: #eee;
+        font-size: 16px;
+      }
+      #commentSection textarea {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        background: #111;
+        color: #eee;
+        font-size: 16px;
+        min-height: 120px;
+        resize: vertical;
+        margin-bottom: 10px;
+      }
+      #commentSection input[type="file"] {
+        margin-bottom: 10px;
+      }
+      #commentSection button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #ffd700;
+        color: #333;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      #commentSection button:hover {
+        background-color: #e6c200;
+      }
+      /* ===============================
+         Barra de Búsqueda, Filtros y Ordenamiento
+         =============================== */
+      #searchBar {
+        text-align: center;
+        margin: 15px;
+      }
+      #searchBar input,
+      #searchBar select {
+        padding: 8px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: #111;
+        color: #eee;
+        font-size: 16px;
+        margin-right: 10px;
+      }
+      /* ===============================
+         Feed de Comentarios
+         =============================== */
+      #commentsFeed {
+        margin: 15px;
+        padding: 15px;
+      }
+      .comment {
+        background: #222;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 10px;
+        position: relative;
+      }
+      .comment h3 {
+        margin: 0 0 5px;
+        color: #8B0000;
+      }
+      .comment .commentTitle {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+      .comment .commentCategory {
+        font-size: 12px;
+        color: #ccc;
+        margin-bottom: 5px;
+      }
+      .comment p {
+        line-height: 1.4;
+        margin: 8px 0;
+      }
+      .comment img {
+        max-width: 100%;
+        border-radius: 4px;
+        margin-top: 8px;
+      }
+      /* Botones de Like/Dislike */
+      .like-btn,
+      .dislike-btn {
+        background-color: #ffd700;
+        border: none;
+        padding: 4px 8px;
+        margin-right: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #333;
+      }
+      .like-btn:hover,
+      .dislike-btn:hover {
+        background-color: #e6c200;
+      }
+      .like-count,
+      .dislike-count {
+        font-size: 12px;
+        margin-right: 10px;
+      }
+      /* Botón Eliminar (solo Admin) */
+      .delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background-color: #ff4d4d;
+        border: none;
+        padding: 5px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #fff;
+      }
+      .delete-btn:hover {
+        background-color: #e60000;
+      }
+      /* Botón para Responder */
+      .reply-btn {
+        background-color: #8B0000;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #fff;
+        margin-top: 5px;
+      }
+      .reply-btn:hover {
+        opacity: 0.8;
+      }
+      .replyForm {
+        margin-top: 10px;
+      }
+      .replyForm textarea {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        resize: vertical;
+        background: #111;
+        color: #eee;
+        font-size: 14px;
+        box-sizing: border-box;
+        margin-bottom: 5px;
+      }
+      .replyForm button {
+        background-color: #ffd700;
+        border: none;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        width: 100%;
+        color: #333;
+      }
+      .replyForm button:hover {
+        background-color: #e6c200;
+      }
+      .replies {
+        margin-left: 20px;
+        margin-top: 10px;
+      }
+      .reply {
+        background-color: #444;
+        padding: 5px 10px;
+        border-left: 2px solid #8B0000;
+        border-radius: 4px;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <!-- HEADER -->
+      <header>
+        <h1>Foro Global</h1>
+        <div id="navButtons">
+          <button onclick="window.history.back()">Regresar</button>
+          <button onclick="window.location.href='index.html'">Inicio</button>
+        </div>
+        <div id="authButtons">
+          <button id="openLogin">Iniciar Sesión</button>
+          <button id="openRegister">Registrarse</button>
+        </div>
+      </header>
 
-    <!-- Modal de Inicio de Sesión -->
-    <div id="loginModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="loginClose">&times;</span>
-        <h2>Iniciar Sesión</h2>
-        <form id="loginForm" class="authForm">
-          <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
-          <input type="password" id="loginPassword" placeholder="Contraseña" required>
-          <button type="submit">Iniciar Sesión</button>
+      <!-- MODAL DE INICIAR SESIÓN -->
+      <div id="loginModal" class="modal">
+        <div class="modal-content">
+          <span class="close" id="loginClose">&times;</span>
+          <h2>Iniciar Sesión</h2>
+          <form id="loginForm" class="authForm">
+            <input type="text" id="loginUsername" placeholder="Nombre de usuario" required />
+            <input type="password" id="loginPassword" placeholder="Contraseña" required />
+            <button type="submit">Iniciar Sesión</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- MODAL DE REGISTRO -->
+      <div id="registerModal" class="modal">
+        <div class="modal-content">
+          <span class="close" id="registerClose">&times;</span>
+          <h2>Registrarse</h2>
+          <form id="registerForm" class="authForm">
+            <input type="text" id="regUsername" placeholder="Nombre de usuario" required />
+            <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required />
+            <button type="submit">Registrarse</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ZONA DE USUARIO ACTIVO -->
+      <div id="userInfo">
+        <p id="welcomeMsg"></p>
+        <button id="logoutBtn">Cerrar Sesión</button>
+      </div>
+
+      <!-- CAJA DE COMENTARIOS -->
+      <div id="commentSection">
+        <h2>Publicar Comentario</h2>
+        <form id="commentForm">
+          <label for="commentTitle">Título del comentario:</label>
+          <input type="text" id="commentTitle" class="commentTitle" placeholder="Escribe un título..." required />
+          <label for="commentCategory">Categoría:</label>
+          <select id="commentCategory" class="commentCategory" required>
+            <option value="">--Seleccione categoría--</option>
+            <option value="Preguntas">Preguntas</option>
+            <option value="Problemas">Problemas</option>
+            <option value="Conversaciones">Conversaciones</option>
+          </select>
+          <textarea id="commentText" placeholder="Escribe tu comentario..." required></textarea>
+          <input type="file" id="commentImage" accept="image/*" />
+          <button type="submit">Publicar Comentario</button>
         </form>
       </div>
-    </div>
 
-    <!-- Modal de Registro -->
-    <div id="registerModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="registerClose">&times;</span>
-        <h2>Registrarse</h2>
-        <form id="registerForm" class="authForm">
-          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
-          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
-          <button type="submit">Registrarse</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Zona de Usuario Activo -->
-    <div id="userInfo">
-      <p id="welcomeMsg"></p>
-      <button id="logoutBtn">Cerrar Sesión</button>
-    </div>
-
-    <!-- Caja de Comentarios -->
-    <div id="commentSection">
-      <h2>Publicar Comentario</h2>
-      <form id="commentForm">
-        <label for="commentTitle">Título del comentario:</label>
-        <input type="text" id="commentTitle" class="commentTitle" placeholder="Escribe un título..." required>
-        <label for="commentCategory">Categoría:</label>
-        <select id="commentCategory" class="commentCategory" required>
-          <option value="">--Seleccione categoría--</option>
+      <!-- BARRA DE BÚSQUEDA, FILTRO Y ORDENAMIENTO -->
+      <div id="searchBar">
+        <input type="text" id="searchInput" placeholder="Buscar por título o usuario..." />
+        <select id="filterCategory">
+          <option value="Todas">Todas</option>
           <option value="Preguntas">Preguntas</option>
           <option value="Problemas">Problemas</option>
           <option value="Conversaciones">Conversaciones</option>
         </select>
-        <textarea id="commentText" placeholder="Escribe tu comentario..." required></textarea>
-        <input type="file" id="commentImage" accept="image/*">
-        <button type="submit">Publicar Comentario</button>
-      </form>
+        <select id="orderSelect">
+          <option value="recientes">Recientes</option>
+          <option value="respuestas">Más Respuestas</option>
+          <option value="likes">Más Likes</option>
+        </select>
+      </div>
+
+      <!-- FEED DE COMENTARIOS -->
+      <div id="commentsFeed">
+        <h2>Comentarios</h2>
+        <div id="comments"></div>
+      </div>
     </div>
 
-    <!-- Barra de Búsqueda, Filtro y Ordenamiento -->
-    <div id="searchBar">
-      <input type="text" id="searchInput" placeholder="Buscar por título o usuario...">
-      <select id="filterCategory">
-        <option value="Todas">Todas</option>
-        <option value="Preguntas">Preguntas</option>
-        <option value="Problemas">Problemas</option>
-        <option value="Conversaciones">Conversaciones</option>
-      </select>
-      <select id="orderSelect">
-        <option value="recientes">Recientes</option>
-        <option value="respuestas">Más Respuestas</option>
-        <option value="likes">Más Likes</option>
-      </select>
-    </div>
-
-    <!-- Feed de Comentarios -->
-    <div id="commentsFeed">
-      <h2>Comentarios</h2>
-      <div id="comments"></div>
-    </div>
-  </div>
-
-  <script>
-    // Esperamos que el DOM se cargue completamente
-    document.addEventListener("DOMContentLoaded", function() {
-      /*********************
-       * CONFIGURACIÓN DE FIREBASE
-       *********************/
-      /* Reemplaza los siguientes valores con los de tu proyecto (desde Firebase Console, "Tus apps") */
-      const firebaseConfig = {
-       apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+    <!-- SCRIPT: Todo se asigna en DOMContentLoaded para asegurar que los elementos existan -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // *******************************
+        // CONFIGURACIÓN DE FIREBASE (Reemplaza estos valores por los de tu proyecto)
+        // *******************************
+        const firebaseConfig = {
+           apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
   databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
   projectId: "innovaccionunefa",
@@ -473,403 +472,417 @@
   appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
   measurementId: "G-LLK0GLWS1G"
 };
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-      /*********************
-       * VARIABLES GLOBALES DE SESIÓN Y COMENTARIOS
-       *********************/
-      let currentUser = null;
-      let currentUserIsAdmin = false;
-      let allComments = [];
+        // *******************************
+        // VARIABLES GLOBALES
+        // *******************************
+        let currentUser = null;
+        let currentUserIsAdmin = false;
+        let allComments = [];
 
-      // Reestablecer sesión si existe en localStorage
-      const storedUser = localStorage.getItem("currentUser");
-      const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
-      if (storedUser) {
-        currentUser = storedUser;
-        currentUserIsAdmin = (storedIsAdmin === "true");
-        onLoginSuccess();
-      }
-      cargarComentarios();
+        // Reestablece sesión si existe en localStorage
+        const storedUser = localStorage.getItem("currentUser");
+        const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
+        if (storedUser) {
+          currentUser = storedUser;
+          currentUserIsAdmin = storedIsAdmin === "true";
+          onLoginSuccess();
+        }
+        cargarComentarios();
 
-      /*********************
-       * Función: onLoginSuccess
-       *********************/
-      function onLoginSuccess() {
-        localStorage.setItem("currentUser", currentUser);
-        localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
-        document.getElementById("authButtons").style.display = "none";
-        document.getElementById("loginModal").style.display = "none";
-        document.getElementById("registerModal").style.display = "none";
-        document.getElementById("userInfo").style.display = "block";
-        document.getElementById("commentSection").style.display = "block";
-        document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
-      }
-
-      /*********************
-       * Cerrar Sesión
-       *********************/
-      document.getElementById("logoutBtn").addEventListener("click", function() {
-        currentUser = null;
-        currentUserIsAdmin = false;
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("currentUserIsAdmin");
-        document.getElementById("authButtons").style.display = "block";
-        document.getElementById("userInfo").style.display = "none";
-        document.getElementById("commentSection").style.display = "none";
-      });
-
-      /*********************
-       * Apertura y Cierre de Modales
-       *********************/
-      document.getElementById("openLogin").addEventListener("click", function() {
-        console.log("Se hizo clic en Iniciar Sesión");
-        document.getElementById("loginModal").style.display = "block";
-      });
-      document.getElementById("openRegister").addEventListener("click", function() {
-        document.getElementById("registerModal").style.display = "block";
-      });
-      document.getElementById("loginClose").addEventListener("click", function() {
-        document.getElementById("loginModal").style.display = "none";
-      });
-      document.getElementById("registerClose").addEventListener("click", function() {
-        document.getElementById("registerModal").style.display = "none";
-      });
-      window.addEventListener("click", function(event) {
-        if (event.target == document.getElementById("loginModal")) {
+        // *******************************
+        // Función onLoginSuccess: oculta modales y muestra zona de usuario activo y comentarios
+        // *******************************
+        function onLoginSuccess() {
+          localStorage.setItem("currentUser", currentUser);
+          localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
+          document.getElementById("authButtons").style.display = "none";
           document.getElementById("loginModal").style.display = "none";
-        }
-        if (event.target == document.getElementById("registerModal")) {
           document.getElementById("registerModal").style.display = "none";
+          document.getElementById("userInfo").style.display = "block";
+          document.getElementById("commentSection").style.display = "block";
+          document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
         }
-      });
 
-      /*********************
-       * Registro de Usuarios
-       *********************/
-      document.getElementById("registerForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const username = document.getElementById("regUsername").value.trim();
-        const password = document.getElementById("regPassword").value;
-        if (password.length < 8) {
-          alert("La contraseña debe tener al menos 8 caracteres.");
-          return;
-        }
-        db.ref("users/" + username).get().then(function(snapshot) {
-          if (snapshot.exists()) {
-            alert("El nombre de usuario ya está en uso. Elige otro.");
-          } else {
-            db.ref("users/" + username).set({ password: password })
-              .then(function() {
-                alert("Registro exitoso. Ahora puedes iniciar sesión.");
-                document.getElementById("registerForm").reset();
-                document.getElementById("registerModal").style.display = "none";
-              })
-              .catch(function(error) {
-                alert("Error en el registro: " + error.message);
-              });
+        // *******************************
+        // Cerrar Sesión
+        // *******************************
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+          currentUser = null;
+          currentUserIsAdmin = false;
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("currentUserIsAdmin");
+          document.getElementById("authButtons").style.display = "block";
+          document.getElementById("userInfo").style.display = "none";
+          document.getElementById("commentSection").style.display = "none";
+        });
+
+        // *******************************
+        // Apertura y Cierre de Modales
+        // *******************************
+        document.getElementById("openLogin").addEventListener("click", function () {
+          console.log("Se hizo clic en Iniciar Sesión");
+          document.getElementById("loginModal").style.display = "block";
+        });
+        document.getElementById("openRegister").addEventListener("click", function () {
+          document.getElementById("registerModal").style.display = "block";
+        });
+        document.getElementById("loginClose").addEventListener("click", function () {
+          document.getElementById("loginModal").style.display = "none";
+        });
+        document.getElementById("registerClose").addEventListener("click", function () {
+          document.getElementById("registerModal").style.display = "none";
+        });
+        window.addEventListener("click", function (event) {
+          if (event.target == document.getElementById("loginModal")) {
+            document.getElementById("loginModal").style.display = "none";
+          }
+          if (event.target == document.getElementById("registerModal")) {
+            document.getElementById("registerModal").style.display = "none";
           }
         });
-      });
 
-      /*********************
-       * Inicio de Sesión (Unificado: Admin y Usuario)
-       *********************/
-      document.getElementById("loginForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const username = document.getElementById("loginUsername").value.trim();
-        const password = document.getElementById("loginPassword").value;
-        // Verificar credenciales de administrador
-        if (username === "ChamoProgramador" && password === "29072024") {
-          currentUser = username;
-          currentUserIsAdmin = true;
-          onLoginSuccess();
-        } else {
-          db.ref("users/" + username).get().then(function(snapshot) {
+        // *******************************
+        // Registro de Usuarios
+        // *******************************
+        document.getElementById("registerForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+          const username = document.getElementById("regUsername").value.trim();
+          const password = document.getElementById("regPassword").value;
+          if (password.length < 8) {
+            alert("La contraseña debe tener al menos 8 caracteres.");
+            return;
+          }
+          db.ref("users/" + username).get().then(function (snapshot) {
             if (snapshot.exists()) {
-              const userData = snapshot.val();
-              if (userData.password === password) {
-                currentUser = username;
-                currentUserIsAdmin = false;
-                onLoginSuccess();
+              alert("El nombre de usuario ya está en uso. Elige otro.");
+            } else {
+              db.ref("users/" + username).set({ password: password })
+                .then(function () {
+                  alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                  document.getElementById("registerForm").reset();
+                  document.getElementById("registerModal").style.display = "none";
+                })
+                .catch(function (error) {
+                  alert("Error en el registro: " + error.message);
+                });
+            }
+          });
+        });
+
+        // *******************************
+        // Inicio de Sesión (Unificado: Admin y Usuario)
+        // *******************************
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+          const username = document.getElementById("loginUsername").value.trim();
+          const password = document.getElementById("loginPassword").value;
+          // Si son las credenciales de administrador (credenciales fijas)
+          if (username === "ChamoProgramador" && password === "29072024") {
+            currentUser = username;
+            currentUserIsAdmin = true;
+            onLoginSuccess();
+          } else {
+            db.ref("users/" + username).get().then(function (snapshot) {
+              if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (userData.password === password) {
+                  currentUser = username;
+                  currentUserIsAdmin = false;
+                  onLoginSuccess();
+                } else {
+                  alert("Contraseña incorrecta.");
+                }
               } else {
-                alert("Contraseña incorrecta.");
+                alert("El usuario no está registrado.");
               }
-            } else {
-              alert("El usuario no está registrado.");
-            }
-          }).catch(function(error) {
-            console.error("Error en el inicio de sesión:", error);
-          });
-        }
-      });
+            }).catch(function (error) {
+              console.error("Error en el inicio de sesión:", error);
+            });
+          }
+        });
 
-      /*********************
-       * Publicar Comentario (con título, categoría, texto, imagen, likes/dislikes y votos únicos)
-       *********************/
-      document.getElementById("commentForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const title = document.getElementById("commentTitle").value.trim();
-        const category = document.getElementById("commentCategory").value;
-        const text = document.getElementById("commentText").value.trim();
-        const fileInput = document.getElementById("commentImage");
-        const comment = {
-          username: currentUser,
-          title: title,
-          category: category,
-          text: text,
-          imageData: null,
-          timestamp: Date.now(),
-          likes: 0,
-          dislikes: 0,
-          votes: {} // Objeto para controlar votos de cada usuario
-        };
-        function postComment() {
-          db.ref("comments").push(comment, function(error) {
-            if (error) {
-              alert("Error al publicar el comentario.");
-            } else {
-              document.getElementById("commentForm").reset();
-            }
-          });
-        }
-        if (fileInput.files && fileInput.files[0]) {
-          const file = fileInput.files[0];
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            comment.imageData = e.target.result;
-            postComment();
+        // *******************************
+        // Publicar Comentario (con título, categoría, texto, imagen, likes/dislikes y votos)
+        // *******************************
+        document.getElementById("commentForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+          const title = document.getElementById("commentTitle").value.trim();
+          const category = document.getElementById("commentCategory").value;
+          const text = document.getElementById("commentText").value.trim();
+          const fileInput = document.getElementById("commentImage");
+          // Inicializa el comentario con votos y contadores en 0
+          const comment = {
+            username: currentUser,
+            title: title,
+            category: category,
+            text: text,
+            imageData: null,
+            timestamp: Date.now(),
+            likes: 0,
+            dislikes: 0,
+            votes: {}
           };
-          reader.readAsDataURL(file);
-        } else {
-          postComment();
-        }
-      });
+          function postComment() {
+            db.ref("comments").push(comment, function (error) {
+              if (error) {
+                alert("Error al publicar el comentario.");
+              } else {
+                document.getElementById("commentForm").reset();
+              }
+            });
+          }
+          if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              comment.imageData = e.target.result;
+              postComment();
+            };
+            reader.readAsDataURL(file);
+          } else {
+            postComment();
+          }
+        });
 
-      /*********************
-       * Cargar Comentarios de Firebase
-       *********************/
-      function cargarComentarios() {
-        db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
-          allComments = [];
-          snapshot.forEach(function(childSnapshot) {
-            let comment = childSnapshot.val();
-            comment.key = childSnapshot.key;
-            allComments.push(comment);
+        // *******************************
+        // Cargar Comentarios desde Firebase
+        // *******************************
+        function cargarComentarios() {
+          db.ref("comments").orderByChild("timestamp").on("value", function (snapshot) {
+            allComments = [];
+            snapshot.forEach(function (childSnapshot) {
+              let comment = childSnapshot.val();
+              comment.key = childSnapshot.key;
+              allComments.push(comment);
+            });
+            displayComments(allComments);
           });
+        }
+
+        // *******************************
+        // Mostrar Comentarios con Filtros y Ordenamiento
+        // *******************************
+        function displayComments(commentsArray) {
+          const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+          const categoryFilter = document.getElementById("filterCategory").value;
+          let filtered = commentsArray.filter(function (comment) {
+            if (searchQuery) {
+              const titleMatch = comment.title && comment.title.toLowerCase().includes(searchQuery);
+              const usernameMatch = comment.username && comment.username.toLowerCase().includes(searchQuery);
+              if (!titleMatch && !usernameMatch) return false;
+            }
+            if (categoryFilter !== "Todas" && comment.category !== categoryFilter) return false;
+            return true;
+          });
+          
+          // Ordenamiento: recientes, respuestas, likes
+          const orderKey = document.getElementById("orderSelect").value;
+          if (orderKey === "recientes") {
+            filtered.sort((a, b) => b.timestamp - a.timestamp);
+          } else if (orderKey === "respuestas") {
+            filtered.sort((a, b) => {
+              const resA = a.replies ? Object.keys(a.replies).length : 0;
+              const resB = b.replies ? Object.keys(b.replies).length : 0;
+              return resB - resA;
+            });
+          } else if (orderKey === "likes") {
+            filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+          }
+          
+          const commentsDiv = document.getElementById("comments");
+          commentsDiv.innerHTML = "";
+          filtered.forEach(function (comment) {
+            const commentElem = document.createElement("div");
+            commentElem.className = "comment";
+            
+            // Botón de eliminar (solo para admin)
+            if (currentUserIsAdmin) {
+              const delBtn = document.createElement("button");
+              delBtn.className = "delete-btn";
+              delBtn.textContent = "Eliminar";
+              delBtn.onclick = function () {
+                if (confirm("¿Desea eliminar este comentario?")) {
+                  db.ref("comments").child(comment.key).remove();
+                }
+              };
+              commentElem.appendChild(delBtn);
+            }
+            
+            // Título y Categoría
+            const titleElem = document.createElement("div");
+            titleElem.className = "commentTitle";
+            titleElem.textContent = comment.title;
+            commentElem.appendChild(titleElem);
+            const catElem = document.createElement("div");
+            catElem.className = "commentCategory";
+            catElem.textContent = comment.category;
+            commentElem.appendChild(catElem);
+            
+            // Autor
+            const authorElem = document.createElement("h3");
+            authorElem.textContent = comment.username;
+            commentElem.appendChild(authorElem);
+            
+            // Texto
+            const textElem = document.createElement("p");
+            textElem.textContent = comment.text;
+            commentElem.appendChild(textElem);
+            
+            // Imagen (si existe)
+            if (comment.imageData) {
+              const img = document.createElement("img");
+              img.src = comment.imageData;
+              commentElem.appendChild(img);
+            }
+            
+            // Botones Like / Dislike — Control de voto único
+            const likeBtn = document.createElement("button");
+            likeBtn.className = "like-btn";
+            likeBtn.textContent = "Like";
+            likeBtn.onclick = function () {
+              if (!currentUser) {
+                alert("Debes iniciar sesión para votar.");
+                return;
+              }
+              db.ref("comments/" + comment.key + "/votes/" + currentUser)
+                .once("value")
+                .then(function (snap) {
+                  if (snap.exists()) {
+                    alert("Ya has votado en este comentario.");
+                  } else {
+                    let currentLikes = comment.likes || 0;
+                    db.ref("comments").child(comment.key).update({
+                      likes: currentLikes + 1,
+                    });
+                    db.ref("comments")
+                      .child(comment.key)
+                      .child("votes")
+                      .child(currentUser)
+                      .set("like");
+                  }
+                });
+            };
+            commentElem.appendChild(likeBtn);
+            
+            const dislikeBtn = document.createElement("button");
+            dislikeBtn.className = "dislike-btn";
+            dislikeBtn.textContent = "Dislike";
+            dislikeBtn.onclick = function () {
+              if (!currentUser) {
+                alert("Debes iniciar sesión para votar.");
+                return;
+              }
+              db.ref("comments/" + comment.key + "/votes/" + currentUser)
+                .once("value")
+                .then(function (snap) {
+                  if (snap.exists()) {
+                    alert("Ya has votado en este comentario.");
+                  } else {
+                    let currentDislikes = comment.dislikes || 0;
+                    db.ref("comments").child(comment.key).update({
+                      dislikes: currentDislikes + 1,
+                    });
+                    db.ref("comments")
+                      .child(comment.key)
+                      .child("votes")
+                      .child(currentUser)
+                      .set("dislike");
+                  }
+                });
+            };
+            commentElem.appendChild(dislikeBtn);
+            
+            // Contadores de Like y Dislike
+            const likeCount = document.createElement("span");
+            likeCount.className = "like-count";
+            likeCount.textContent = "Likes: " + (comment.likes || 0);
+            commentElem.appendChild(likeCount);
+            const dislikeCount = document.createElement("span");
+            dislikeCount.className = "dislike-count";
+            dislikeCount.textContent = "Dislikes: " + (comment.dislikes || 0);
+            commentElem.appendChild(dislikeCount);
+            
+            // Botón para responder
+            if (currentUser) {
+              const replyBtn = document.createElement("button");
+              replyBtn.className = "reply-btn";
+              replyBtn.textContent = "Responder";
+              replyBtn.onclick = function () {
+                let existingForm = commentElem.querySelector(".replyForm");
+                if (existingForm) {
+                  existingForm.remove();
+                } else {
+                  const replyForm = document.createElement("form");
+                  replyForm.className = "replyForm";
+                  const replyTextarea = document.createElement("textarea");
+                  replyTextarea.placeholder = "Escribe tu respuesta...";
+                  replyTextarea.required = true;
+                  replyTextarea.rows = 2;
+                  replyForm.appendChild(replyTextarea);
+                  const submitReplyBtn = document.createElement("button");
+                  submitReplyBtn.type = "submit";
+                  submitReplyBtn.textContent = "Enviar Respuesta";
+                  replyForm.appendChild(submitReplyBtn);
+                  replyForm.onsubmit = function (ev) {
+                    ev.preventDefault();
+                    const replyContent = replyTextarea.value.trim();
+                    if (replyContent !== "") {
+                      const reply = {
+                        username: currentUser,
+                        text: replyContent,
+                        timestamp: Date.now(),
+                      };
+                      db.ref("comments/" + comment.key + "/replies").push(reply, function (error) {
+                        if (!error) {
+                          replyTextarea.value = "";
+                          replyForm.remove();
+                        } else {
+                          alert("Error al enviar respuesta.");
+                        }
+                      });
+                    }
+                  };
+                  commentElem.appendChild(replyForm);
+                }
+              };
+              commentElem.appendChild(replyBtn);
+            }
+            
+            // Mostrar respuestas existentes
+            if (comment.replies) {
+              const repliesDiv = document.createElement("div");
+              repliesDiv.className = "replies";
+              for (let replyKey in comment.replies) {
+                const replyData = comment.replies[replyKey];
+                const replyElem = document.createElement("div");
+                replyElem.className = "reply";
+                replyElem.innerHTML =
+                  "<strong>" + replyData.username + ":</strong> " + replyData.text;
+                repliesDiv.appendChild(replyElem);
+              }
+              commentElem.appendChild(repliesDiv);
+            }
+            
+            commentsDiv.appendChild(commentElem);
+          });
+        }
+
+        // Eventos para búsqueda y filtros
+        document.getElementById("searchInput").addEventListener("input", function () {
           displayComments(allComments);
         });
-      }
-
-      /*********************
-       * Función para mostrar comentarios filtrados y ordenados
-       * Filtros: búsqueda, categoría; Orden: recientes, respuestas, likes
-       *********************/
-      function displayComments(commentsArray) {
-        const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-        const categoryFilter = document.getElementById("filterCategory").value;
-        let filtered = commentsArray.filter(function(comment) {
-          if (searchQuery) {
-            const titleMatch = comment.title && comment.title.toLowerCase().includes(searchQuery);
-            const usernameMatch = comment.username && comment.username.toLowerCase().includes(searchQuery);
-            if (!titleMatch && !usernameMatch) return false;
-          }
-          if (categoryFilter !== "Todas" && comment.category !== categoryFilter) return false;
-          return true;
+        document.getElementById("filterCategory").addEventListener("change", function () {
+          displayComments(allComments);
         });
-
-        // Ordenamiento según opción seleccionada
-        const orderKey = document.getElementById("orderSelect").value;
-        if (orderKey === "recientes") {
-          filtered.sort((a, b) => b.timestamp - a.timestamp);
-        } else if (orderKey === "respuestas") {
-          filtered.sort((a, b) => {
-            const resA = a.replies ? Object.keys(a.replies).length : 0;
-            const resB = b.replies ? Object.keys(b.replies).length : 0;
-            return resB - resA;
-          });
-        } else if (orderKey === "likes") {
-          filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-        }
-
-        // Renderizamos los comentarios
-        const commentsDiv = document.getElementById("comments");
-        commentsDiv.innerHTML = "";
-        filtered.forEach(function(comment) {
-          const commentElem = document.createElement("div");
-          commentElem.className = "comment";
-
-          // Botón Eliminar para admin
-          if (currentUserIsAdmin) {
-            const delBtn = document.createElement("button");
-            delBtn.className = "delete-btn";
-            delBtn.textContent = "Eliminar";
-            delBtn.onclick = function() {
-              if (confirm("¿Desea eliminar este comentario?")) {
-                db.ref("comments").child(comment.key).remove();
-              }
-            };
-            commentElem.appendChild(delBtn);
-          }
-
-          // Título y Categoría
-          const titleElem = document.createElement("div");
-          titleElem.className = "commentTitle";
-          titleElem.textContent = comment.title;
-          commentElem.appendChild(titleElem);
-
-          const catElem = document.createElement("div");
-          catElem.className = "commentCategory";
-          catElem.textContent = comment.category;
-          commentElem.appendChild(catElem);
-
-          // Autor
-          const authorElem = document.createElement("h3");
-          authorElem.textContent = comment.username;
-          commentElem.appendChild(authorElem);
-
-          // Texto
-          const textElem = document.createElement("p");
-          textElem.textContent = comment.text;
-          commentElem.appendChild(textElem);
-
-          // Imagen (si existe)
-          if (comment.imageData) {
-            const img = document.createElement("img");
-            img.src = comment.imageData;
-            commentElem.appendChild(img);
-          }
-
-          // Botones de Like y Dislike con control de voto único
-          const likeBtn = document.createElement("button");
-          likeBtn.className = "like-btn";
-          likeBtn.textContent = "Like";
-          likeBtn.onclick = function() {
-            if (!currentUser) {
-              alert("Debes iniciar sesión para votar.");
-              return;
-            }
-            // Comprobar si el usuario ya votó
-            db.ref("comments/" + comment.key + "/votes/" + currentUser).once("value")
-              .then(function(snap) {
-                if (snap.exists()) {
-                  alert("Ya has votado en este comentario.");
-                } else {
-                  let currentLikes = comment.likes || 0;
-                  db.ref("comments").child(comment.key).update({ likes: currentLikes + 1 });
-                  db.ref("comments").child(comment.key).child("votes").child(currentUser).set("like");
-                }
-              });
-          };
-          commentElem.appendChild(likeBtn);
-          
-          const dislikeBtn = document.createElement("button");
-          dislikeBtn.className = "dislike-btn";
-          dislikeBtn.textContent = "Dislike";
-          dislikeBtn.onclick = function() {
-            if (!currentUser) {
-              alert("Debes iniciar sesión para votar.");
-              return;
-            }
-            db.ref("comments/" + comment.key + "/votes/" + currentUser).once("value")
-              .then(function(snap) {
-                if (snap.exists()) {
-                  alert("Ya has votado en este comentario.");
-                } else {
-                  let currentDislikes = comment.dislikes || 0;
-                  db.ref("comments").child(comment.key).update({ dislikes: currentDislikes + 1 });
-                  db.ref("comments").child(comment.key).child("votes").child(currentUser).set("dislike");
-                }
-              });
-          };
-          commentElem.appendChild(dislikeBtn);
-          
-          // Mostrar contadores de likes y dislikes
-          const likeCount = document.createElement("span");
-          likeCount.className = "like-count";
-          likeCount.textContent = "Likes: " + (comment.likes || 0);
-          commentElem.appendChild(likeCount);
-          
-          const dislikeCount = document.createElement("span");
-          dislikeCount.className = "dislike-count";
-          dislikeCount.textContent = "Dislikes: " + (comment.dislikes || 0);
-          commentElem.appendChild(dislikeCount);
-
-          // Botón para Responder
-          if (currentUser) {
-            const replyBtn = document.createElement("button");
-            replyBtn.className = "reply-btn";
-            replyBtn.textContent = "Responder";
-            replyBtn.onclick = function() {
-              let existingForm = commentElem.querySelector(".replyForm");
-              if (existingForm) {
-                existingForm.remove();
-              } else {
-                const replyForm = document.createElement("form");
-                replyForm.className = "replyForm";
-                const replyTextarea = document.createElement("textarea");
-                replyTextarea.placeholder = "Escribe tu respuesta...";
-                replyTextarea.required = true;
-                replyTextarea.rows = 2;
-                replyForm.appendChild(replyTextarea);
-                const submitReplyBtn = document.createElement("button");
-                submitReplyBtn.type = "submit";
-                submitReplyBtn.textContent = "Enviar Respuesta";
-                replyForm.appendChild(submitReplyBtn);
-                replyForm.onsubmit = function(ev) {
-                  ev.preventDefault();
-                  const replyContent = replyTextarea.value.trim();
-                  if (replyContent !== "") {
-                    const reply = {
-                      username: currentUser,
-                      text: replyContent,
-                      timestamp: Date.now()
-                    };
-                    db.ref("comments/" + comment.key + "/replies").push(reply, function(error) {
-                      if (!error) {
-                        replyTextarea.value = "";
-                        replyForm.remove();
-                      } else {
-                        alert("Error al enviar respuesta.");
-                      }
-                    });
-                  }
-                };
-                commentElem.appendChild(replyForm);
-              }
-            };
-            commentElem.appendChild(replyBtn);
-          }
-
-          // Mostrar respuestas existentes
-          if (comment.replies) {
-            const repliesDiv = document.createElement("div");
-            repliesDiv.className = "replies";
-            for (let replyKey in comment.replies) {
-              const replyData = comment.replies[replyKey];
-              const replyElem = document.createElement("div");
-              replyElem.className = "reply";
-              replyElem.innerHTML = "<strong>" + replyData.username + ":</strong> " + replyData.text;
-              repliesDiv.appendChild(replyElem);
-            }
-            commentElem.appendChild(repliesDiv);
-          }
-          commentsDiv.appendChild(commentElem);
+        document.getElementById("orderSelect").addEventListener("change", function () {
+          displayComments(allComments);
         });
-      }
-
-      // Eventos para la barra de búsqueda, filtro y ordenamiento
-      document.getElementById("searchInput").addEventListener("input", function() {
-        displayComments(allComments);
-      });
-      document.getElementById("filterCategory").addEventListener("change", function() {
-        displayComments(allComments);
-      });
-      document.getElementById("orderSelect").addEventListener("change", function() {
-        displayComments(allComments);
       });
     });
   </script>
-</body>
+  <!-- Fin del DOMContentLoaded -->
+  </body>
 </html>
