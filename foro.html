@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Estilos generales, navegación, modales, y caja de comentarios -->
   <style>
-    /* Estilo general: fondo negro, texto claro, minimalista */
+    /* Estilo general: fondo negro, fuente clara, minimalista */
     body {
       font-family: Arial, sans-serif;
       background-color: #000;
@@ -36,7 +36,7 @@
       margin: 0;
       font-size: 28px;
     }
-    /* Botones de navegación (esquina superior izquierda) */
+    /* Botones de navegación (izquierda) */
     #navButtons {
       position: absolute;
       top: 10px;
@@ -55,7 +55,7 @@
     #navButtons button:hover {
       background-color: #e6c200;
     }
-    /* Botones de autenticación (esquina superior derecha) */
+    /* Botones de autenticación (derecha) */
     #authButtons {
       position: absolute;
       top: 10px;
@@ -107,7 +107,7 @@
     .close:hover, .close:focus {
       color: #fff;
     }
-    /* Formularios dentro de los modales */
+    /* Formularios en los modales */
     .authForm input[type="text"],
     .authForm input[type="password"] {
       width: 100%;
@@ -132,7 +132,7 @@
     .authForm button:hover {
       background-color: #e6c200;
     }
-    /* Zona para mostrar el usuario activo */
+    /* Zona de usuario activo */
     #userInfo {
       padding: 15px;
       text-align: center;
@@ -151,7 +151,7 @@
     #userInfo button:hover {
       background-color: #e60000;
     }
-    /* Caja de comentarios estética */
+    /* Caja de comentarios */
     #commentSection {
       margin: 15px;
       padding: 20px;
@@ -164,7 +164,7 @@
       margin: 0 0 10px;
       text-align: center;
     }
-    /* Nuevo campo: Título del comentario */
+    /* Campo para Título */
     #commentSection label {
       display: block;
       margin-bottom: 5px;
@@ -180,7 +180,7 @@
       color: #eee;
       font-size: 16px;
     }
-    /* Nuevo campo: Selección de Categoría */
+    /* Campo para Categoría */
     #commentSection select.commentCategory {
       width: 100%;
       padding: 10px;
@@ -220,7 +220,7 @@
     #commentSection button:hover {
       background-color: #e6c200;
     }
-    /* Barra de búsqueda y opciones de ordenamiento */
+    /* Barra de búsqueda y ordenamiento */
     #searchBar {
       margin: 15px;
       text-align: center;
@@ -280,7 +280,7 @@
       border-radius: 4px;
       margin-top: 8px;
     }
-    /* Estilos para likes y dislikes */
+    /* Likes y Dislikes */
     .like-btn, .dislike-btn {
       background-color: #ffd700;
       border: none;
@@ -298,6 +298,7 @@
       font-size: 12px;
       margin-right: 10px;
     }
+    /* Botón Eliminar (solo admin) */
     .delete-btn {
       position: absolute;
       top: 8px;
@@ -313,6 +314,7 @@
     .delete-btn:hover {
       background-color: #e60000;
     }
+    /* Botón para Responder */
     .reply-btn {
       background-color: #8B0000;
       color: #fff;
@@ -439,7 +441,7 @@
       </form>
     </div>
 
-    <!-- Barra de búsqueda, filtrado por categoría y ordenamiento -->
+    <!-- Barra de búsqueda, filtro de categoría y ordenamiento -->
     <div id="searchBar">
       <input type="text" id="searchInput" placeholder="Buscar por título o usuario...">
       <select id="filterCategory">
@@ -462,15 +464,16 @@
     </div>
   </div>
 
-  <!-- Todas las asignaciones de eventos se ejecutan al cargar el DOM -->
   <script>
+    // Esperamos a que el DOM esté completamente cargado
     document.addEventListener("DOMContentLoaded", function() {
+
       /*********************
        * CONFIGURACIÓN DE FIREBASE
        *********************/
-      /* Reemplaza los siguientes datos por los de tu proyecto (desde Firebase Console "Tus apps") */
+      /* Reemplaza este bloque con los datos de tu proyecto (desde Firebase Console "Tus apps") */
       const firebaseConfig = {
-    apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
   databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
   projectId: "innovaccionunefa",
@@ -490,7 +493,7 @@
       let currentUserIsAdmin = false;
       let allComments = [];
 
-      // Reestablecer sesión desde localStorage (si existe)
+      // Reestablecer la sesión si existe
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
       if (storedUser) {
@@ -654,7 +657,7 @@
       });
 
       /*********************
-       * Cargar Comentarios desde Firebase y guardarlos en allComments
+       * Cargar Comentarios desde Firebase
        *********************/
       function cargarComentarios() {
         db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
@@ -672,9 +675,10 @@
        * Función para mostrar comentarios filtrados y ordenados
        *********************/
       function displayComments(commentsArray) {
+        // Filtrar según búsqueda y categoría
+        const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+        const categoryFilter = document.getElementById("filterCategory").value;
         let filtered = commentsArray.filter(function(comment) {
-          const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-          const categoryFilter = document.getElementById("filterCategory").value;
           if (searchQuery) {
             const titleMatch = comment.title && comment.title.toLowerCase().includes(searchQuery);
             const usernameMatch = comment.username && comment.username.toLowerCase().includes(searchQuery);
@@ -683,7 +687,8 @@
           if (categoryFilter !== "Todas" && comment.category !== categoryFilter) return false;
           return true;
         });
-        // Ordenar según la opción seleccionada
+
+        // Ordenar según la selección
         const orderKey = document.getElementById("orderSelect").value;
         if (orderKey === "recientes") {
           filtered.sort((a, b) => b.timestamp - a.timestamp);
@@ -702,8 +707,8 @@
         filtered.forEach(function(comment) {
           const commentElem = document.createElement("div");
           commentElem.className = "comment";
-          
-          // Botón de eliminar (solo para admin)
+
+          // Botón Eliminar (solo para admin)
           if (currentUserIsAdmin) {
             const delBtn = document.createElement("button");
             delBtn.className = "delete-btn";
@@ -715,37 +720,35 @@
             };
             commentElem.appendChild(delBtn);
           }
-          
-          // Título
+
+          // Mostrar título y categoría
           const titleElem = document.createElement("div");
           titleElem.className = "commentTitle";
           titleElem.textContent = comment.title;
           commentElem.appendChild(titleElem);
-          
-          // Categoría
           const catElem = document.createElement("div");
           catElem.className = "commentCategory";
           catElem.textContent = comment.category;
           commentElem.appendChild(catElem);
-          
-          // Autor
+
+          // Mostrar nombre del autor
           const authorElem = document.createElement("h3");
           authorElem.textContent = comment.username;
           commentElem.appendChild(authorElem);
-          
-          // Texto
+
+          // Mostrar texto del comentario
           const textElem = document.createElement("p");
           textElem.textContent = comment.text;
           commentElem.appendChild(textElem);
-          
-          // Imagen, si existe
+
+          // Mostrar imagen (si existe)
           if (comment.imageData) {
             const img = document.createElement("img");
             img.src = comment.imageData;
             commentElem.appendChild(img);
           }
-          
-          // Botones de Like y Dislike
+
+          // Botones de Like y Dislike y sus contadores
           const likeBtn = document.createElement("button");
           likeBtn.className = "like-btn";
           likeBtn.textContent = "Like";
@@ -754,7 +757,6 @@
             db.ref("comments").child(comment.key).update({ likes: currentLikes + 1 });
           };
           commentElem.appendChild(likeBtn);
-          
           const dislikeBtn = document.createElement("button");
           dislikeBtn.className = "dislike-btn";
           dislikeBtn.textContent = "Dislike";
@@ -763,8 +765,6 @@
             db.ref("comments").child(comment.key).update({ dislikes: currentDislikes + 1 });
           };
           commentElem.appendChild(dislikeBtn);
-          
-          // Mostrar contadores de likes y dislikes
           const likeCount = document.createElement("span");
           likeCount.className = "like-count";
           likeCount.textContent = "Likes: " + (comment.likes || 0);
@@ -773,8 +773,8 @@
           dislikeCount.className = "dislike-count";
           dislikeCount.textContent = "Dislikes: " + (comment.dislikes || 0);
           commentElem.appendChild(dislikeCount);
-          
-          // Botón para responder (si hay sesión)
+
+          // Botón para responder (si hay sesión activa)
           if (currentUser) {
             const replyBtn = document.createElement("button");
             replyBtn.className = "reply-btn";
@@ -819,8 +819,8 @@
             };
             commentElem.appendChild(replyBtn);
           }
-          
-          // Mostrar respuestas existentes
+
+          // Mostrar respuestas existentes (si hay)
           if (comment.replies) {
             const repliesDiv = document.createElement("div");
             repliesDiv.className = "replies";
@@ -833,12 +833,11 @@
             }
             commentElem.appendChild(repliesDiv);
           }
-          
           commentsDiv.appendChild(commentElem);
         });
       }
 
-      // Eventos para la barra de búsqueda, filtro de categoría y ordenamiento
+      // Eventos para filtros: búsqueda, categoría y ordenamiento
       document.getElementById("searchInput").addEventListener("input", function() {
         displayComments(allComments);
       });
