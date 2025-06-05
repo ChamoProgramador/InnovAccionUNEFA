@@ -6,26 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Estilos para la interfaz -->
   <style>
-    /* Fondo general negro y tipografía legible */
+    /* Fondo general negro con texto claro */
     body {
       font-family: Arial, sans-serif;
-      background-color: #000; /* Fondo negro */
+      background-color: #000; /* Negro */
+      color: #eee;
       margin: 0;
       padding: 0;
-      color: #eee; /* Texto claro */
     }
-    
     /* Contenedor principal */
     #container {
       max-width: 900px;
       margin: 20px auto;
-      background-color: #222;  /* Panel oscuro */
+      background-color: #222; /* Panel oscuro */
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.7);
       overflow: hidden;
       padding-bottom: 20px;
     }
-    
     /* Header en tono vinotinto */
     header {
       background-color: #8B0000; /* Vinotinto */
@@ -33,10 +31,7 @@
       padding: 15px;
       text-align: center;
     }
-    h1, h2 {
-      margin: 0 0 10px;
-    }
-    
+    h1, h2 { margin: 0 0 10px; }
     /* Botones de navegación */
     #navButtons {
       text-align: center;
@@ -56,8 +51,7 @@
     .nav-btn:hover {
       background-color: #e6c200;
     }
-    
-    /* Secciones de autenticación: Registro, Login y Admin */
+    /* Secciones de autenticación */
     .authSection {
       margin: 15px;
       padding: 15px;
@@ -89,7 +83,6 @@
     .authSection form button:hover {
       background-color: #e6c200;
     }
-    
     /* Información del usuario logueado */
     #userInfo {
       padding: 15px;
@@ -113,7 +106,6 @@
     #logoutBtn:hover {
       background-color: #e60000;
     }
-    
     /* Sección para publicar comentarios */
     #commentSection {
       margin: 15px;
@@ -148,8 +140,7 @@
     #commentSection form button:hover {
       background-color: #e6c200;
     }
-    
-    /* Feed global de comentarios */
+    /* Feed de comentarios global */
     #commentsFeed {
       margin: 15px;
       padding: 15px;
@@ -159,16 +150,12 @@
       padding: 10px 0;
       position: relative;
     }
-    .comment:last-child {
-      border-bottom: none;
-    }
+    .comment:last-child { border-bottom: none; }
     .comment h3 {
       margin: 0;
       color: #8B0000; /* Vinotinto para nombres */
     }
-    .comment p {
-      margin: 8px 0;
-    }
+    .comment p { margin: 8px 0; }
     .comment img {
       max-width: 100%;
       border-radius: 4px;
@@ -186,10 +173,7 @@
       cursor: pointer;
       font-size: 12px;
     }
-    .delete-btn:hover {
-      background-color: #e60000;
-    }
-    
+    .delete-btn:hover { background-color: #e60000; }
     /* Estilos para responder a comentarios */
     .reply-btn {
       background-color: #8B0000; /* Vinotinto */
@@ -200,9 +184,7 @@
       cursor: pointer;
       margin-top: 5px;
     }
-    .reply-btn:hover {
-      opacity: 0.8;
-    }
+    .reply-btn:hover { opacity: 0.8; }
     .replyForm {
       margin: 10px 0;
     }
@@ -226,9 +208,7 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .replyForm button:hover {
-      background-color: #e6c200;
-    }
+    .replyForm button:hover { background-color: #e6c200; }
     .replies {
       margin-left: 20px;
       margin-top: 10px;
@@ -242,7 +222,7 @@
     }
   </style>
   
-  <!-- Cargar Firebase (utilizando la versión compat) -->
+  <!-- Cargar Firebase (versión compat para facilitar integración) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
@@ -315,7 +295,7 @@
     /*********************
      * CONFIGURACIÓN DE FIREBASE
      *********************/
-    // **IMPORTANTE:** Reemplaza este bloque con los datos de tu proyecto obtenidos de Firebase Console.
+    /* Reemplaza los datos a continuación por la configuración de tu proyecto (desde "Tus apps" en Firebase Console) */
     const firebaseConfig = {
        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
@@ -326,7 +306,6 @@
   appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
   measurementId: "G-LLK0GLWS1G"
 };
-
     // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -335,9 +314,9 @@
      * VARIABLES GLOBALES DE SESIÓN
      *********************/
     let currentUser = null;          // Usuario logueado
-    let currentUserIsAdmin = false;    // Flag para determinar si es admin
+    let currentUserIsAdmin = false;    // Flag para determinar si el usuario es admin
 
-    // Reestablecer sesión desde localStorage, si existe
+    // Reestablecer la sesión desde localStorage (si existe)
     document.addEventListener("DOMContentLoaded", function() {
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
@@ -351,26 +330,26 @@
     });
 
     /*********************
-     * FUNCIÓN: AL INICIAR SESIÓN CON ÉXITO
+     * FUNCIÓN: Al iniciar sesión con éxito
      *********************/
     function onLoginSuccess() {
-      // Guardar sesión en localStorage
+      // Guardamos la sesión en localStorage
       localStorage.setItem("currentUser", currentUser);
       localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
 
-      // Ocultar formularios de registro e inicio de sesión
+      // Ocultar formularios de autenticación
       document.getElementById("registerSection").style.display = "none";
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("adminSection").style.display = "none";
 
-      // Mostrar información del usuario y la sección de comentarios
+      // Mostrar la información del usuario y la sección para comentar
       document.getElementById("userInfo").style.display = "block";
       document.getElementById("commentSection").style.display = "block";
       document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
     }
 
     /*********************
-     * CERRAR SESIÓN
+     * Cerrar sesión
      *********************/
     document.getElementById("logoutBtn").addEventListener("click", function() {
       currentUser = null;
@@ -378,7 +357,7 @@
       localStorage.removeItem("currentUser");
       localStorage.removeItem("currentUserIsAdmin");
 
-      // Mostrar nuevamente formularios de autenticación
+      // Mostrar nuevamente los formularios de autenticación y ocultar info de usuario
       document.getElementById("registerSection").style.display = "block";
       document.getElementById("loginSection").style.display = "block";
       document.getElementById("adminSection").style.display = "block";
@@ -387,8 +366,107 @@
     });
 
     /*********************
-     * REGISTRO DE USUARIOS
+     * Registro de usuarios
      *********************/
     document.getElementById("registerForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const username
+      const username = document.getElementById("regUsername").value.trim();
+      const password = document.getElementById("regPassword").value;
+      if (password.length < 8) {
+        alert("La contraseña debe tener al menos 8 caracteres.");
+        return;
+      }
+      // Verificar que el usuario no exista
+      db.ref("users/" + username).get().then(function(snapshot) {
+        if (snapshot.exists()) {
+          alert("El nombre de usuario ya está en uso. Elige otro.");
+        } else {
+          // Registrar el usuario
+          db.ref("users/" + username).set({ password: password })
+            .then(function() {
+              alert("Registro exitoso. Ahora puedes iniciar sesión.");
+              document.getElementById("registerForm").reset();
+            })
+            .catch(function(error) {
+              alert("Error en el registro: " + error.message);
+            });
+        }
+      });
+    });
+
+    /*********************
+     * Inicio de sesión de usuario
+     *********************/
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      db.ref("users/" + username).get().then(function(snapshot) {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          if (userData.password === password) {
+            currentUser = username;
+            currentUserIsAdmin = false;
+            onLoginSuccess();
+          } else {
+            alert("Contraseña incorrecta.");
+          }
+        } else {
+          alert("El usuario no está registrado.");
+        }
+      });
+    });
+
+    /*********************
+     * Inicio de sesión de administrador
+     *********************/
+    document.getElementById("adminLoginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const username = document.getElementById("adminUsername").value.trim();
+      const password = document.getElementById("adminPassword").value;
+      // Credenciales fijas de administrador
+      if (username === "ChamoProgramador" && password === "29072024") {
+        currentUser = username;
+        currentUserIsAdmin = true;
+        onLoginSuccess();
+      } else {
+        alert("Credenciales de administrador incorrectas.");
+      }
+    });
+
+    /*********************
+     * Publicar comentario
+     *********************/
+    document.getElementById("commentForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const text = document.getElementById("commentText").value.trim();
+      const fileInput = document.getElementById("commentImage");
+      const comment = {
+        username: currentUser,
+        text: text,
+        imageData: null,
+        timestamp: Date.now()
+      };
+
+      function postComment() {
+        db.ref("comments").push(comment, function(error) {
+          if (error) {
+            alert("Error al publicar el comentario.");
+          } else {
+            document.getElementById("commentForm").reset();
+          }
+        });
+      }
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          comment.imageData = e.target.result;
+          postComment();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        postComment();
+      }
+    });
