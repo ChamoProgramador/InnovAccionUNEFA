@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Foro Global - Mi Foro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Estilos generales, navegación, modales y nuevos campos del comentario -->
+  <!-- Estilos generales, navegación, modales y caja de comentarios -->
   <style>
     /* Estilo general: fondo negro, texto claro, minimalista */
     body {
@@ -24,7 +24,7 @@
       overflow: hidden;
       padding-bottom: 20px;
     }
-    /* Header: título, botones de navegación (izquierda) y autenticación (derecha) */
+    /* Header: título, botones de navegación y autenticación */
     header {
       position: relative;
       background-color: #8B0000; /* Vinotinto */
@@ -36,7 +36,7 @@
       margin: 0;
       font-size: 28px;
     }
-    /* Botones de navegación en la esquina superior izquierda */
+    /* Botones de navegación (esquina superior izquierda) */
     #navButtons {
       position: absolute;
       top: 10px;
@@ -55,7 +55,7 @@
     #navButtons button:hover {
       background-color: #e6c200;
     }
-    /* Botones de autenticación en la esquina superior derecha */
+    /* Botones de autenticación (esquina superior derecha) */
     #authButtons {
       position: absolute;
       top: 10px;
@@ -74,9 +74,9 @@
     #authButtons button:hover {
       background-color: #e6c200;
     }
-    /* Modal (overlay) para formularios de autenticación */
+    /* Modal overlay para formularios de autenticación */
     .modal {
-      display: none; 
+      display: none;
       position: fixed;
       z-index: 10;
       left: 0;
@@ -107,7 +107,7 @@
     .close:hover, .close:focus {
       color: #fff;
     }
-    /* Formularios dentro de los modales */
+    /* Formularios en los modales */
     .authForm input[type="text"],
     .authForm input[type="password"] {
       width: 100%;
@@ -132,7 +132,7 @@
     .authForm button:hover {
       background-color: #e6c200;
     }
-    /* Zona de sesión activa */
+    /* Zona de usuario activo */
     #userInfo {
       padding: 15px;
       text-align: center;
@@ -151,7 +151,7 @@
     #userInfo button:hover {
       background-color: #e60000;
     }
-    /* Caja de comentarios estética */
+    /* Caja de comentarios */
     #commentSection {
       margin: 15px;
       padding: 20px;
@@ -164,7 +164,7 @@
       margin: 0 0 10px;
       text-align: center;
     }
-    /* Nuevo campo: Título del comentario */
+    /* Campo para Título del comentario */
     #commentSection label {
       display: block;
       margin-bottom: 5px;
@@ -181,7 +181,7 @@
       box-sizing: border-box;
       font-size: 16px;
     }
-    /* Nuevo campo: Selección de Categoría */
+    /* Campo para Selección de Categoría */
     #commentSection select.commentCategory {
       width: 100%;
       padding: 10px;
@@ -192,6 +192,7 @@
       color: #eee;
       font-size: 16px;
     }
+    /* Textarea del comentario */
     #commentSection textarea {
       width: 100%;
       padding: 12px;
@@ -221,7 +222,7 @@
     #commentSection button:hover {
       background-color: #e6c200;
     }
-    /* Barra de búsqueda y filtro de categoría */
+    /* Barra de búsqueda y filtro de categoría sobre el feed de comentarios */
     #searchBar {
       margin: 15px;
       text-align: center;
@@ -358,12 +359,12 @@
   <div id="container">
     <header>
       <h1>Foro Global</h1>
-      <!-- Botones de navegación en la esquina superior izquierda -->
+      <!-- Botones de navegación (izquierda) -->
       <div id="navButtons">
         <button onclick="window.history.back()">Regresar</button>
         <button onclick="window.location.href='index.html'">Inicio</button>
       </div>
-      <!-- Botones de autenticación en la esquina superior derecha -->
+      <!-- Botones de autenticación (derecha) -->
       <div id="authButtons">
         <button id="openLogin">Iniciar Sesión</button>
         <button id="openRegister">Registrarse</button>
@@ -439,12 +440,14 @@
     </div>
   </div>
 
+  <!-- Todos los scripts se aseguran de ejecutarse cuando el DOM está cargado -->
   <script>
-    /*********************
-     * CONFIGURACIÓN DE FIREBASE
-     *********************/
-    /* Reemplaza este bloque con la configuración de tu proyecto (desde "Tus apps" en Firebase Console) */
-    const firebaseConfig = {
+    document.addEventListener("DOMContentLoaded", function() {
+      /*********************
+       * CONFIGURACIÓN DE FIREBASE
+       *********************/
+      /* Reemplaza este bloque con la configuración de tu proyecto obtenida desde Firebase Console ("Tus apps") */
+      const firebaseConfig = {
        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
   databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
@@ -454,18 +457,18 @@
   appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
   measurementId: "G-LLK0GLWS1G"
 };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
 
-    /*********************
-     * VARIABLES GLOBALES DE SESIÓN Y COMENTARIOS
-     *********************/
-    let currentUser = null;
-    let currentUserIsAdmin = false;
-    let allComments = [];
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
 
-    // Al cargar la página, reestablecer la sesión (si existe) y cargar comentarios
-    document.addEventListener("DOMContentLoaded", function() {
+      /*********************
+       * VARIABLES GLOBALES DE SESIÓN Y COMENTARIOS
+       *********************/
+      let currentUser = null;
+      let currentUserIsAdmin = false;
+      let allComments = [];
+
+      // Reestablecer la sesión si existe en localStorage
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
       if (storedUser) {
@@ -474,98 +477,312 @@
         onLoginSuccess();
       }
       cargarComentarios();
-    });
 
-    /*********************
-     * Función: Al iniciar sesión con éxito
-     *********************/
-    function onLoginSuccess() {
-      localStorage.setItem("currentUser", currentUser);
-      localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
-      document.getElementById("authButtons").style.display = "none";
-      document.getElementById("loginModal").style.display = "none";
-      document.getElementById("registerModal").style.display = "none";
-      document.getElementById("userInfo").style.display = "block";
-      document.getElementById("commentSection").style.display = "block";
-      document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
-    }
-
-    /*********************
-     * Cerrar Sesión
-     *********************/
-    document.getElementById("logoutBtn").addEventListener("click", function() {
-      currentUser = null;
-      currentUserIsAdmin = false;
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("currentUserIsAdmin");
-      document.getElementById("authButtons").style.display = "block";
-      document.getElementById("userInfo").style.display = "none";
-      document.getElementById("commentSection").style.display = "none";
-    });
-
-    /*********************
-     * Apertura y cierre de modales
-     *********************/
-    // Asignar eventos después de asegurarnos de que el DOM está cargado
-
-    document.getElementById("openLogin").onclick = function() {
-      console.log("Se hizo clic en Iniciar Sesión"); // Depuración
-      document.getElementById("loginModal").style.display = "block";
-    };
-    document.getElementById("openRegister").onclick = function() {
-      document.getElementById("registerModal").style.display = "block";
-    };
-    document.getElementById("loginClose").onclick = function() {
-      document.getElementById("loginModal").style.display = "none";
-    };
-    document.getElementById("registerClose").onclick = function() {
-      document.getElementById("registerModal").style.display = "none";
-    };
-    window.onclick = function(event) {
-      if (event.target == document.getElementById("loginModal")) {
+      /*********************
+       * Función: Al iniciar sesión con éxito
+       *********************/
+      function onLoginSuccess() {
+        localStorage.setItem("currentUser", currentUser);
+        localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
+        document.getElementById("authButtons").style.display = "none";
         document.getElementById("loginModal").style.display = "none";
-      }
-      if (event.target == document.getElementById("registerModal")) {
         document.getElementById("registerModal").style.display = "none";
+        document.getElementById("userInfo").style.display = "block";
+        document.getElementById("commentSection").style.display = "block";
+        document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
       }
-    };
 
-    /*********************
-     * Registro de Usuarios
-     *********************/
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const username = document.getElementById("regUsername").value.trim();
-      const password = document.getElementById("regPassword").value;
-      if (password.length < 8) {
-        alert("La contraseña debe tener al menos 8 caracteres.");
-        return;
-      }
-      db.ref("users/" + username).get().then(function(snapshot) {
-        if (snapshot.exists()) {
-          alert("El nombre de usuario ya está en uso. Elige otro.");
-        } else {
-          db.ref("users/" + username).set({ password: password })
-            .then(function() {
-              alert("Registro exitoso. Ahora puedes iniciar sesión.");
-              document.getElementById("registerForm").reset();
-              document.getElementById("registerModal").style.display = "none";
-            })
-            .catch(function(error) {
-              alert("Error en el registro: " + error.message);
-            });
+      /*********************
+       * Cerrar Sesión
+       *********************/
+      document.getElementById("logoutBtn").addEventListener("click", function() {
+        currentUser = null;
+        currentUserIsAdmin = false;
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("currentUserIsAdmin");
+        document.getElementById("authButtons").style.display = "block";
+        document.getElementById("userInfo").style.display = "none";
+        document.getElementById("commentSection").style.display = "none";
+      });
+
+      /*********************
+       * Apertura y cierre de modales
+       *********************/
+      document.getElementById("openLogin").addEventListener("click", function() {
+        console.log("Se hizo clic en Iniciar Sesión");
+        document.getElementById("loginModal").style.display = "block";
+      });
+      document.getElementById("openRegister").addEventListener("click", function() {
+        document.getElementById("registerModal").style.display = "block";
+      });
+      document.getElementById("loginClose").addEventListener("click", function() {
+        document.getElementById("loginModal").style.display = "none";
+      });
+      document.getElementById("registerClose").addEventListener("click", function() {
+        document.getElementById("registerModal").style.display = "none";
+      });
+      window.addEventListener("click", function(event) {
+        if (event.target == document.getElementById("loginModal")) {
+          document.getElementById("loginModal").style.display = "none";
+        }
+        if (event.target == document.getElementById("registerModal")) {
+          document.getElementById("registerModal").style.display = "none";
         }
       });
-    });
 
-    /*********************
-     * Inicio de Sesión (Unificado: Admin y Usuario)
-     *********************/
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const username = document.getElementById("loginUsername").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      // Verifica si son credenciales de administrador
-      if (username === "ChamoProgramador" && password === "29072024") {
-        currentUser = username;
-        current
+      /*********************
+       * Registro de Usuarios
+       *********************/
+      document.getElementById("registerForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const username = document.getElementById("regUsername").value.trim();
+        const password = document.getElementById("regPassword").value;
+        if (password.length < 8) {
+          alert("La contraseña debe tener al menos 8 caracteres.");
+          return;
+        }
+        db.ref("users/" + username).get().then(function(snapshot) {
+          if (snapshot.exists()) {
+            alert("El nombre de usuario ya está en uso. Elige otro.");
+          } else {
+            db.ref("users/" + username).set({ password: password })
+              .then(function() {
+                alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                document.getElementById("registerForm").reset();
+                document.getElementById("registerModal").style.display = "none";
+              })
+              .catch(function(error) {
+                alert("Error en el registro: " + error.message);
+              });
+          }
+        });
+      });
+
+      /*********************
+       * Inicio de Sesión (Unificado: Admin y Usuario)
+       *********************/
+      document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        // Verificar credenciales de administrador
+        if (username === "ChamoProgramador" && password === "29072024") {
+          currentUser = username;
+          currentUserIsAdmin = true;
+          onLoginSuccess();
+        } else {
+          db.ref("users/" + username).get().then(function(snapshot) {
+            if (snapshot.exists()) {
+              const userData = snapshot.val();
+              if (userData.password === password) {
+                currentUser = username;
+                currentUserIsAdmin = false;
+                onLoginSuccess();
+              } else {
+                alert("Contraseña incorrecta.");
+              }
+            } else {
+              alert("El usuario no está registrado.");
+            }
+          }).catch(function(error) {
+            console.error("Error en el inicio de sesión:", error);
+          });
+        }
+      });
+
+      /*********************
+       * Publicar Comentario (con título, categoría, texto y opción de imagen)
+       *********************/
+      document.getElementById("commentForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const title = document.getElementById("commentTitle").value.trim();
+        const category = document.getElementById("commentCategory").value;
+        const text = document.getElementById("commentText").value.trim();
+        const fileInput = document.getElementById("commentImage");
+        const comment = {
+          username: currentUser,
+          title: title,
+          category: category,
+          text: text,
+          imageData: null,
+          timestamp: Date.now()
+        };
+        function postComment() {
+          db.ref("comments").push(comment, function(error) {
+            if (error) {
+              alert("Error al publicar el comentario.");
+            } else {
+              document.getElementById("commentForm").reset();
+            }
+          });
+        }
+        if (fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            comment.imageData = e.target.result;
+            postComment();
+          };
+          reader.readAsDataURL(file);
+        } else {
+          postComment();
+        }
+      });
+
+      /*********************
+       * Cargar Comentarios desde Firebase
+       *********************/
+      function cargarComentarios() {
+        db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
+          allComments = [];
+          snapshot.forEach(function(childSnapshot) {
+            let comment = childSnapshot.val();
+            comment.key = childSnapshot.key;
+            allComments.push(comment);
+          });
+          displayComments(allComments);
+        });
+      }
+
+      /*********************
+       * Función para mostrar comentarios según búsqueda y filtro de categoría
+       *********************/
+      function displayComments(commentsArray) {
+        const commentsDiv = document.getElementById("comments");
+        commentsDiv.innerHTML = "";
+        const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+        const categoryFilter = document.getElementById("filterCategory").value;
+        
+        commentsArray.forEach(function(comment) {
+          // Filtrar por búsqueda en título o usuario
+          if (searchQuery) {
+            const titleMatch = comment.title && comment.title.toLowerCase().includes(searchQuery);
+            const usernameMatch = comment.username && comment.username.toLowerCase().includes(searchQuery);
+            if (!titleMatch && !usernameMatch) return;
+          }
+          // Filtrar por categoría si no se selecciona "Todas"
+          if (categoryFilter !== "Todas") {
+            if (comment.category !== categoryFilter) return;
+          }
+          
+          // Crear el elemento del comentario
+          const commentElem = document.createElement("div");
+          commentElem.className = "comment";
+
+          // Botón de eliminar (solo para admin)
+          if (currentUserIsAdmin) {
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.textContent = "Eliminar";
+            delBtn.onclick = function() {
+              if (confirm("¿Desea eliminar este comentario?")) {
+                db.ref("comments").child(comment.key).remove();
+              }
+            };
+            commentElem.appendChild(delBtn);
+          }
+          
+          // Título del comentario
+          const titleElem = document.createElement("div");
+          titleElem.className = "commentTitle";
+          titleElem.textContent = comment.title;
+          commentElem.appendChild(titleElem);
+          
+          // Categoría del comentario
+          const catElem = document.createElement("div");
+          catElem.className = "commentCategory";
+          catElem.textContent = comment.category;
+          commentElem.appendChild(catElem);
+          
+          // Nombre del autor
+          const authorElem = document.createElement("h3");
+          authorElem.textContent = comment.username;
+          commentElem.appendChild(authorElem);
+          
+          // Texto del comentario
+          const textElem = document.createElement("p");
+          textElem.textContent = comment.text;
+          commentElem.appendChild(textElem);
+          
+          // Imagen (si existe)
+          if (comment.imageData) {
+            const img = document.createElement("img");
+            img.src = comment.imageData;
+            commentElem.appendChild(img);
+          }
+          
+          // Botón para responder (si hay sesión activa)
+          if (currentUser) {
+            const replyBtn = document.createElement("button");
+            replyBtn.className = "reply-btn";
+            replyBtn.textContent = "Responder";
+            replyBtn.onclick = function() {
+              let existingForm = commentElem.querySelector(".replyForm");
+              if (existingForm) {
+                existingForm.remove();
+              } else {
+                const replyForm = document.createElement("form");
+                replyForm.className = "replyForm";
+                const replyTextarea = document.createElement("textarea");
+                replyTextarea.placeholder = "Escribe tu respuesta...";
+                replyTextarea.required = true;
+                replyTextarea.rows = 2;
+                replyForm.appendChild(replyTextarea);
+                const submitReplyBtn = document.createElement("button");
+                submitReplyBtn.type = "submit";
+                submitReplyBtn.textContent = "Enviar Respuesta";
+                replyForm.appendChild(submitReplyBtn);
+                replyForm.onsubmit = function(ev) {
+                  ev.preventDefault();
+                  const replyContent = replyTextarea.value.trim();
+                  if (replyContent !== "") {
+                    const reply = {
+                      username: currentUser,
+                      text: replyContent,
+                      timestamp: Date.now()
+                    };
+                    db.ref("comments/" + comment.key + "/replies").push(reply, function(error) {
+                      if (!error) {
+                        replyTextarea.value = "";
+                        replyForm.remove();
+                      } else {
+                        alert("Error al enviar respuesta.");
+                      }
+                    });
+                  }
+                };
+                commentElem.appendChild(replyForm);
+              }
+            };
+            commentElem.appendChild(replyBtn);
+          }
+          
+          // Mostrar respuestas existentes (si las hay)
+          if (comment.replies) {
+            const repliesDiv = document.createElement("div");
+            repliesDiv.className = "replies";
+            for (let replyKey in comment.replies) {
+              const replyData = comment.replies[replyKey];
+              const replyElem = document.createElement("div");
+              replyElem.className = "reply";
+              replyElem.innerHTML = "<strong>" + replyData.username + ":</strong> " + replyData.text;
+              repliesDiv.appendChild(replyElem);
+            }
+            commentElem.appendChild(repliesDiv);
+          }
+          
+          commentsDiv.appendChild(commentElem);
+        });
+      }
+
+      // Eventos para la barra de búsqueda y el filtro de categoría
+      document.getElementById("searchInput").addEventListener("input", function() {
+        displayComments(allComments);
+      });
+      document.getElementById("filterCategory").addEventListener("change", function() {
+        displayComments(allComments);
+      });
+    });
+  </script>
+</body>
+</html>
