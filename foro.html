@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <title>Foro Global - Mi Foro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Estilos generales, navegación y modales -->
+  <!-- Estilos generales, navegación, modales y nuevos campos en el comentario -->
   <style>
-    /* Estilo general: fondo negro, texto claro */
+    /* Estilo general: fondo negro, texto claro, minimalista */
     body {
       font-family: Arial, sans-serif;
       background-color: #000;
@@ -24,7 +24,7 @@
       overflow: hidden;
       padding-bottom: 20px;
     }
-    /* Header: título, navegación y botones de autenticación */
+    /* Header: con título, botones de navegación en la izquierda y auten. en la derecha */
     header {
       position: relative;
       background-color: #8B0000; /* Vinotinto */
@@ -36,11 +36,11 @@
       margin: 0;
       font-size: 28px;
     }
-    /* Contenedor de navegación: botones para regresar y menú de inicio */
+    /* Botones de navegación (izquierda) */
     #navButtons {
       position: absolute;
-      left: 10px;
       top: 10px;
+      left: 10px;
     }
     #navButtons button {
       background-color: #ffd700;
@@ -55,7 +55,7 @@
     #navButtons button:hover {
       background-color: #e6c200;
     }
-    /* Botones de autenticación en la esquina superior derecha */
+    /* Botones de autenticación (derecha) */
     #authButtons {
       position: absolute;
       top: 10px;
@@ -74,9 +74,9 @@
     #authButtons button:hover {
       background-color: #e6c200;
     }
-    /* Modal: contenedor overlay */
+    /* Modal (overlay) para los formularios */
     .modal {
-      display: none; /* Oculto por defecto */
+      display: none;
       position: fixed;
       z-index: 10;
       left: 0;
@@ -86,7 +86,6 @@
       overflow: auto;
       background-color: rgba(0,0,0,0.8);
     }
-    /* Modal content: cuadro pequeño centrado */
     .modal-content {
       background-color: #222;
       margin: 15% auto;
@@ -96,7 +95,6 @@
       border-radius: 4px;
       position: relative;
     }
-    /* Botón de cierre de modal */
     .close {
       position: absolute;
       top: 5px;
@@ -109,7 +107,7 @@
     .close:hover, .close:focus {
       color: #fff;
     }
-    /* Formularios dentro de los modales */
+    /* Formularios en los modales */
     .authForm input[type="text"],
     .authForm input[type="password"] {
       width: 100%;
@@ -134,7 +132,7 @@
     .authForm button:hover {
       background-color: #e6c200;
     }
-    /* Zona de usuario activo (visible tras iniciar sesión) */
+    /* Zona de usuario activo (sesión iniciada) */
     #userInfo {
       padding: 15px;
       text-align: center;
@@ -153,7 +151,7 @@
     #userInfo button:hover {
       background-color: #e60000;
     }
-    /* Caja de comentarios estética: mayor espacio, borde en vinotinto */
+    /* Caja de comentarios: se mejora la estética */
     #commentSection {
       margin: 15px;
       padding: 20px;
@@ -166,6 +164,36 @@
       margin: 0 0 10px;
       text-align: center;
     }
+    /* Nuevo campo: Título del comentario */
+    #commentSection input[type="text"].commentTitle {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #111;
+      color: #eee;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    /* Nuevo campo: Selección de Categoría */
+    #commentSection select.commentCategory {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #111;
+      color: #eee;
+      font-size: 16px;
+    }
+    /* Etiqueta para identificar el campo de título */
+    #commentSection label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    /* Textarea del comentario */
     #commentSection textarea {
       width: 100%;
       padding: 12px;
@@ -195,7 +223,30 @@
     #commentSection button:hover {
       background-color: #e6c200;
     }
-    /* Feed de comentarios global */
+    /* Barra de búsqueda y filtro de categoría sobre el feed */
+    #searchBar {
+      margin: 15px;
+      text-align: center;
+    }
+    #searchBar input[type="text"] {
+      padding: 8px;
+      width: 60%;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #111;
+      color: #eee;
+      font-size: 16px;
+    }
+    #searchBar select {
+      padding: 8px;
+      margin-left: 10px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #111;
+      color: #eee;
+      font-size: 16px;
+    }
+    /* Feed de comentarios */
     #commentsFeed {
       margin: 15px;
       padding: 15px;
@@ -210,8 +261,18 @@
       border-bottom: none;
     }
     .comment h3 {
-      margin: 0;
+      margin: 0 0 5px;
       color: #8B0000;
+    }
+    .comment .commentTitle {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+    .comment .commentCategory {
+      font-size: 12px;
+      color: #ccc;
+      margin-bottom: 5px;
     }
     .comment p {
       margin: 8px 0;
@@ -299,12 +360,12 @@
   <div id="container">
     <header>
       <h1>Foro Global</h1>
-      <!-- Botones de navegación -->
+      <!-- Botones de navegación (izquierda) -->
       <div id="navButtons">
         <button onclick="window.history.back()">Regresar</button>
         <button onclick="window.location.href='index.html'">Inicio</button>
       </div>
-      <!-- Botones de autenticación (se muestran si no hay sesión activa) -->
+      <!-- Botones de autenticación (derecha) -->
       <div id="authButtons">
         <button id="openLogin">Iniciar Sesión</button>
         <button id="openRegister">Registrarse</button>
@@ -337,7 +398,7 @@
       </div>
     </div>
 
-    <!-- Zona para mostrar sesión activa -->
+    <!-- Zona de usuario activo -->
     <div id="userInfo">
       <p id="welcomeMsg"></p>
       <button id="logoutBtn">Cerrar Sesión</button>
@@ -347,10 +408,34 @@
     <div id="commentSection">
       <h2>Publicar Comentario</h2>
       <form id="commentForm">
+        <!-- Nuevo campo: Título -->
+        <label for="commentTitle">Título del comentario:</label>
+        <input type="text" id="commentTitle" class="commentTitle" placeholder="Escribe un título..." required>
+        <!-- Nuevo campo: Seleccionar Categoría -->
+        <label for="commentCategory">Categoría:</label>
+        <select id="commentCategory" class="commentCategory" required>
+          <option value="">--Seleccione categoría--</option>
+          <option value="Preguntas">Preguntas</option>
+          <option value="Problemas">Problemas</option>
+          <option value="Conversaciones">Conversaciones</option>
+        </select>
+        <!-- Campo de texto del comentario -->
         <textarea id="commentText" placeholder="Escribe tu comentario..." required></textarea>
+        <!-- Opción para adjuntar imagen -->
         <input type="file" id="commentImage" accept="image/*">
         <button type="submit">Publicar Comentario</button>
       </form>
+    </div>
+
+    <!-- Barra de búsqueda y filtro de categoría para los comentarios -->
+    <div id="searchBar">
+      <input type="text" id="searchInput" placeholder="Buscar por título o usuario...">
+      <select id="filterCategory">
+        <option value="Todas">Todas</option>
+        <option value="Preguntas">Preguntas</option>
+        <option value="Problemas">Problemas</option>
+        <option value="Conversaciones">Conversaciones</option>
+      </select>
     </div>
 
     <!-- Feed de comentarios -->
@@ -364,7 +449,7 @@
     /*********************
      * CONFIGURACIÓN DE FIREBASE
      *********************/
-    /* Reemplaza el siguiente bloque con los datos de tu proyecto obtenidos desde Firebase Console ("Tus apps") */
+    /* Reemplaza los datos a continuación con los de tu proyecto (desde Firebase Console "Tus apps") */
     const firebaseConfig = {
       apiKey: "TU_API_KEY",
       authDomain: "TU_PROYECTO.firebaseapp.com",
@@ -379,12 +464,13 @@
     const db = firebase.database();
 
     /*********************
-     * VARIABLES GLOBALES DE SESIÓN
+     * VARIABLES GLOBALES DE SESIÓN Y COMENTARIOS
      *********************/
     let currentUser = null;
     let currentUserIsAdmin = false;
+    let allComments = [];  // Array para almacenar todos los comentarios
 
-    // Al cargar la página, reestablecer la sesión desde localStorage (si existe)
+    // Al cargar la página, reestablecer la sesión si existe y cargar comentarios
     document.addEventListener("DOMContentLoaded", function() {
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
@@ -397,7 +483,7 @@
     });
 
     /*********************
-     * Función: Al iniciar sesión con éxito
+     * Función: Al iniciar sesión con éxito (guarda sesión)
      *********************/
     function onLoginSuccess() {
       localStorage.setItem("currentUser", currentUser);
@@ -488,7 +574,6 @@
         currentUserIsAdmin = true;
         onLoginSuccess();
       } else {
-        // Si no es admin, se consulta la BD para verificar el usuario
         db.ref("users/" + username).get().then(function(snapshot) {
           if (snapshot.exists()) {
             const userData = snapshot.val();
@@ -509,14 +594,18 @@
     });
 
     /*********************
-     * Publicar Comentario (con opción de imagen)
+     * Publicar Comentario (incluye título, categoría, texto y opción de imagen)
      *********************/
     document.getElementById("commentForm").addEventListener("submit", function(e) {
       e.preventDefault();
+      const title = document.getElementById("commentTitle").value.trim();
+      const category = document.getElementById("commentCategory").value;
       const text = document.getElementById("commentText").value.trim();
       const fileInput = document.getElementById("commentImage");
       const comment = {
         username: currentUser,
+        title: title,
+        category: category,
         text: text,
         imageData: null,
         timestamp: Date.now()
@@ -544,108 +633,157 @@
     });
 
     /*********************
-     * Cargar y Mostrar Comentarios (incluyendo respuestas)
+     * Cargar Comentarios de Firebase y guardarlos en allComments
      *********************/
+    let allComments = [];
     function cargarComentarios() {
       db.ref("comments").orderByChild("timestamp").on("value", function(snapshot) {
-        const commentsDiv = document.getElementById("comments");
-        commentsDiv.innerHTML = "";
+        allComments = [];
         snapshot.forEach(function(childSnapshot) {
-          const key = childSnapshot.key;
-          const commentData = childSnapshot.val();
-          const commentElem = document.createElement("div");
-          commentElem.className = "comment";
-
-          // Botón "Eliminar" (solo para admin)
-          if (currentUserIsAdmin) {
-            const delBtn = document.createElement("button");
-            delBtn.className = "delete-btn";
-            delBtn.textContent = "Eliminar";
-            delBtn.onclick = function() {
-              if (confirm("¿Desea eliminar este comentario?")) {
-                db.ref("comments").child(key).remove();
-              }
-            };
-            commentElem.appendChild(delBtn);
-          }
-
-          const h3 = document.createElement("h3");
-          h3.textContent = commentData.username;
-          commentElem.appendChild(h3);
-
-          const p = document.createElement("p");
-          p.textContent = commentData.text;
-          commentElem.appendChild(p);
-
-          if (commentData.imageData) {
-            const img = document.createElement("img");
-            img.src = commentData.imageData;
-            commentElem.appendChild(img);
-          }
-
-          // Botón para responder (visible si hay sesión)
-          if (currentUser) {
-            const replyBtn = document.createElement("button");
-            replyBtn.className = "reply-btn";
-            replyBtn.textContent = "Responder";
-            replyBtn.onclick = function() {
-              let existingForm = commentElem.querySelector(".replyForm");
-              if (existingForm) {
-                existingForm.remove();
-              } else {
-                const replyForm = document.createElement("form");
-                replyForm.className = "replyForm";
-                const replyTextarea = document.createElement("textarea");
-                replyTextarea.placeholder = "Escribe tu respuesta...";
-                replyTextarea.required = true;
-                replyTextarea.rows = 2;
-                replyForm.appendChild(replyTextarea);
-                const submitReplyBtn = document.createElement("button");
-                submitReplyBtn.type = "submit";
-                submitReplyBtn.textContent = "Enviar Respuesta";
-                replyForm.appendChild(submitReplyBtn);
-                replyForm.onsubmit = function(ev) {
-                  ev.preventDefault();
-                  const replyContent = replyTextarea.value.trim();
-                  if (replyContent !== "") {
-                    const reply = {
-                      username: currentUser,
-                      text: replyContent,
-                      timestamp: Date.now()
-                    };
-                    db.ref("comments/" + key + "/replies").push(reply, function(error) {
-                      if (!error) {
-                        replyTextarea.value = "";
-                        replyForm.remove();
-                      } else {
-                        alert("Error al enviar respuesta.");
-                      }
-                    });
-                  }
-                };
-                commentElem.appendChild(replyForm);
-              }
-            };
-            commentElem.appendChild(replyBtn);
-          }
-
-          // Mostrar respuestas existentes
-          if (commentData.replies) {
-            const repliesDiv = document.createElement("div");
-            repliesDiv.className = "replies";
-            for (let replyKey in commentData.replies) {
-              const replyData = commentData.replies[replyKey];
-              const replyElem = document.createElement("div");
-              replyElem.className = "reply";
-              replyElem.innerHTML = "<strong>" + replyData.username + ":</strong> " + replyData.text;
-              repliesDiv.appendChild(replyElem);
-            }
-            commentElem.appendChild(repliesDiv);
-          }
-          commentsDiv.appendChild(commentElem);
+          let comment = childSnapshot.val();
+          comment.key = childSnapshot.key;
+          allComments.push(comment);
         });
+        displayComments(allComments);
       });
     }
+
+    /*********************
+     * Función para mostrar comentarios filtrados según búsqueda y categoría
+     *********************/
+    function displayComments(commentsArray) {
+      const commentsDiv = document.getElementById("comments");
+      commentsDiv.innerHTML = "";
+      const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+      const categoryFilter = document.getElementById("filterCategory").value;
+      
+      commentsArray.forEach(function(comment) {
+        // Filtrar por búsqueda (título o nombre)
+        if (searchQuery) {
+          const titleMatch = comment.title && comment.title.toLowerCase().includes(searchQuery);
+          const usernameMatch = comment.username && comment.username.toLowerCase().includes(searchQuery);
+          if (!titleMatch && !usernameMatch) return; // no mostrar
+        }
+        // Filtrar por categoría, si no se selecciona "Todas"
+        if (categoryFilter !== "Todas") {
+          if (comment.category !== categoryFilter) return;
+        }
+        // Crear el elemento del comentario
+        const commentElem = document.createElement("div");
+        commentElem.className = "comment";
+
+        // Si es administrador, agregar botón de eliminar
+        if (currentUserIsAdmin) {
+          const delBtn = document.createElement("button");
+          delBtn.className = "delete-btn";
+          delBtn.textContent = "Eliminar";
+          delBtn.onclick = function() {
+            if (confirm("¿Desea eliminar este comentario?")) {
+              db.ref("comments").child(comment.key).remove();
+            }
+          };
+          commentElem.appendChild(delBtn);
+        }
+
+        // Mostrar el título y la categoría
+        const titleElem = document.createElement("div");
+        titleElem.className = "commentTitle";
+        titleElem.textContent = comment.title;
+        commentElem.appendChild(titleElem);
+
+        const catElem = document.createElement("div");
+        catElem.className = "commentCategory";
+        catElem.textContent = comment.category;
+        commentElem.appendChild(catElem);
+
+        // Mostrar el nombre del autor
+        const authorElem = document.createElement("h3");
+        authorElem.textContent = comment.username;
+        commentElem.appendChild(authorElem);
+
+        // Mostrar el texto del comentario
+        const textElem = document.createElement("p");
+        textElem.textContent = comment.text;
+        commentElem.appendChild(textElem);
+
+        // Mostrar imagen si existe
+        if (comment.imageData) {
+          const img = document.createElement("img");
+          img.src = comment.imageData;
+          commentElem.appendChild(img);
+        }
+
+        // Botón para responder (si hay sesión activa)
+        if (currentUser) {
+          const replyBtn = document.createElement("button");
+          replyBtn.className = "reply-btn";
+          replyBtn.textContent = "Responder";
+          replyBtn.onclick = function() {
+            let existingForm = commentElem.querySelector(".replyForm");
+            if (existingForm) {
+              existingForm.remove();
+            } else {
+              const replyForm = document.createElement("form");
+              replyForm.className = "replyForm";
+              const replyTextarea = document.createElement("textarea");
+              replyTextarea.placeholder = "Escribe tu respuesta...";
+              replyTextarea.required = true;
+              replyTextarea.rows = 2;
+              replyForm.appendChild(replyTextarea);
+              const submitReplyBtn = document.createElement("button");
+              submitReplyBtn.type = "submit";
+              submitReplyBtn.textContent = "Enviar Respuesta";
+              replyForm.appendChild(submitReplyBtn);
+              replyForm.onsubmit = function(ev) {
+                ev.preventDefault();
+                const replyContent = replyTextarea.value.trim();
+                if (replyContent !== "") {
+                  const reply = {
+                    username: currentUser,
+                    text: replyContent,
+                    timestamp: Date.now()
+                  };
+                  db.ref("comments/" + comment.key + "/replies").push(reply, function(error) {
+                    if (!error) {
+                      replyTextarea.value = "";
+                      replyForm.remove();
+                    } else {
+                      alert("Error al enviar respuesta.");
+                    }
+                  });
+                }
+              };
+              commentElem.appendChild(replyForm);
+            }
+          };
+          commentElem.appendChild(replyBtn);
+        }
+
+        // Mostrar respuestas existentes (si hay)
+        if (comment.replies) {
+          const repliesDiv = document.createElement("div");
+          repliesDiv.className = "replies";
+          for (let replyKey in comment.replies) {
+            const replyData = comment.replies[replyKey];
+            const replyElem = document.createElement("div");
+            replyElem.className = "reply";
+            replyElem.innerHTML = "<strong>" + replyData.username + ":</strong> " + replyData.text;
+            repliesDiv.appendChild(replyElem);
+          }
+          commentElem.appendChild(repliesDiv);
+        }
+
+        commentsDiv.appendChild(commentElem);
+      });
+    }
+
+    // Agregar eventos al input de búsqueda y al selector de categoría para filtrar los comentarios
+    document.getElementById("searchInput").addEventListener("input", function() {
+      displayComments(allComments);
+    });
+    document.getElementById("filterCategory").addEventListener("change", function() {
+      displayComments(allComments);
+    });
   </script>
 </body>
 </html>
