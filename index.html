@@ -2,44 +2,179 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Mi Proyecto - Página Principal</title>
+  <title>InnovAccionUNEFA - Inicio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Fondo global con la bandera de Venezuela -->
   <style>
-    /* Estilos generales para la página principal */
     body {
       font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_Venezuela.svg/2560px-Flag_of_Venezuela.svg.png');
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: #eee;
     }
-    h1 {
-      margin-bottom: 40px;
+    /* Contenedor principal con fondo semitransparente para facilitar la lectura */
+    #container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: rgba(34, 34, 34, 0.95);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
     }
-    .boton {
-      display: inline-block;
-      margin: 10px;
-      padding: 15px 25px;
-      background: #333;
-      color: #fff;
+    /* ------------------------------
+       Header y Navegación
+       ------------------------------ */
+    header {
+      background-color: #8B0000;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    nav a {
       text-decoration: none;
-      font-size: 1.1em;
-      border-radius: 5px;
-      transition: background 0.3s ease;
+      color: #eee;
+      font-size: 18px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
     }
-    .boton:hover {
-      background: #555;
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    /* ------------------------------
+       Sección Hero
+       ------------------------------ */
+    .hero {
+      background: rgba(0,0,0,0.4);
+      padding: 100px 20px;
+      text-align: center;
+    }
+    .hero h2 {
+      font-size: 48px;
+      color: #ffd700;
+      text-shadow: 2px 2px 4px #000;
+      margin-bottom: 20px;
+    }
+    .hero p {
+      font-size: 20px;
+      color: #eee;
+    }
+    /* ------------------------------
+       Secciones de Contenido
+       ------------------------------ */
+    section {
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .section-title {
+      font-size: 32px;
+      color: #8B0000;
+      margin-bottom: 20px;
+    }
+    .section-content {
+      font-size: 18px;
+      line-height: 1.5;
+    }
+    /* ------------------------------
+       Sección de Contacto
+       (Actualmente decorativa)
+       ------------------------------ */
+    #contacto {
+      background-color: #333;
+      padding: 40px 20px;
+    }
+    #contacto h2 {
+      font-size: 32px;
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+    #contacto p {
+      font-size: 18px;
+    }
+    /* ------------------------------
+       Footer
+       ------------------------------ */
+    footer {
+      background-color: #111;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
+    /* ------------------------------
+       Responsive
+       ------------------------------ */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 32px;
+      }
+      .hero h2 {
+        font-size: 36px;
+      }
+      nav a {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Bienvenido a Mi Proyecto</h1>
-  <a href="noticias.html" class="boton">Noticias</a>
-  <a href="foro.html" class="boton">Foro</a>
-  <a href="sugerencias.html" class="boton">Sugerencias</a>
+  <div id="container">
+    <!-- HEADER -->
+    <header>
+      <h1>InnovAccionUNEFA</h1>
+      <nav>
+        <a href="foro.html">Foro</a>
+        <a href="noticias.html">Noticias</a>
+        <a href="sugerencias.html">Sugerencias</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <h2>Impulsando la Innovación</h2>
+      <p>Bienvenido a la plataforma oficial de InnovAccionUNEFA</p>
+    </section>
+
+    <!-- SECCIÓN DE PRESENTACIÓN (Puede ser adaptada) -->
+    <section id="presentacion">
+      <h2 class="section-title">Bienvenido</h2>
+      <div class="section-content">
+        <p>
+          Descubre nuestro foro, conoce las últimas noticias y comparte tus sugerencias para seguir mejorando.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CONTACTO (Decorativa, se puede expandir con el tiempo) -->
+    <section id="contacto">
+      <h2>Contacto</h2>
+      <p>
+        Próximamente agregaremos un formulario de contacto interactivo. ¡Mantente atento!
+      </p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>&copy; 2025 InnovAccionUNEFA. Todos los derechos reservados.</p>
+    </footer>
+  </div>
 </body>
 </html>
