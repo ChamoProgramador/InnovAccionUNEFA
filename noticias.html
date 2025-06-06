@@ -9,246 +9,370 @@
        Estilos Generales y Contenedor
        =============================== */
     body {
-      font-family: Arial, sans-serif;
-      background-color: #000;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #000; /* Negro profundo */
       color: #eee;
       margin: 0;
       padding: 0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased; /* Mejor renderizado de fuentes */
+      -moz-osx-font-smoothing: grayscale;
     }
+
     #container {
-      max-width: 1200px;
-      margin: 20px auto;
-      background-color: #222;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      max-width: 1000px;
+      margin: 30px auto;
+      background-color: #1a1a1a; /* Gris muy oscuro */
+      border-radius: 10px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7); /* Sombra más pronunciada */
       overflow: hidden;
-      padding-bottom: 20px;
+      border: 1px solid #333; /* Borde sutil */
     }
+
     /* ===============================
        Header, Navegación y Botones de Autenticación
        =============================== */
     header {
-      position: relative;
-      background-color: #8B0000; /* Vinotinto */
+      background-color: #4A004B; /* Morado Oscuro */
       color: #fff;
-      padding: 15px;
+      padding: 25px;
       text-align: center;
+      position: relative;
+      border-bottom: 3px solid #8B0000; /* Vinotinto como acento */
     }
+
     header h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 2.8em;
+      font-weight: 200; /* Fuente más delgada */
+      letter-spacing: 2px;
     }
-    #navButtons {
+
+    #navButtons, #authButtons {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 20px;
+      display: flex;
+      gap: 10px; /* Espacio entre botones */
     }
-    #navButtons button {
-      background-color: #ffd700;
-      border: none;
-      padding: 6px 10px;
-      margin-right: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #333;
-    }
-    #navButtons button:hover {
-      background-color: #e6c200;
-    }
-    #authButtons {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
+
+    #navButtons { left: 20px; }
+    #authButtons { right: 20px; }
+
+    #navButtons button,
     #authButtons button {
-      background-color: #ffd700;
-      border: none;
-      padding: 8px 12px;
-      margin-left: 5px;
-      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1); /* Ligero fondo transparente */
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 15px;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 14px;
-      color: #333;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px); /* Efecto blur */
+      -webkit-backdrop-filter: blur(5px);
     }
+
+    #navButtons button:hover,
     #authButtons button:hover {
-      background-color: #e6c200;
+      background-color: #8B0000; /* Vinotinto al pasar el mouse */
+      border-color: #8B0000;
+      transform: translateY(-2px); /* Pequeño efecto de elevación */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
+
     /* ===============================
        Modales de Autenticación
        =============================== */
     .modal {
       display: none;
       position: fixed;
-      z-index: 10;
+      z-index: 100; /* Asegura que esté por encima de todo */
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.8);
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .modal-content {
-      background-color: #222;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #444;
-      width: 300px;
-      border-radius: 4px;
+      background: linear-gradient(145deg, #1a1a1a, #2a002a); /* Degradado sutil de negro a morado oscuro */
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 450px;
       position: relative;
-      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+      border: 1px solid #4a004b;
     }
+
     .close {
       position: absolute;
-      top: 5px;
-      right: 10px;
-      font-size: 28px;
+      top: 15px;
+      right: 20px;
+      color: #ccc;
+      font-size: 2.2em;
       font-weight: bold;
-      color: #eee;
       cursor: pointer;
+      transition: color 0.3s ease;
     }
+
     .close:hover {
+      color: #8B0000; /* Vinotinto al cerrar */
+    }
+
+    .authForm h2 {
+      text-align: center;
       color: #fff;
+      margin-bottom: 25px;
+      font-weight: 300;
+      font-size: 2em;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 10px;
     }
-    .authForm input[type="text"],
-    .authForm input[type="password"] {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
+
+    .authForm input {
+      width: calc(100% - 20px); /* Ajuste para padding */
+      padding: 12px 10px;
+      margin-bottom: 18px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #2a2a2a; /* Fondo más oscuro para inputs */
       color: #eee;
+      font-size: 1.05em;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
+
+    .authForm input:focus {
+      border-color: #800080; /* Morado al enfocar */
+      box-shadow: 0 0 8px rgba(128, 0, 128, 0.5);
+      outline: none;
+    }
+
     .authForm button {
       width: 100%;
-      padding: 10px;
+      background-color: #800080; /* Morado Medio */
+      color: #fff;
+      padding: 14px;
       border: none;
-      border-radius: 4px;
-      background-color: #ffd700;
-      color: #333;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
-      margin-top: 8px;
+      font-size: 1.1em;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      letter-spacing: 0.5px;
     }
+
     .authForm button:hover {
-      background-color: #e6c200;
+      background-color: #8B0000; /* Vinotinto al pasar el mouse */
+      transform: translateY(-1px);
     }
+
     /* ===============================
        Zona de Usuario Activo
        =============================== */
     #userInfo {
-      padding: 15px;
-      text-align: center;
-      background-color: #333;
-      display: none;
-    }
-    #userInfo button {
-      background-color: #ff4d4d;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
+      background-color: #2a002a; /* Morado oscuro más claro */
       color: #fff;
+      padding: 20px;
+      text-align: center;
+      display: none;
+      border-bottom: 2px solid #8B0000;
     }
+
+    #userInfo p {
+      margin: 0 0 10px;
+      font-size: 1.1em;
+    }
+
+    #userInfo button {
+      background-color: #8B0000; /* Vinotinto */
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: background-color 0.3s ease;
+    }
+
     #userInfo button:hover {
-      background-color: #e60000;
+      background-color: #a00000; /* Vinotinto más oscuro */
     }
+
     /* ===============================
        Apartado de Noticias
        =============================== */
     #newsSection {
-      margin: 15px;
-      padding: 20px;
-      background-color: #333;
-      border: 2px solid #8B0000;
-      border-radius: 8px;
+      padding: 30px;
+      background-color: #1a1a1a; /* Fondo principal de la sección */
     }
+
     #newsSection h2 {
+      color: #fff;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 30px;
+      font-weight: 300;
+      font-size: 2.2em;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
     }
+
     /* Formulario para publicar noticias (solo visible para Admin) */
     #newsFormContainer {
+      background-color: #222;
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 30px;
       display: none;
-      margin-bottom: 20px;
+      border: 1px solid #4a004b; /* Borde morado */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
+
     #newsForm label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
+      margin-bottom: 8px;
+      font-weight: normal;
+      color: #ccc;
     }
-    #newsForm input,
+
+    #newsForm input[type="text"],
     #newsForm textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #333;
       color: #eee;
-      font-size: 14px;
+      font-size: 1em;
     }
+
+    #newsForm input[type="file"] {
+      margin-bottom: 15px;
+      color: #ccc;
+      background-color: #333;
+      border: 1px solid #444;
+      border-radius: 5px;
+      padding: 8px;
+    }
+
     #newsForm button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: none;
-      border-radius: 4px;
-      background-color: #ffd700;
-      color: #333;
+      border-radius: 5px;
+      background-color: #8B0000; /* Vinotinto */
+      color: #fff;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 1.1em;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
     }
+
     #newsForm button:hover {
-      background-color: #e6c200;
+      background-color: #a00000;
     }
+
     /* Feed de Noticias */
     #newsFeed {
-      border-top: 1px solid #444;
-      padding-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr; /* Una columna por defecto */
+      gap: 25px; /* Espacio entre noticias */
     }
+
+    @media (min-width: 768px) {
+      #newsFeed {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas en pantallas medianas */
+      }
+    }
+
+    @media (min-width: 1024px) {
+      #newsFeed {
+        grid-template-columns: repeat(3, 1fr); /* Tres columnas en pantallas grandes */
+      }
+    }
+
+
     .newsItem {
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 10px;
+      background: #222; /* Fondo de la tarjeta de noticia */
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+
+    .newsItem:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    }
+
     .newsItem h3 {
-      margin: 0 0 5px;
-      color: #8B0000;
+      margin: 0 0 10px;
+      color: #800080; /* Morado para títulos de noticias */
+      font-size: 1.4em;
+      font-weight: 400;
     }
+
     .newsItem p {
-      margin: 5px 0;
-      line-height: 1.4;
+      margin: 5px 0 15px;
+      line-height: 1.5;
+      color: #ccc;
+      flex-grow: 1; /* Para que el contenido ocupe el espacio */
     }
+
     .newsItem img {
       max-width: 100%;
-      border-radius: 4px;
-      margin-top: 5px;
+      border-radius: 6px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      display: block;
+      object-fit: cover; /* Para que las imágenes no se deformen */
     }
+
     .newsItem .newsTimestamp {
-      font-size: 12px;
-      color: #ccc;
-      margin-top: 5px;
+      font-size: 0.85em;
+      color: #999;
+      margin-top: 10px;
+      text-align: right;
     }
+
     /* Botones Like/Dislike para Noticias */
+    .news-actions {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      border-top: 1px solid #333;
+      padding-top: 10px;
+    }
+
     .news-like-btn, .news-dislike-btn {
-      background-color: #ffd700;
+      background-color: #4A004B; /* Morado Oscuro */
       border: none;
-      padding: 4px 8px;
-      margin-right: 5px;
+      padding: 6px 10px;
+      margin-right: 8px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 12px;
-      color: #333;
+      font-size: 0.85em;
+      color: #fff;
+      transition: background-color 0.3s ease;
     }
+
     .news-like-btn:hover, .news-dislike-btn:hover {
-      background-color: #e6c200;
+      background-color: #8B0000; /* Vinotinto al pasar el mouse */
     }
+
     .news-like-count, .news-dislike-count {
-      font-size: 12px;
-      margin-right: 10px;
+      font-size: 0.85em;
+      color: #ccc;
+      margin-right: 15px;
     }
   </style>
 </head>
@@ -273,7 +397,7 @@
         <form id="loginForm" class="authForm">
           <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
           <input type="password" id="loginPassword" placeholder="Contraseña" required>
-          <button type="submit">Iniciar Sesión</button>
+          <button type="submit">Entrar</button>
         </form>
       </div>
     </div>
@@ -285,7 +409,7 @@
         <form id="registerForm" class="authForm">
           <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
           <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
-          <button type="submit">Registrarse</button>
+          <button type="submit">Crear Cuenta</button>
         </form>
       </div>
     </div>
@@ -296,16 +420,17 @@
     </div>
 
         <div id="newsSection">
-      <h2>Noticias</h2>
-            <div id="newsFormContainer" style="display:none;">
+      <h2>Últimas Noticias</h2>
+            <div id="newsFormContainer">
+        <h3>Publicar Nueva Noticia</h3>
         <form id="newsForm">
-          <label for="newsTitle">Título de la Noticia:</label>
+          <label for="newsTitle">Título:</label>
           <input type="text" id="newsTitle" placeholder="Título de la noticia" required>
           <label for="newsContent">Contenido:</label>
-          <textarea id="newsContent" placeholder="Escribe el contenido de la noticia" required></textarea>
+          <textarea id="newsContent" placeholder="Escribe el contenido de la noticia" rows="6" required></textarea>
           <label for="newsImage">Imagen (opcional):</label>
           <input type="file" id="newsImage" accept="image/*">
-          <button type="submit">Publicar Noticia</button>
+          <button type="submit">Publicar</button>
         </form>
       </div>
             <div id="newsFeed"></div>
@@ -315,7 +440,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>   <script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+  <script>
     document.addEventListener("DOMContentLoaded", function() {
       /*****************************
        * CONFIGURACIÓN DE FIREBASE
@@ -331,7 +458,6 @@
         measurementId: "G-LLK0GLWS1G"
       };
 
-      // Inicializa Firebase SOLO si no ha sido inicializado antes
       if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
         console.log("Firebase inicializado correctamente.");
@@ -355,7 +481,7 @@
       if(storedUser) {
         currentUser = storedUser;
         currentUserIsAdmin = storedIsAdmin === "true";
-        onLoginSuccess(); // Llama a esta función para actualizar la UI
+        onLoginSuccess();
         console.log("Sesión restaurada desde localStorage para:", currentUser, "Admin:", currentUserIsAdmin);
       }
 
@@ -373,7 +499,6 @@
         document.getElementById("registerModal").style.display = "none";
         document.getElementById("userInfo").style.display = "block";
         document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
-        // Mostrar u ocultar el formulario de noticias basado en el rol de administrador
         if(currentUserIsAdmin) {
           document.getElementById("newsFormContainer").style.display = "block";
           console.log("Usuario es administrador. Formulario de noticias visible.");
@@ -391,7 +516,7 @@
         currentUserIsAdmin = false;
         localStorage.removeItem("currentUser");
         localStorage.removeItem("currentUserIsAdmin");
-        document.getElementById("authButtons").style.display = "block";
+        document.getElementById("authButtons").style.display = "flex"; /* Usa flex para los botones */
         document.getElementById("userInfo").style.display = "none";
         document.getElementById("newsFormContainer").style.display = "none";
         console.log("Sesión cerrada. currentUser:", currentUser);
@@ -402,11 +527,11 @@
        *****************************/
       document.getElementById("openLogin").addEventListener("click", function() {
         console.log("Clic en Iniciar Sesión. Mostrando modal de login.");
-        document.getElementById("loginModal").style.display = "block";
+        document.getElementById("loginModal").style.display = "flex"; /* Usa flex */
       });
       document.getElementById("openRegister").addEventListener("click", function() {
         console.log("Clic en Registrarse. Mostrando modal de registro.");
-        document.getElementById("registerModal").style.display = "block";
+        document.getElementById("registerModal").style.display = "flex"; /* Usa flex */
       });
       document.getElementById("loginClose").addEventListener("click", function() {
         console.log("Cerrando modal de Iniciar Sesión.");
@@ -441,13 +566,11 @@
           return;
         }
 
-        // Verifica si el usuario ya existe antes de registrar
         db.ref("users/" + username).get().then(function(snapshot) {
           if(snapshot.exists()){
             alert("El nombre de usuario ya está en uso. Elige otro.");
             console.warn("Registro fallido: Nombre de usuario", username, "ya existe.");
           } else {
-            // Guarda el nuevo usuario en la base de datos
             db.ref("users/" + username).set({ password: password })
               .then(function(){
                 alert("Registro exitoso. Ahora puedes iniciar sesión.");
@@ -523,11 +646,11 @@
         const news = {
           title: newsTitle,
           content: newsContent,
-          imageData: null, // Para almacenar la imagen en Base64
+          imageData: null,
           timestamp: Date.now(),
           likes: 0,
           dislikes: 0,
-          votes: {} // Para registrar los votos de cada usuario
+          votes: {}
         };
 
         function postNewsToDb() {
@@ -546,7 +669,7 @@
           const file = newsFileInput.files[0];
           const reader = new FileReader();
           reader.onload = function(e) {
-            news.imageData = e.target.result; // Almacena la imagen como Base64
+            news.imageData = e.target.result;
             postNewsToDb();
           };
           reader.readAsDataURL(file);
@@ -559,16 +682,15 @@
        * Cargar Noticias desde Firebase
        *****************************/
       function cargarNoticias() {
-        // Escucha cambios en el nodo 'news'
         db.ref("news").orderByChild("timestamp").on("value", function(snapshot) {
           allNews = [];
           snapshot.forEach(function(childSnapshot) {
             let newsItem = childSnapshot.val();
-            newsItem.key = childSnapshot.key; // Guarda la clave única de Firebase
+            newsItem.key = childSnapshot.key;
             allNews.push(newsItem);
           });
           console.log("Noticias cargadas:", allNews.length);
-          displayNoticias(allNews); // Actualiza la visualización de noticias
+          displayNoticias(allNews);
         }, function(error) {
           console.error("Error al cargar noticias de Firebase:", error);
         });
@@ -578,10 +700,9 @@
        * Mostrar Noticias en la Interfaz
        *****************************/
       function displayNoticias(newsArray) {
-        // Ordenar de más reciente a más antigua
         newsArray.sort((a, b) => b.timestamp - a.timestamp);
         const newsDiv = document.getElementById("newsFeed");
-        newsDiv.innerHTML = ""; // Limpia el feed antes de agregar nuevas noticias
+        newsDiv.innerHTML = "";
 
         newsArray.forEach(function(newsItem) {
           const newsElem = document.createElement("div");
@@ -607,15 +728,17 @@
           newsElem.appendChild(dateElem);
 
           // Botones Like/Dislike para la noticia (voto único por usuario)
+          const actionsDiv = document.createElement("div");
+          actionsDiv.className = "news-actions";
+
           const likeBtn = document.createElement("button");
           likeBtn.className = "news-like-btn";
-          likeBtn.textContent = "Like";
+          likeBtn.textContent = "👍 Like";
           likeBtn.onclick = function() {
             if(!currentUser) {
               alert("Debes iniciar sesión para votar.");
               return;
             }
-            // Verifica si el usuario ya votó en esta noticia
             db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
               .then(function(snap) {
                 if(snap.exists()){
@@ -631,17 +754,22 @@
                 console.error("Error al registrar voto 'like':", error);
               });
           };
-          newsElem.appendChild(likeBtn);
+          actionsDiv.appendChild(likeBtn);
+
+          const likeCount = document.createElement("span");
+          likeCount.className = "news-like-count";
+          likeCount.textContent = (newsItem.likes || 0);
+          actionsDiv.appendChild(likeCount);
+
 
           const dislikeBtn = document.createElement("button");
           dislikeBtn.className = "news-dislike-btn";
-          dislikeBtn.textContent = "Dislike";
+          dislikeBtn.textContent = "👎 Dislike";
           dislikeBtn.onclick = function() {
             if(!currentUser) {
               alert("Debes iniciar sesión para votar.");
               return;
             }
-            // Verifica si el usuario ya votó en esta noticia
             db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
               .then(function(snap) {
                 if(snap.exists()){
@@ -657,18 +785,14 @@
                 console.error("Error al registrar voto 'dislike':", error);
               });
           };
-          newsElem.appendChild(dislikeBtn);
-
-          const likeCount = document.createElement("span");
-          likeCount.className = "news-like-count";
-          likeCount.textContent = "Likes: " + (newsItem.likes || 0);
-          newsElem.appendChild(likeCount);
+          actionsDiv.appendChild(dislikeBtn);
 
           const dislikeCount = document.createElement("span");
           dislikeCount.className = "news-dislike-count";
-          dislikeCount.textContent = "Dislikes: " + (newsItem.dislikes || 0);
-          newsElem.appendChild(dislikeCount);
+          dislikeCount.textContent = (newsItem.dislikes || 0);
+          actionsDiv.appendChild(dislikeCount);
 
+          newsElem.appendChild(actionsDiv); // Añadir el div de acciones al elemento de noticia
           newsDiv.appendChild(newsElem);
         });
       }
