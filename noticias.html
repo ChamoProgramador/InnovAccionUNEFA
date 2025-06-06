@@ -1,620 +1,665 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Noticias - Mi Sitio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    /* ===============================
-       Estilos Generales y Contenedor
-       =============================== */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #000;
-      color: #eee;
-      margin: 0;
-      padding: 0;
-    }
-    #container {
-      max-width: 1200px;
-      margin: 20px auto;
-      background-color: #222;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
-      overflow: hidden;
-      padding-bottom: 20px;
-    }
-    /* ===============================
-       Header, Navegación y Botones de Autenticación
-       =============================== */
-    header {
-      position: relative;
-      background-color: #8B0000; /* Vinotinto */
-      color: #fff;
-      padding: 15px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-    #navButtons {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-    #navButtons button {
-      background-color: #ffd700;
-      border: none;
-      padding: 6px 10px;
-      margin-right: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #333;
-    }
-    #navButtons button:hover {
-      background-color: #e6c200;
-    }
-    #authButtons {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-    #authButtons button {
-      background-color: #ffd700;
-      border: none;
-      padding: 8px 12px;
-      margin-left: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      color: #333;
-    }
-    #authButtons button:hover {
-      background-color: #e6c200;
-    }
-    /* ===============================
-       Modales de Autenticación
-       =============================== */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.8);
-    }
-    .modal-content {
-      background-color: #222;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #444;
-      width: 300px;
-      border-radius: 4px;
-      position: relative;
-      text-align: center;
-    }
-    .close {
-      position: absolute;
-      top: 5px;
-      right: 10px;
-      font-size: 28px;
-      font-weight: bold;
-      color: #eee;
-      cursor: pointer;
-    }
-    .close:hover {
-      color: #fff;
-    }
-    .authForm input[type="text"],
-    .authForm input[type="password"] {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
-      color: #eee;
-    }
-    .authForm button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      background-color: #ffd700;
-      color: #333;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 8px;
-    }
-    .authForm button:hover {
-      background-color: #e6c200;
-    }
-    /* ===============================
-       Zona de Usuario Activo
-       =============================== */
-    #userInfo {
-      padding: 15px;
-      text-align: center;
-      background-color: #333;
-      display: none;
-    }
-    #userInfo button {
-      background-color: #ff4d4d;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-      color: #fff;
-    }
-    #userInfo button:hover {
-      background-color: #e60000;
-    }
-    /* ===============================
-       Apartado de Noticias
-       =============================== */
-    #newsSection {
-      margin: 15px;
-      padding: 20px;
-      background-color: #333;
-      border: 2px solid #8B0000;
-      border-radius: 8px;
-    }
-    #newsSection h2 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    /* Formulario de Noticias, visible solo para Admin */
-    #newsFormContainer {
-      display: none;
-      margin-bottom: 20px;
-    }
-    #newsForm label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    #newsForm input,
-    #newsForm textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
-      color: #eee;
-      font-size: 14px;
-    }
-    #newsForm button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      background-color: #ffd700;
-      color: #333;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    #newsForm button:hover {
-      background-color: #e6c200;
-    }
-    /* Feed de Noticias */
-    #newsFeed {
-      border-top: 1px solid #444;
-      padding-top: 10px;
-    }
-    .newsItem {
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    .newsItem h3 {
-      margin: 0 0 5px;
-      color: #8B0000;
-    }
-    .newsItem p {
-      margin: 5px 0;
-      line-height: 1.4;
-    }
-    .newsItem img {
-      max-width: 100%;
-      border-radius: 4px;
-      margin-top: 5px;
-    }
-    .newsItem .newsTimestamp {
-      font-size: 12px;
-      color: #ccc;
-      margin-top: 5px;
-    }
-    /* Botones Like/Dislike para Noticias */
-    .news-like-btn, .news-dislike-btn {
-      background-color: #ffd700;
-      border: none;
-      padding: 4px 8px;
-      margin-right: 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #333;
-    }
-    .news-like-btn:hover, .news-dislike-btn:hover {
-      background-color: #e6c200;
-    }
-    .news-like-count, .news-dislike-count {
-      font-size: 12px;
-      margin-right: 10px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Noticias - Mi Sitio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* ===============================
+       Estilos Generales y Contenedor
+       =============================== */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+    }
+    #container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #222;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      overflow: hidden;
+      padding-bottom: 20px;
+    }
+    /* ===============================
+       Header, Navegación y Botones de Autenticación
+       =============================== */
+    header {
+      position: relative;
+      background-color: #8B0000; /* Vinotinto */
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    #navButtons {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    #navButtons button {
+      background-color: #ffd700;
+      border: none;
+      padding: 6px 10px;
+      margin-right: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #333;
+    }
+    #navButtons button:hover {
+      background-color: #e6c200;
+    }
+    #authButtons {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    #authButtons button {
+      background-color: #ffd700;
+      border: none;
+      padding: 8px 12px;
+      margin-left: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+    }
+    #authButtons button:hover {
+      background-color: #e6c200;
+    }
+    /* ===============================
+       Modales de Autenticación
+       =============================== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+    }
+    .modal-content {
+      background-color: #222;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #444;
+      width: 300px;
+      border-radius: 4px;
+      position: relative;
+      text-align: center;
+    }
+    .close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #eee;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #fff;
+    }
+    .authForm input[type="text"],
+    .authForm input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #111;
+      color: #eee;
+    }
+    .authForm button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #ffd700;
+      color: #333;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+    .authForm button:hover {
+      background-color: #e6c200;
+    }
+    /* ===============================
+       Zona de Usuario Activo
+       =============================== */
+    #userInfo {
+      padding: 15px;
+      text-align: center;
+      background-color: #333;
+      display: none;
+    }
+    #userInfo button {
+      background-color: #ff4d4d;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      color: #fff;
+    }
+    #userInfo button:hover {
+      background-color: #e60000;
+    }
+    /* ===============================
+       Apartado de Noticias
+       =============================== */
+    #newsSection {
+      margin: 15px;
+      padding: 20px;
+      background-color: #333;
+      border: 2px solid #8B0000;
+      border-radius: 8px;
+    }
+    #newsSection h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    /* Formulario de Noticias, visible solo para Admin */
+    #newsFormContainer {
+      display: none;
+      margin-bottom: 20px;
+    }
+    #newsForm label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    #newsForm input,
+    #newsForm textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #111;
+      color: #eee;
+      font-size: 14px;
+    }
+    #newsForm button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #ffd700;
+      color: #333;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #newsForm button:hover {
+      background-color: #e6c200;
+    }
+    /* Feed de Noticias */
+    #newsFeed {
+      border-top: 1px solid #444;
+      padding-top: 10px;
+    }
+    .newsItem {
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .newsItem h3 {
+      margin: 0 0 5px;
+      color: #8B0000;
+    }
+    .newsItem p {
+      margin: 5px 0;
+      line-height: 1.4;
+    }
+    .newsItem img {
+      max-width: 100%;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+    .newsItem .newsTimestamp {
+      font-size: 12px;
+      color: #ccc;
+      margin-top: 5px;
+    }
+    /* Botones Like/Dislike para Noticias */
+    .news-like-btn, .news-dislike-btn {
+      background-color: #ffd700;
+      border: none;
+      padding: 4px 8px;
+      margin-right: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #333;
+    }
+    .news-like-btn:hover, .news-dislike-btn:hover {
+      background-color: #e6c200;
+    }
+    .news-like-count, .news-dislike-count {
+      font-size: 12px;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-  <div id="container">
-    <!-- HEADER -->
-    <header>
-      <h1>Noticias</h1>
-      <div id="navButtons">
-        <button onclick="window.history.back()">Regresar</button>
-        <button onclick="window.location.href='index.html'">Inicio</button>
-      </div>
-      <div id="authButtons">
-        <button id="openLogin">Iniciar Sesión</button>
-        <button id="openRegister">Registrarse</button>
-      </div>
-    </header>
+  <div id="container">
+        <header>
+      <h1>Noticias</h1>
+      <div id="navButtons">
+        <button onclick="window.history.back()">Regresar</button>
+        <button onclick="window.location.href='index.html'">Inicio</button>
+      </div>
+      <div id="authButtons">
+        <button id="openLogin">Iniciar Sesión</button>
+        <button id="openRegister">Registrarse</button>
+      </div>
+    </header>
 
-    <!-- MODAL DE INICIAR SESIÓN -->
-    <div id="loginModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="loginClose">&times;</span>
-        <h2>Iniciar Sesión</h2>
-        <form id="loginForm" class="authForm">
-          <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
-          <input type="password" id="loginPassword" placeholder="Contraseña" required>
-          <button type="submit">Iniciar Sesión</button>
-        </form>
-      </div>
-    </div>
+        <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="loginClose">&times;</span>
+        <h2>Iniciar Sesión</h2>
+        <form id="loginForm" class="authForm">
+          <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+          <input type="password" id="loginPassword" placeholder="Contraseña" required>
+          <button type="submit">Iniciar Sesión</button>
+        </form>
+      </div>
+    </div>
 
-    <!-- MODAL DE REGISTRO -->
-    <div id="registerModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="registerClose">&times;</span>
-        <h2>Registrarse</h2>
-        <form id="registerForm" class="authForm">
-          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
-          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
-          <button type="submit">Registrarse</button>
-        </form>
-      </div>
-    </div>
+        <div id="registerModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="registerClose">&times;</span>
+        <h2>Registrarse</h2>
+        <form id="registerForm" class="authForm">
+          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
+          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
+          <button type="submit">Registrarse</button>
+        </form>
+      </div>
+    </div>
 
-    <!-- ZONA DE USUARIO ACTIVO -->
-    <div id="userInfo">
-      <p id="welcomeMsg"></p>
-      <button id="logoutBtn">Cerrar Sesión</button>
-    </div>
+        <div id="userInfo">
+      <p id="welcomeMsg"></p>
+      <button id="logoutBtn">Cerrar Sesión</button>
+    </div>
 
-    <!-- APARTADO DE NOTICIAS -->
-    <div id="newsSection">
-      <h2>Noticias</h2>
-      <!-- Formulario para publicar noticias (solo visible para Admin) -->
-      <div id="newsFormContainer" style="display:none;">
-        <form id="newsForm">
-          <label for="newsTitle">Título de la Noticia:</label>
-          <input type="text" id="newsTitle" placeholder="Título de la noticia" required>
-          <label for="newsContent">Contenido:</label>
-          <textarea id="newsContent" placeholder="Escribe el contenido de la noticia" required></textarea>
-          <label for="newsImage">Imagen (opcional):</label>
-          <input type="file" id="newsImage" accept="image/*">
-          <button type="submit">Publicar Noticia</button>
-        </form>
-      </div>
-      <!-- Feed de Noticias -->
-      <div id="newsFeed"></div>
-    </div>
-  </div>
+        <div id="newsSection">
+      <h2>Noticias</h2>
+            <div id="newsFormContainer" style="display:none;">
+        <form id="newsForm">
+          <label for="newsTitle">Título de la Noticia:</label>
+          <input type="text" id="newsTitle" placeholder="Título de la noticia" required>
+          <label for="newsContent">Contenido:</label>
+          <textarea id="newsContent" placeholder="Escribe el contenido de la noticia" required></textarea>
+          <label for="newsImage">Imagen (opcional):</label>
+          <input type="file" id="newsImage" accept="image/*">
+          <button type="submit">Publicar Noticia</button>
+        </form>
+      </div>
+            <div id="newsFeed"></div>
+    </div>
+  </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      /*****************************
-       * CONFIGURACIÓN DE FIREBASE
-       *****************************/
-      const firebaseConfig = {
-        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
-        authDomain: "innovaccionunefa.firebaseapp.com",
-        databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
-        projectId: "innovaccionunefa",
-        storageBucket: "innovaccionunefa.firebasestorage.app",
-        messagingSenderId: "613542800676",
-        appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
-        measurementId: "G-LLK0GLWS1G"
-      };
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
+      <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>   <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      /*****************************
+       * CONFIGURACIÓN DE FIREBASE
+       *****************************/
+      const firebaseConfig = {
+        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+        authDomain: "innovaccionunefa.firebaseapp.com",
+        databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
+        projectId: "innovaccionunefa",
+        storageBucket: "innovaccionunefa.firebasestorage.app",
+        messagingSenderId: "613542800676",
+        appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
+        measurementId: "G-LLK0GLWS1G"
+      };
+      // Asegúrate de que Firebase se inicialice una sola vez
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+        console.log("Firebase inicializado correctamente.");
+      } else {
+        console.log("Firebase ya estaba inicializado.");
+      }
+      const db = firebase.database();
+      // const storage = firebase.storage(); // Descomentar si usas Firebase Storage para imágenes
 
-      /*****************************
-       * VARIABLES GLOBALES
-       *****************************/
-      let currentUser = null;
-      let currentUserIsAdmin = false;
-      let allNews = [];
+      /*****************************
+       * VARIABLES GLOBALES
+       *****************************/
+      let currentUser = null;
+      let currentUserIsAdmin = false;
+      let allNews = [];
 
-      // Reestablece sesión si existe en localStorage
-      const storedUser = localStorage.getItem("currentUser");
-      const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
-      if(storedUser) {
-        currentUser = storedUser;
-        currentUserIsAdmin = storedIsAdmin === "true";
-        onLoginSuccess();
-      }
-      cargarNoticias();
+      // Reestablece sesión si existe en localStorage
+      const storedUser = localStorage.getItem("currentUser");
+      const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
+      if(storedUser) {
+        currentUser = storedUser;
+        currentUserIsAdmin = storedIsAdmin === "true";
+        onLoginSuccess();
+        console.log("Sesión restaurada desde localStorage. Usuario:", currentUser, "Admin:", currentUserIsAdmin);
+      }
 
-      /*****************************
-       * Función onLoginSuccess
-       *****************************/
-      function onLoginSuccess() {
-        localStorage.setItem("currentUser", currentUser);
-        localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
-        document.getElementById("authButtons").style.display = "none";
-        document.getElementById("loginModal").style.display = "none";
-        document.getElementById("registerModal").style.display = "none";
-        document.getElementById("userInfo").style.display = "block";
-        document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
-        // Mostrar el formulario de noticias solo si es Admin
-        if(currentUserIsAdmin) {
-          document.getElementById("newsFormContainer").style.display = "block";
-        }
-      }
+      cargarNoticias(); // Cargar noticias al iniciar la página
 
-      /*****************************
-       * Cerrar Sesión
-       *****************************/
-      document.getElementById("logoutBtn").addEventListener("click", function() {
-        currentUser = null;
-        currentUserIsAdmin = false;
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("currentUserIsAdmin");
-        document.getElementById("authButtons").style.display = "block";
-        document.getElementById("userInfo").style.display = "none";
-        document.getElementById("newsFormContainer").style.display = "none";
-      });
+      /*****************************
+       * Función onLoginSuccess
+       *****************************/
+      function onLoginSuccess() {
+        localStorage.setItem("currentUser", currentUser);
+        localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
+        document.getElementById("authButtons").style.display = "none";
+        document.getElementById("loginModal").style.display = "none";
+        document.getElementById("registerModal").style.display = "none";
+        document.getElementById("userInfo").style.display = "block";
+        document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
+        // Mostrar el formulario de noticias solo si es Admin
+        if(currentUserIsAdmin) {
+          document.getElementById("newsFormContainer").style.display = "block";
+          console.log("Usuario es administrador. Formulario de noticias visible.");
+        } else {
+          document.getElementById("newsFormContainer").style.display = "none";
+          console.log("Usuario normal. Formulario de noticias oculto.");
+        }
+      }
 
-      /*****************************
-       * Apertura y Cierre de Modales
-       *****************************/
-      document.getElementById("openLogin").addEventListener("click", function() {
-        console.log("Se hizo clic en Iniciar Sesión");
-        document.getElementById("loginModal").style.display = "block";
-      });
-      document.getElementById("openRegister").addEventListener("click", function() {
-        document.getElementById("registerModal").style.display = "block";
-      });
-      document.getElementById("loginClose").addEventListener("click", function() {
-        document.getElementById("loginModal").style.display = "none";
-      });
-      document.getElementById("registerClose").addEventListener("click", function() {
-        document.getElementById("registerModal").style.display = "none";
-      });
-      window.addEventListener("click", function(event) {
-        if(event.target == document.getElementById("loginModal")) {
-          document.getElementById("loginModal").style.display = "none";
-        }
-        if(event.target == document.getElementById("registerModal")) {
-          document.getElementById("registerModal").style.display = "none";
-        }
-      });
+      /*****************************
+       * Cerrar Sesión
+       *****************************/
+      document.getElementById("logoutBtn").addEventListener("click", function() {
+        currentUser = null;
+        currentUserIsAdmin = false;
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("currentUserIsAdmin");
+        document.getElementById("authButtons").style.display = "block";
+        document.getElementById("userInfo").style.display = "none";
+        document.getElementById("newsFormContainer").style.display = "none";
+        console.log("Sesión cerrada. currentUser:", currentUser);
+      });
 
-      /*****************************
-       * Registro de Usuarios
-       *****************************/
-      document.getElementById("registerForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const username = document.getElementById("regUsername").value.trim();
-        const password = document.getElementById("regPassword").value;
-        if(password.length < 8) {
-          alert("La contraseña debe tener al menos 8 caracteres.");
-          return;
-        }
-        db.ref("users/" + username).get().then(function(snapshot) {
-          if(snapshot.exists()){
-            alert("El nombre de usuario ya está en uso. Elige otro.");
-          } else {
-            db.ref("users/" + username).set({ password: password })
-              .then(function(){
-                alert("Registro exitoso. Ahora puedes iniciar sesión.");
-                document.getElementById("registerForm").reset();
-                document.getElementById("registerModal").style.display = "none";
-              })
-              .catch(function(error){
-                alert("Error en el registro: " + error.message);
-              });
-          }
-        });
-      });
+      /*****************************
+       * Apertura y Cierre de Modales
+       *****************************/
+      document.getElementById("openLogin").addEventListener("click", function() {
+        console.log("Abrir modal de Iniciar Sesión");
+        document.getElementById("loginModal").style.display = "block";
+      });
+      document.getElementById("openRegister").addEventListener("click", function() {
+        console.log("Abrir modal de Registro");
+        document.getElementById("registerModal").style.display = "block";
+      });
+      document.getElementById("loginClose").addEventListener("click", function() {
+        console.log("Cerrar modal de Iniciar Sesión");
+        document.getElementById("loginModal").style.display = "none";
+      });
+      document.getElementById("registerClose").addEventListener("click", function() {
+        console.log("Cerrar modal de Registro");
+        document.getElementById("registerModal").style.display = "none";
+      });
+      window.addEventListener("click", function(event) {
+        if(event.target == document.getElementById("loginModal")) {
+          console.log("Clic fuera del modal de Iniciar Sesión");
+          document.getElementById("loginModal").style.display = "none";
+        }
+        if(event.target == document.getElementById("registerModal")) {
+          console.log("Clic fuera del modal de Registro");
+          document.getElementById("registerModal").style.display = "none";
+        }
+      });
 
-      /*****************************
-       * Inicio de Sesión (Admin y Usuario)
-       *****************************/
-      document.getElementById("loginForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const username = document.getElementById("loginUsername").value.trim();
-        const password = document.getElementById("loginPassword").value;
-        // Credenciales fijas para Admin
-        if(username === "ChamoProgramador" && password === "29072024"){
-          currentUser = username;
-          currentUserIsAdmin = true;
-          onLoginSuccess();
-        } else {
-          db.ref("users/" + username).get().then(function(snapshot) {
-            if(snapshot.exists()){
-              const userData = snapshot.val();
-              if(userData.password === password) {
-                currentUser = username;
-                currentUserIsAdmin = false;
-                onLoginSuccess();
-              } else {
-                alert("Contraseña incorrecta.");
-              }
-            } else {
-              alert("El usuario no está registrado.");
-            }
-          }).catch(function(error){
-            console.error("Error en el inicio de sesión:", error);
-          });
-        }
-      });
+      /*****************************
+       * Registro de Usuarios
+       *****************************/
+      document.getElementById("registerForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const username = document.getElementById("regUsername").value.trim();
+        const password = document.getElementById("regPassword").value;
+        console.log("Intento de registro para:", username);
 
-      /*****************************
-       * Publicar Noticia (solo Admin)
-       *****************************/
-      document.getElementById("newsForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        if(!currentUserIsAdmin) {
-          alert("Solo el administrador puede publicar noticias.");
-          return;
-        }
-        const newsTitle = document.getElementById("newsTitle").value.trim();
-        const newsContent = document.getElementById("newsContent").value.trim();
-        const newsFileInput = document.getElementById("newsImage");
-        const news = {
-          title: newsTitle,
-          content: newsContent,
-          imageData: null,
-          timestamp: Date.now(),
-          likes: 0,
-          dislikes: 0,
-          votes: {}
-        };
-        function postNews() {
-          db.ref("news").push(news, function(error) {
-            if(error) {
-              alert("Error al publicar la noticia.");
-            } else {
-              document.getElementById("newsForm").reset();
-            }
-          });
-        }
-        if(newsFileInput.files && newsFileInput.files[0]){
-          const file = newsFileInput.files[0];
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            news.imageData = e.target.result;
-            postNews();
-          };
-          reader.readAsDataURL(file);
-        } else {
-          postNews();
-        }
-      });
+        if(password.length < 8) {
+          alert("La contraseña debe tener al menos 8 caracteres.");
+          return;
+        }
 
-      /*****************************
-       * Cargar Noticias
-       *****************************/
-      function cargarNoticias() {
-        db.ref("news").orderByChild("timestamp").on("value", function(snapshot) {
-          allNews = [];
-          snapshot.forEach(function(childSnapshot) {
-            let newsItem = childSnapshot.val();
-            newsItem.key = childSnapshot.key;
-            allNews.push(newsItem);
-          });
-          displayNoticias(allNews);
-        });
-      }
+        db.ref("users/" + username).get().then(function(snapshot) {
+          if(snapshot.exists()){
+            alert("El nombre de usuario ya está en uso. Elige otro.");
+            console.warn("Registro fallido: Nombre de usuario ya existe.");
+          } else {
+            db.ref("users/" + username).set({ password: password })
+              .then(function(){
+                alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                document.getElementById("registerForm").reset();
+                document.getElementById("registerModal").style.display = "none";
+                console.log("Registro exitoso para:", username);
+              })
+              .catch(function(error){
+                alert("Error en el registro: " + error.message);
+                console.error("Error en el registro de Firebase:", error);
+              });
+          }
+        }).catch(function(error) {
+          console.error("Error al verificar usuario existente en Firebase:", error);
+          alert("Error al verificar usuario. Consulta la consola.");
+        });
+      });
 
-      /*****************************
-       * Mostrar Noticias
-       *****************************/
-      function displayNoticias(newsArray) {
-        // Ordenar de más reciente a más antigua
-        newsArray.sort((a, b) => b.timestamp - a.timestamp);
-        const newsDiv = document.getElementById("newsFeed");
-        newsDiv.innerHTML = "";
-        newsArray.forEach(function(newsItem) {
-          const newsElem = document.createElement("div");
-          newsElem.className = "newsItem";
+      /*****************************
+       * Inicio de Sesión (Admin y Usuario)
+       *****************************/
+      document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        console.log("Intento de inicio de sesión para:", username);
 
-          const titleElem = document.createElement("h3");
-          titleElem.textContent = newsItem.title;
-          newsElem.appendChild(titleElem);
+        // Credenciales fijas para Admin
+        if(username === "ChamoProgramador" && password === "29072024"){
+          currentUser = username;
+          currentUserIsAdmin = true;
+          onLoginSuccess();
+          console.log("Inicio de sesión de administrador exitoso.");
+        } else {
+          db.ref("users/" + username).get().then(function(snapshot) {
+            if(snapshot.exists()){
+              const userData = snapshot.val();
+              console.log("Usuario encontrado en DB:", userData);
+              if(userData.password === password) {
+                currentUser = username;
+                currentUserIsAdmin = false;
+                onLoginSuccess();
+                console.log("Inicio de sesión de usuario regular exitoso.");
+              } else {
+                alert("Contraseña incorrecta.");
+                console.warn("Inicio de sesión fallido: Contraseña incorrecta para", username);
+              }
+            } else {
+              alert("El usuario no está registrado.");
+              console.warn("Inicio de sesión fallido: Usuario", username, "no encontrado en la base de datos.");
+            }
+          }).catch(function(error){
+            console.error("Error en la conexión a la base de datos o en la lectura del usuario:", error);
+            alert("Error al iniciar sesión. Por favor, revisa la consola para más detalles.");
+          });
+        }
+      });
 
-          const contentElem = document.createElement("p");
-          contentElem.textContent = newsItem.content;
-          newsElem.appendChild(contentElem);
+      /*****************************
+       * Publicar Noticia (solo Admin)
+       *****************************/
+      document.getElementById("newsForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        if(!currentUserIsAdmin) {
+          alert("Solo el administrador puede publicar noticias.");
+          return;
+        }
+        const newsTitle = document.getElementById("newsTitle").value.trim();
+        const newsContent = document.getElementById("newsContent").value.trim();
+        const newsFileInput = document.getElementById("newsImage");
+        const news = {
+          title: newsTitle,
+          content: newsContent,
+          imageData: null,
+          timestamp: Date.now(),
+          likes: 0,
+          dislikes: 0,
+          votes: {}
+        };
+        function postNews() {
+          db.ref("news").push(news, function(error) {
+            if(error) {
+              alert("Error al publicar la noticia.");
+              console.error("Error al guardar noticia en Firebase:", error);
+            } else {
+              document.getElementById("newsForm").reset();
+              console.log("Noticia publicada exitosamente.");
+            }
+          });
+        }
+        if(newsFileInput.files && newsFileInput.files[0]){
+          const file = newsFileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            news.imageData = e.target.result;
+            postNews();
+          };
+          reader.readAsDataURL(file);
+        } else {
+          postNews();
+        }
+      });
 
-          if(newsItem.imageData) {
-            const img = document.createElement("img");
-            img.src = newsItem.imageData;
-            newsElem.appendChild(img);
-          }
+      /*****************************
+       * Cargar Noticias
+       *****************************/
+      function cargarNoticias() {
+        db.ref("news").orderByChild("timestamp").on("value", function(snapshot) {
+          allNews = [];
+          snapshot.forEach(function(childSnapshot) {
+            let newsItem = childSnapshot.val();
+            newsItem.key = childSnapshot.key;
+            allNews.push(newsItem);
+          });
+          console.log("Noticias cargadas:", allNews.length);
+          displayNoticias(allNews);
+        }, function(error) {
+          console.error("Error al cargar noticias de Firebase:", error);
+        });
+      }
 
-          const dateElem = document.createElement("div");
-          dateElem.className = "newsTimestamp";
-          dateElem.textContent = "Publicado: " + new Date(newsItem.timestamp).toLocaleString();
-          newsElem.appendChild(dateElem);
+      /*****************************
+       * Mostrar Noticias
+       *****************************/
+      function displayNoticias(newsArray) {
+        // Ordenar de más reciente a más antigua
+        newsArray.sort((a, b) => b.timestamp - a.timestamp);
+        const newsDiv = document.getElementById("newsFeed");
+        newsDiv.innerHTML = "";
+        newsArray.forEach(function(newsItem) {
+          const newsElem = document.createElement("div");
+          newsElem.className = "newsItem";
 
-          // Botones Like/Dislike para la noticia (voto único)
-          const likeBtn = document.createElement("button");
-          likeBtn.className = "news-like-btn";
-          likeBtn.textContent = "Like";
-          likeBtn.onclick = function() {
-            if(!currentUser) {
-              alert("Debes iniciar sesión para votar.");
-              return;
-            }
-            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
-              .then(function(snap) {
-                if(snap.exists()){
-                  alert("Ya has votado en esta noticia.");
-                } else {
-                  let currentLikes = newsItem.likes || 0;
-                  db.ref("news").child(newsItem.key).update({ likes: currentLikes + 1 });
-                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("like");
-                }
-              });
-          };
-          newsElem.appendChild(likeBtn);
+          const titleElem = document.createElement("h3");
+          titleElem.textContent = newsItem.title;
+          newsElem.appendChild(titleElem);
 
-          const dislikeBtn = document.createElement("button");
-          dislikeBtn.className = "news-dislike-btn";
-          dislikeBtn.textContent = "Dislike";
-          dislikeBtn.onclick = function() {
-            if(!currentUser) {
-              alert("Debes iniciar sesión para votar.");
-              return;
-            }
-            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
-              .then(function(snap) {
-                if(snap.exists()){
-                  alert("Ya has votado en esta noticia.");
-                } else {
-                  let currentDislikes = newsItem.dislikes || 0;
-                  db.ref("news").child(newsItem.key).update({ dislikes: currentDislikes + 1 });
-                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("dislike");
-                }
-              });
-          };
-          newsElem.appendChild(dislikeBtn);
+          const contentElem = document.createElement("p");
+          contentElem.textContent = newsItem.content;
+          newsElem.appendChild(contentElem);
 
-          const likeCount = document.createElement("span");
-          likeCount.className = "news-like-count";
-          likeCount.textContent = "Likes: " + (newsItem.likes || 0);
-          newsElem.appendChild(likeCount);
+          if(newsItem.imageData) {
+            const img = document.createElement("img");
+            img.src = newsItem.imageData;
+            newsElem.appendChild(img);
+          }
 
-          const dislikeCount = document.createElement("span");
-          dislikeCount.className = "news-dislike-count";
-          dislikeCount.textContent = "Dislikes: " + (newsItem.dislikes || 0);
-          newsElem.appendChild(dislikeCount);
+          const dateElem = document.createElement("div");
+          dateElem.className = "newsTimestamp";
+          dateElem.textContent = "Publicado: " + new Date(newsItem.timestamp).toLocaleString();
+          newsElem.appendChild(dateElem);
 
-          newsDiv.appendChild(newsElem);
-        });
-      }
-    });
-  </script>
+          // Botones Like/Dislike para la noticia (voto único)
+          const likeBtn = document.createElement("button");
+          likeBtn.className = "news-like-btn";
+          likeBtn.textContent = "Like";
+          likeBtn.onclick = function() {
+            if(!currentUser) {
+              alert("Debes iniciar sesión para votar.");
+              return;
+            }
+            // Verifica si el usuario ya votó
+            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
+              .then(function(snap) {
+                if(snap.exists()){
+                  alert("Ya has votado en esta noticia.");
+                } else {
+                  let currentLikes = newsItem.likes || 0;
+                  db.ref("news").child(newsItem.key).update({ likes: currentLikes + 1 });
+                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("like");
+                  console.log("Like agregado a noticia:", newsItem.key);
+                }
+              }).catch(function(error) {
+                console.error("Error al registrar voto 'like':", error);
+              });
+          };
+          newsElem.appendChild(likeBtn);
+
+          const dislikeBtn = document.createElement("button");
+          dislikeBtn.className = "news-dislike-btn";
+          dislikeBtn.textContent = "Dislike";
+          dislikeBtn.onclick = function() {
+            if(!currentUser) {
+              alert("Debes iniciar sesión para votar.");
+              return;
+            }
+            // Verifica si el usuario ya votó
+            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
+              .then(function(snap) {
+                if(snap.exists()){
+                  alert("Ya has votado en esta noticia.");
+                } else {
+                  let currentDislikes = newsItem.dislikes || 0;
+                  db.ref("news").child(newsItem.key).update({ dislikes: currentDislikes + 1 });
+                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("dislike");
+                  console.log("Dislike agregado a noticia:", newsItem.key);
+                }
+              }).catch(function(error) {
+                console.error("Error al registrar voto 'dislike':", error);
+              });
+          };
+          newsElem.appendChild(dislikeBtn);
+
+          const likeCount = document.createElement("span");
+          likeCount.className = "news-like-count";
+          likeCount.textContent = "Likes: " + (newsItem.likes || 0);
+          newsElem.appendChild(likeCount);
+
+          const dislikeCount = document.createElement("span");
+          dislikeCount.className = "news-dislike-count";
+          dislikeCount.textContent = "Dislikes: " + (newsItem.dislikes || 0);
+          newsElem.appendChild(dislikeCount);
+
+          newsDiv.appendChild(newsElem);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
