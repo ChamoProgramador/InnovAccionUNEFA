@@ -1,802 +1,801 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Noticias - Mi Sitio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    /* ===============================
-       Estilos Generales y Contenedor
-       =============================== */
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background-color: #000; /* Negro profundo */
-      color: #eee;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased; /* Mejor renderizado de fuentes */
-      -moz-osx-font-smoothing: grayscale;
-    }
+    <meta charset="UTF-8">
+    <title>Noticias - Mi Sitio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* ===============================
+           Estilos Generales y Contenedor
+           =============================== */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #000; /* Negro profundo */
+            color: #eee; /* Texto general más claro para contraste */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-    #container {
-      max-width: 1000px;
-      margin: 30px auto;
-      background-color: #1a1a1a; /* Gris muy oscuro */
-      border-radius: 10px;
-      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7); /* Sombra más pronunciada */
-      overflow: hidden;
-      border: 1px solid #333; /* Borde sutil */
-    }
+        #container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: #1a1a1a; /* Gris muy oscuro para el contenedor principal */
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            border: 1px solid #333;
+        }
 
-    /* ===============================
-       Header, Navegación y Botones de Autenticación
-       =============================== */
-    header {
-      background-color: #4A004B; /* Morado Oscuro */
-      color: #fff;
-      padding: 25px;
-      text-align: center;
-      position: relative;
-      border-bottom: 3px solid #8B0000; /* Vinotinto como acento */
-    }
+        /* ===============================
+           Header, Navegación y Botones de Autenticación
+           =============================== */
+        header {
+            background-color: #4A004B; /* Morado Oscuro */
+            color: #fff;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid #8B0000; /* Vinotinto como acento */
+        }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.8em;
-      font-weight: 200; /* Fuente más delgada */
-      letter-spacing: 2px;
-    }
+        header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 200;
+            letter-spacing: 2px;
+        }
 
-    #navButtons, #authButtons {
-      position: absolute;
-      top: 20px;
-      display: flex;
-      gap: 10px; /* Espacio entre botones */
-    }
+        #navButtons, #authButtons {
+            position: absolute;
+            top: 20px;
+            display: flex;
+            gap: 10px;
+        }
 
-    #navButtons { left: 20px; }
-    #authButtons { right: 20px; }
+        #navButtons { left: 20px; }
+        #authButtons { right: 20px; }
 
-    #navButtons button,
-    #authButtons button {
-      background: rgba(255, 255, 255, 0.1); /* Ligero fondo transparente */
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 8px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.9em;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(5px); /* Efecto blur */
-      -webkit-backdrop-filter: blur(5px);
-    }
+        #navButtons button,
+        #authButtons button {
+            background: rgba(255, 255, 255, 0.1); /* Ligero fondo transparente */
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
 
-    #navButtons button:hover,
-    #authButtons button:hover {
-      background-color: #8B0000; /* Vinotinto al pasar el mouse */
-      border-color: #8B0000;
-      transform: translateY(-2px); /* Pequeño efecto de elevación */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    }
+        #navButtons button:hover,
+        #authButtons button:hover {
+            background-color: #8B0000; /* Vinotinto al pasar el mouse */
+            border-color: #8B0000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
 
-    /* ===============================
-       Modales de Autenticación
-       =============================== */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100; /* Asegura que esté por encima de todo */
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        /* ===============================
+           Modales de Autenticación
+           =============================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Fondo más oscuro para el modal */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex; /* Asegura que el contenido del modal esté centrado */
+            align-items: center;
+            justify-content: center;
+        }
 
-    .modal-content {
-      background: linear-gradient(145deg, #1a1a1a, #2a002a); /* Degradado sutil de negro a morado oscuro */
-      padding: 30px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 450px;
-      position: relative;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
-      border: 1px solid #4a004b;
-    }
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #2a002a); /* Degradado sutil de negro a morado oscuro */
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+            border: 1px solid #4a004b;
+        }
 
-    .close {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      color: #ccc;
-      font-size: 2.2em;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #ccc;
+            font-size: 2.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
 
-    .close:hover {
-      color: #8B0000; /* Vinotinto al cerrar */
-    }
+        .close:hover {
+            color: #8B0000;
+        }
 
-    .authForm h2 {
-      text-align: center;
-      color: #fff;
-      margin-bottom: 25px;
-      font-weight: 300;
-      font-size: 2em;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 10px;
-    }
+        .authForm h2 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 25px;
+            font-weight: 300;
+            font-size: 2em;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
 
-    .authForm input {
-      width: calc(100% - 20px); /* Ajuste para padding */
-      padding: 12px 10px;
-      margin-bottom: 18px;
-      border: 1px solid #444;
-      border-radius: 5px;
-      background-color: #2a2a2a; /* Fondo más oscuro para inputs */
-      color: #eee;
-      font-size: 1.05em;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
+        .authForm input {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 18px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #333; /* Fondo más claro para los inputs */
+            color: #eee; /* Texto visible */
+            font-size: 1.05em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .authForm input:focus {
-      border-color: #800080; /* Morado al enfocar */
-      box-shadow: 0 0 8px rgba(128, 0, 128, 0.5);
-      outline: none;
-    }
+        .authForm input:focus {
+            border-color: #800080;
+            box-shadow: 0 0 8px rgba(128, 0, 128, 0.5);
+            outline: none;
+        }
 
-    .authForm button {
-      width: 100%;
-      background-color: #800080; /* Morado Medio */
-      color: #fff;
-      padding: 14px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1.1em;
-      font-weight: bold;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      letter-spacing: 0.5px;
-    }
+        .authForm button {
+            width: 100%;
+            background-color: #800080; /* Morado Medio */
+            color: #fff;
+            padding: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            letter-spacing: 0.5px;
+        }
 
-    .authForm button:hover {
-      background-color: #8B0000; /* Vinotinto al pasar el mouse */
-      transform: translateY(-1px);
-    }
+        .authForm button:hover {
+            background-color: #8B0000; /* Vinotinto al pasar el mouse */
+            transform: translateY(-1px);
+        }
 
-    /* ===============================
-       Zona de Usuario Activo
-       =============================== */
-    #userInfo {
-      background-color: #2a002a; /* Morado oscuro más claro */
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-      display: none;
-      border-bottom: 2px solid #8B0000;
-    }
+        /* ===============================
+           Zona de Usuario Activo
+           =============================== */
+        #userInfo {
+            background-color: #2a002a; /* Morado oscuro más claro */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            display: none;
+            border-bottom: 2px solid #8B0000;
+        }
 
-    #userInfo p {
-      margin: 0 0 10px;
-      font-size: 1.1em;
-    }
+        #userInfo p {
+            margin: 0 0 10px;
+            font-size: 1.1em;
+        }
 
-    #userInfo button {
-      background-color: #8B0000; /* Vinotinto */
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.95em;
-      transition: background-color 0.3s ease;
-    }
+        #userInfo button {
+            background-color: #8B0000; /* Vinotinto */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease;
+        }
 
-    #userInfo button:hover {
-      background-color: #a00000; /* Vinotinto más oscuro */
-    }
+        #userInfo button:hover {
+            background-color: #a00000; /* Vinotinto más oscuro */
+        }
 
-    /* ===============================
-       Apartado de Noticias
-       =============================== */
-    #newsSection {
-      padding: 30px;
-      background-color: #1a1a1a; /* Fondo principal de la sección */
-    }
+        /* ===============================
+           Apartado de Noticias
+           =============================== */
+        #newsSection {
+            padding: 30px;
+            background-color: #1a1a1a; /* Fondo principal de la sección */
+        }
 
-    #newsSection h2 {
-      color: #fff;
-      text-align: center;
-      margin-bottom: 30px;
-      font-weight: 300;
-      font-size: 2.2em;
-      border-bottom: 1px solid #333;
-      padding-bottom: 10px;
-    }
+        #newsSection h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 300;
+            font-size: 2.2em;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
 
-    /* Formulario para publicar noticias (solo visible para Admin) */
-    #newsFormContainer {
-      background-color: #222;
-      padding: 25px;
-      border-radius: 8px;
-      margin-bottom: 30px;
-      display: none;
-      border: 1px solid #4a004b; /* Borde morado */
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    }
+        /* Formulario para publicar noticias (solo visible para Admin) */
+        #newsFormContainer {
+            background-color: #222; /* Fondo del formulario de noticias */
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: none;
+            border: 1px solid #4a004b;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
 
-    #newsForm label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: normal;
-      color: #ccc;
-    }
+        #newsForm label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: normal;
+            color: #ccc;
+        }
 
-    #newsForm input[type="text"],
-    #newsForm textarea {
-      width: calc(100% - 20px);
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #444;
-      border-radius: 5px;
-      background-color: #333;
-      color: #eee;
-      font-size: 1em;
-    }
+        #newsForm input[type="text"],
+        #newsForm textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #333; /* Fondo de inputs más claro */
+            color: #eee; /* Texto visible */
+            font-size: 1em;
+        }
 
-    #newsForm input[type="file"] {
-      margin-bottom: 15px;
-      color: #ccc;
-      background-color: #333;
-      border: 1px solid #444;
-      border-radius: 5px;
-      padding: 8px;
-    }
+        #newsForm input[type="file"] {
+            margin-bottom: 15px;
+            color: #ccc;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 8px;
+        }
 
-    #newsForm button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 5px;
-      background-color: #8B0000; /* Vinotinto */
-      color: #fff;
-      cursor: pointer;
-      font-size: 1.1em;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
+        #newsForm button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #8B0000; /* Vinotinto */
+            color: #fff;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
 
-    #newsForm button:hover {
-      background-color: #a00000;
-    }
+        #newsForm button:hover {
+            background-color: #a00000;
+        }
 
-    /* Feed de Noticias */
-    #newsFeed {
-      display: grid;
-      grid-template-columns: 1fr; /* Una columna por defecto */
-      gap: 25px; /* Espacio entre noticias */
-    }
+        /* Feed de Noticias */
+        #newsFeed {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
 
-    @media (min-width: 768px) {
-      #newsFeed {
-        grid-template-columns: repeat(2, 1fr); /* Dos columnas en pantallas medianas */
-      }
-    }
+        @media (min-width: 768px) {
+            #newsFeed {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
 
-    @media (min-width: 1024px) {
-      #newsFeed {
-        grid-template-columns: repeat(3, 1fr); /* Tres columnas en pantallas grandes */
-      }
-    }
+        @media (min-width: 1024px) {
+            #newsFeed {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
 
+        .newsItem {
+            background: #282828; /* Fondo de la tarjeta de noticia, más claro para mejor lectura */
+            border: 1px solid #3a3a3a; /* Borde más claro */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-    .newsItem {
-      background: #222; /* Fondo de la tarjeta de noticia */
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+        .newsItem:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
 
-    .newsItem:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-    }
+        .newsItem h3 {
+            margin: 0 0 10px;
+            color: #800080; /* Morado para títulos de noticias */
+            font-size: 1.4em;
+            font-weight: 400;
+        }
 
-    .newsItem h3 {
-      margin: 0 0 10px;
-      color: #800080; /* Morado para títulos de noticias */
-      font-size: 1.4em;
-      font-weight: 400;
-    }
+        .newsItem p {
+            margin: 5px 0 15px;
+            line-height: 1.5;
+            color: #ccc; /* Color de texto más claro para el contenido */
+            flex-grow: 1;
+        }
 
-    .newsItem p {
-      margin: 5px 0 15px;
-      line-height: 1.5;
-      color: #ccc;
-      flex-grow: 1; /* Para que el contenido ocupe el espacio */
-    }
+        .newsItem img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            display: block;
+            object-fit: cover;
+        }
 
-    .newsItem img {
-      max-width: 100%;
-      border-radius: 6px;
-      margin-top: 10px;
-      margin-bottom: 15px;
-      display: block;
-      object-fit: cover; /* Para que las imágenes no se deformen */
-    }
+        .newsItem .newsTimestamp {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 10px;
+            text-align: right;
+        }
 
-    .newsItem .newsTimestamp {
-      font-size: 0.85em;
-      color: #999;
-      margin-top: 10px;
-      text-align: right;
-    }
+        /* Botones Like/Dislike para Noticias */
+        .news-actions {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            border-top: 1px solid #3a3a3a; /* Borde más claro */
+            padding-top: 10px;
+        }
 
-    /* Botones Like/Dislike para Noticias */
-    .news-actions {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      border-top: 1px solid #333;
-      padding-top: 10px;
-    }
+        .news-like-btn, .news-dislike-btn {
+            background-color: #4A004B; /* Morado Oscuro */
+            border: none;
+            padding: 6px 10px;
+            margin-right: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
 
-    .news-like-btn, .news-dislike-btn {
-      background-color: #4A004B; /* Morado Oscuro */
-      border: none;
-      padding: 6px 10px;
-      margin-right: 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85em;
-      color: #fff;
-      transition: background-color 0.3s ease;
-    }
+        .news-like-btn:hover, .news-dislike-btn:hover {
+            background-color: #8B0000; /* Vinotinto al pasar el mouse */
+        }
 
-    .news-like-btn:hover, .news-dislike-btn:hover {
-      background-color: #8B0000; /* Vinotinto al pasar el mouse */
-    }
-
-    .news-like-count, .news-dislike-count {
-      font-size: 0.85em;
-      color: #ccc;
-      margin-right: 15px;
-    }
-  </style>
+        .news-like-count, .news-dislike-count {
+            font-size: 0.85em;
+            color: #ccc; /* Más claro para los contadores */
+            margin-right: 15px;
+        }
+    </style>
 </head>
 <body>
-  <div id="container">
-        <header>
-      <h1>Noticias</h1>
-      <div id="navButtons">
-        <button onclick="window.history.back()">Regresar</button>
-        <button onclick="window.location.href='index.html'">Inicio</button>
-      </div>
-      <div id="authButtons">
-        <button id="openLogin">Iniciar Sesión</button>
-        <button id="openRegister">Registrarse</button>
-      </div>
-    </header>
+    <div id="container">
+        <header>
+            <h1>Noticias</h1>
+            <div id="navButtons">
+                <button onclick="window.history.back()">Regresar</button>
+                <button onclick="window.location.href='index.html'">Inicio</button>
+            </div>
+            <div id="authButtons">
+                <button id="openLogin">Iniciar Sesión</button>
+                <button id="openRegister">Registrarse</button>
+            </div>
+        </header>
 
-        <div id="loginModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="loginClose">&times;</span>
-        <h2>Iniciar Sesión</h2>
-        <form id="loginForm" class="authForm">
-          <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
-          <input type="password" id="loginPassword" placeholder="Contraseña" required>
-          <button type="submit">Entrar</button>
-        </form>
-      </div>
-    </div>
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="loginClose">&times;</span>
+                <h2>Iniciar Sesión</h2>
+                <form id="loginForm" class="authForm">
+                    <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+                    <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                    <button type="submit">Entrar</button>
+                </form>
+            </div>
+        </div>
 
-        <div id="registerModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="registerClose">&times;</span>
-        <h2>Registrarse</h2>
-        <form id="registerForm" class="authForm">
-          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
-          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
-          <button type="submit">Crear Cuenta</button>
-        </form>
-      </div>
-    </div>
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="registerClose">&times;</span>
+                <h2>Registrarse</h2>
+                <form id="registerForm" class="authForm">
+                    <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
+                    <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
+                    <button type="submit">Crear Cuenta</button>
+                </form>
+            </div>
+        </div>
 
-        <div id="userInfo">
-      <p id="welcomeMsg"></p>
-      <button id="logoutBtn">Cerrar Sesión</button>
-    </div>
+        <div id="userInfo">
+            <p id="welcomeMsg"></p>
+            <button id="logoutBtn">Cerrar Sesión</button>
+        </div>
 
-        <div id="newsSection">
-      <h2>Últimas Noticias</h2>
-            <div id="newsFormContainer">
-        <h3>Publicar Nueva Noticia</h3>
-        <form id="newsForm">
-          <label for="newsTitle">Título:</label>
-          <input type="text" id="newsTitle" placeholder="Título de la noticia" required>
-          <label for="newsContent">Contenido:</label>
-          <textarea id="newsContent" placeholder="Escribe el contenido de la noticia" rows="6" required></textarea>
-          <label for="newsImage">Imagen (opcional):</label>
-          <input type="file" id="newsImage" accept="image/*">
-          <button type="submit">Publicar</button>
-        </form>
-      </div>
-            <div id="newsFeed"></div>
-    </div>
-  </div>
+        <div id="newsSection">
+            <h2>Últimas Noticias</h2>
+            <div id="newsFormContainer">
+                <h3>Publicar Nueva Noticia</h3>
+                <form id="newsForm">
+                    <label for="newsTitle">Título:</label>
+                    <input type="text" id="newsTitle" placeholder="Título de la noticia" required>
+                    <label for="newsContent">Contenido:</label>
+                    <textarea id="newsContent" placeholder="Escribe el contenido de la noticia" rows="6" required></textarea>
+                    <label for="newsImage">Imagen (opcional):</label>
+                    <input type="file" id="newsImage" accept="image/*">
+                    <button type="submit">Publicar</button>
+                </form>
+            </div>
+            <div id="newsFeed"></div>
+        </div>
+    </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      /*****************************
-       * CONFIGURACIÓN DE FIREBASE
-       *****************************/
-      const firebaseConfig = {
-        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
-        authDomain: "innovaccionunefa.firebaseapp.com",
-        databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
-        projectId: "innovaccionunefa",
-        storageBucket: "innovaccionunefa.firebasestorage.app",
-        messagingSenderId: "613542800676",
-        appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
-        measurementId: "G-LLK0GLWS1G"
-      };
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            /*****************************
+             * CONFIGURACIÓN DE FIREBASE
+             *****************************/
+            const firebaseConfig = {
+                apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+                authDomain: "innovaccionunefa.firebaseapp.com",
+                databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
+                projectId: "innovaccionunefa",
+                storageBucket: "innovaccionunefa.firebasestorage.app",
+                messagingSenderId: "613542800676",
+                appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
+                measurementId: "G-LLK0GLWS1G"
+            };
 
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-        console.log("Firebase inicializado correctamente.");
-      } else {
-        console.log("Firebase ya estaba inicializado (evitando doble inicialización).");
-      }
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+                console.log("Firebase inicializado correctamente.");
+            } else {
+                console.log("Firebase ya estaba inicializado (evitando doble inicialización).");
+            }
 
-      const db = firebase.database();
-      // const storage = firebase.storage(); // Descomentar si usas Firebase Storage para imágenes
+            const db = firebase.database();
+            // const storage = firebase.storage(); // Descomentar si usas Firebase Storage para imágenes
 
-      /*****************************
-       * VARIABLES GLOBALES
-       *****************************/
-      let currentUser = null;
-      let currentUserIsAdmin = false;
-      let allNews = [];
+            /*****************************
+             * VARIABLES GLOBALES
+             *****************************/
+            let currentUser = null;
+            let currentUserIsAdmin = false;
+            let allNews = [];
 
-      // Reestablece sesión si existe en localStorage al cargar la página
-      const storedUser = localStorage.getItem("currentUser");
-      const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
-      if(storedUser) {
-        currentUser = storedUser;
-        currentUserIsAdmin = storedIsAdmin === "true";
-        onLoginSuccess();
-        console.log("Sesión restaurada desde localStorage para:", currentUser, "Admin:", currentUserIsAdmin);
-      }
+            // Reestablece sesión si existe en localStorage al cargar la página
+            const storedUser = localStorage.getItem("currentUser");
+            const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
+            if(storedUser) {
+                currentUser = storedUser;
+                currentUserIsAdmin = storedIsAdmin === "true";
+                onLoginSuccess();
+                console.log("Sesión restaurada desde localStorage para:", currentUser, "Admin:", currentUserIsAdmin);
+            }
 
-      cargarNoticias(); // Cargar noticias al iniciar la página
+            cargarNoticias(); // Cargar noticias al iniciar la página
 
-      /*****************************
-       * Función onLoginSuccess
-       * Actualiza la interfaz de usuario después de un inicio de sesión exitoso.
-       *****************************/
-      function onLoginSuccess() {
-        localStorage.setItem("currentUser", currentUser);
-        localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
-        document.getElementById("authButtons").style.display = "none";
-        document.getElementById("loginModal").style.display = "none";
-        document.getElementById("registerModal").style.display = "none";
-        document.getElementById("userInfo").style.display = "block";
-        document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
-        if(currentUserIsAdmin) {
-          document.getElementById("newsFormContainer").style.display = "block";
-          console.log("Usuario es administrador. Formulario de noticias visible.");
-        } else {
-          document.getElementById("newsFormContainer").style.display = "none";
-          console.log("Usuario normal. Formulario de noticias oculto.");
-        }
-      }
+            /*****************************
+             * Función onLoginSuccess
+             * Actualiza la interfaz de usuario después de un inicio de sesión exitoso.
+             *****************************/
+            function onLoginSuccess() {
+                localStorage.setItem("currentUser", currentUser);
+                localStorage.setItem("currentUserIsAdmin", currentUserIsAdmin ? "true" : "false");
+                document.getElementById("authButtons").style.display = "none";
+                document.getElementById("loginModal").style.display = "none";
+                document.getElementById("registerModal").style.display = "none";
+                document.getElementById("userInfo").style.display = "block";
+                document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
+                if(currentUserIsAdmin) {
+                    document.getElementById("newsFormContainer").style.display = "block";
+                    console.log("Usuario es administrador. Formulario de noticias visible.");
+                } else {
+                    document.getElementById("newsFormContainer").style.display = "none";
+                    console.log("Usuario normal. Formulario de noticias oculto.");
+                }
+            }
 
-      /*****************************
-       * Cerrar Sesión
-       *****************************/
-      document.getElementById("logoutBtn").addEventListener("click", function() {
-        currentUser = null;
-        currentUserIsAdmin = false;
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("currentUserIsAdmin");
-        document.getElementById("authButtons").style.display = "flex"; /* Usa flex para los botones */
-        document.getElementById("userInfo").style.display = "none";
-        document.getElementById("newsFormContainer").style.display = "none";
-        console.log("Sesión cerrada. currentUser:", currentUser);
-      });
+            /*****************************
+             * Cerrar Sesión
+             *****************************/
+            document.getElementById("logoutBtn").addEventListener("click", function() {
+                currentUser = null;
+                currentUserIsAdmin = false;
+                localStorage.removeItem("currentUser");
+                localStorage.removeItem("currentUserIsAdmin");
+                document.getElementById("authButtons").style.display = "flex";
+                document.getElementById("userInfo").style.display = "none";
+                document.getElementById("newsFormContainer").style.display = "none";
+                console.log("Sesión cerrada. currentUser:", currentUser);
+            });
 
-      /*****************************
-       * Apertura y Cierre de Modales
-       *****************************/
-      document.getElementById("openLogin").addEventListener("click", function() {
-        console.log("Clic en Iniciar Sesión. Mostrando modal de login.");
-        document.getElementById("loginModal").style.display = "flex"; /* Usa flex */
-      });
-      document.getElementById("openRegister").addEventListener("click", function() {
-        console.log("Clic en Registrarse. Mostrando modal de registro.");
-        document.getElementById("registerModal").style.display = "flex"; /* Usa flex */
-      });
-      document.getElementById("loginClose").addEventListener("click", function() {
-        console.log("Cerrando modal de Iniciar Sesión.");
-        document.getElementById("loginModal").style.display = "none";
-      });
-      document.getElementById("registerClose").addEventListener("click", function() {
-        console.log("Cerrando modal de Registro.");
-        document.getElementById("registerModal").style.display = "none";
-      });
-      window.addEventListener("click", function(event) {
-        if(event.target == document.getElementById("loginModal")) {
-          console.log("Clic fuera del modal de Iniciar Sesión.");
-          document.getElementById("loginModal").style.display = "none";
-        }
-        if(event.target == document.getElementById("registerModal")) {
-          console.log("Clic fuera del modal de Registro.");
-          document.getElementById("registerModal").style.display = "none";
-        }
-      });
+            /*****************************
+             * Apertura y Cierre de Modales
+             *****************************/
+            document.getElementById("openLogin").addEventListener("click", function() {
+                console.log("Clic en Iniciar Sesión. Mostrando modal de login.");
+                document.getElementById("loginModal").style.display = "flex";
+            });
+            document.getElementById("openRegister").addEventListener("click", function() {
+                console.log("Clic en Registrarse. Mostrando modal de registro.");
+                document.getElementById("registerModal").style.display = "flex";
+            });
+            document.getElementById("loginClose").addEventListener("click", function() {
+                console.log("Cerrando modal de Iniciar Sesión.");
+                document.getElementById("loginModal").style.display = "none";
+            });
+            document.getElementById("registerClose").addEventListener("click", function() {
+                console.log("Cerrando modal de Registro.");
+                document.getElementById("registerModal").style.display = "none";
+            });
+            window.addEventListener("click", function(event) {
+                if(event.target == document.getElementById("loginModal")) {
+                    console.log("Clic fuera del modal de Iniciar Sesión.");
+                    document.getElementById("loginModal").style.display = "none";
+                }
+                if(event.target == document.getElementById("registerModal")) {
+                    console.log("Clic fuera del modal de Registro.");
+                    document.getElementById("registerModal").style.display = "none";
+                }
+            });
 
-      /*****************************
-       * Registro de Usuarios
-       *****************************/
-      document.getElementById("registerForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const username = document.getElementById("regUsername").value.trim();
-        const password = document.getElementById("regPassword").value;
-        console.log("Intentando registrar usuario:", username);
+            /*****************************
+             * Registro de Usuarios
+             *****************************/
+            document.getElementById("registerForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const username = document.getElementById("regUsername").value.trim();
+                const password = document.getElementById("regPassword").value;
+                console.log("Intentando registrar usuario:", username);
 
-        if(password.length < 8) {
-          alert("La contraseña debe tener al menos 8 caracteres.");
-          return;
-        }
+                if(password.length < 8) {
+                    alert("La contraseña debe tener al menos 8 caracteres.");
+                    return;
+                }
 
-        db.ref("users/" + username).get().then(function(snapshot) {
-          if(snapshot.exists()){
-            alert("El nombre de usuario ya está en uso. Elige otro.");
-            console.warn("Registro fallido: Nombre de usuario", username, "ya existe.");
-          } else {
-            db.ref("users/" + username).set({ password: password })
-              .then(function(){
-                alert("Registro exitoso. Ahora puedes iniciar sesión.");
-                document.getElementById("registerForm").reset();
-                document.getElementById("registerModal").style.display = "none";
-                console.log("Usuario", username, "registrado exitosamente.");
-              })
-              .catch(function(error){
-                alert("Error en el registro: " + error.message);
-                console.error("Error de Firebase al registrar:", error);
-              });
-          }
-        }).catch(function(error) {
-          console.error("Error al verificar la existencia del usuario:", error);
-          alert("Error al procesar el registro. Inténtalo de nuevo más tarde.");
-        });
-      });
+                db.ref("users/" + username).get().then(function(snapshot) {
+                    if(snapshot.exists()){
+                        alert("El nombre de usuario ya está en uso. Elige otro.");
+                        console.warn("Registro fallido: Nombre de usuario", username, "ya existe.");
+                    } else {
+                        db.ref("users/" + username).set({ password: password })
+                            .then(function(){
+                                alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                                document.getElementById("registerForm").reset();
+                                document.getElementById("registerModal").style.display = "none";
+                                console.log("Usuario", username, "registrado exitosamente.");
+                            })
+                            .catch(function(error){
+                                alert("Error en el registro: " + error.message);
+                                console.error("Error de Firebase al registrar:", error);
+                            });
+                    }
+                }).catch(function(error) {
+                    console.error("Error al verificar la existencia del usuario:", error);
+                    alert("Error al procesar el registro. Inténtalo de nuevo más tarde.");
+                });
+            });
 
-      /*****************************
-       * Inicio de Sesión (Admin y Usuario Normal)
-       *****************************/
-      document.getElementById("loginForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const username = document.getElementById("loginUsername").value.trim();
-        const password = document.getElementById("loginPassword").value;
-        console.log("Intentando iniciar sesión con usuario:", username);
+            /*****************************
+             * Inicio de Sesión (Admin y Usuario Normal)
+             *****************************/
+            document.getElementById("loginForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const username = document.getElementById("loginUsername").value.trim();
+                const password = document.getElementById("loginPassword").value;
+                console.log("Intentando iniciar sesión con usuario:", username);
 
-        // Credenciales fijas para el Administrador
-        if(username === "ChamoProgramador" && password === "29072024"){
-          currentUser = username;
-          currentUserIsAdmin = true;
-          onLoginSuccess();
-          console.log("Inicio de sesión de administrador exitoso.");
-        } else {
-          // Intenta iniciar sesión como usuario normal desde Firebase Database
-          db.ref("users/" + username).get().then(function(snapshot) {
-            if(snapshot.exists()){
-              const userData = snapshot.val();
-              console.log("Datos de usuario recuperados:", userData);
-              if(userData.password === password) {
-                currentUser = username;
-                currentUserIsAdmin = false;
-                onLoginSuccess();
-                console.log("Inicio de sesión de usuario normal exitoso para:", username);
-              } else {
-                alert("Contraseña incorrecta.");
-                console.warn("Inicio de sesión fallido: Contraseña incorrecta para", username);
-              }
-            } else {
-              alert("El usuario no está registrado.");
-              console.warn("Inicio de sesión fallido: Usuario", username, "no encontrado en la base de datos.");
-            }
-          }).catch(function(error){
-            console.error("Error de Firebase en el inicio de sesión:", error);
-            alert("Error al iniciar sesión. Por favor, revisa la consola para más detalles.");
-          });
-        }
-      });
+                // Credenciales fijas para el Administrador
+                if(username === "ChamoProgramador" && password === "29072024"){
+                    currentUser = username;
+                    currentUserIsAdmin = true;
+                    onLoginSuccess();
+                    console.log("Inicio de sesión de administrador exitoso.");
+                } else {
+                    // Intenta iniciar sesión como usuario normal desde Firebase Database
+                    db.ref("users/" + username).get().then(function(snapshot) {
+                        if(snapshot.exists()){
+                            const userData = snapshot.val();
+                            console.log("Datos de usuario recuperados:", userData);
+                            if(userData.password === password) {
+                                currentUser = username;
+                                currentUserIsAdmin = false;
+                                onLoginSuccess();
+                                console.log("Inicio de sesión de usuario normal exitoso para:", username);
+                            } else {
+                                alert("Contraseña incorrecta.");
+                                console.warn("Inicio de sesión fallido: Contraseña incorrecta para", username);
+                            }
+                        } else {
+                            alert("El usuario no está registrado.");
+                            console.warn("Inicio de sesión fallido: Usuario", username, "no encontrado en la base de datos.");
+                        }
+                    }).catch(function(error){
+                        console.error("Error de Firebase en el inicio de sesión:", error);
+                        alert("Error al iniciar sesión. Por favor, revisa la consola para más detalles.");
+                    });
+                }
+            });
 
-      /*****************************
-       * Publicar Noticia (solo Admin)
-       *****************************/
-      document.getElementById("newsForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        if(!currentUserIsAdmin) {
-          alert("Solo el administrador puede publicar noticias.");
-          console.warn("Intento de publicación de noticia por usuario no administrador.");
-          return;
-        }
-        const newsTitle = document.getElementById("newsTitle").value.trim();
-        const newsContent = document.getElementById("newsContent").value.trim();
-        const newsFileInput = document.getElementById("newsImage");
-        const news = {
-          title: newsTitle,
-          content: newsContent,
-          imageData: null,
-          timestamp: Date.now(),
-          likes: 0,
-          dislikes: 0,
-          votes: {}
-        };
+            /*****************************
+             * Publicar Noticia (solo Admin)
+             *****************************/
+            document.getElementById("newsForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                if(!currentUserIsAdmin) {
+                    alert("Solo el administrador puede publicar noticias.");
+                    console.warn("Intento de publicación de noticia por usuario no administrador.");
+                    return;
+                }
+                const newsTitle = document.getElementById("newsTitle").value.trim();
+                const newsContent = document.getElementById("newsContent").value.trim();
+                const newsFileInput = document.getElementById("newsImage");
+                const news = {
+                    title: newsTitle,
+                    content: newsContent,
+                    imageData: null,
+                    timestamp: Date.now(),
+                    likes: 0,
+                    dislikes: 0,
+                    votes: {}
+                };
 
-        function postNewsToDb() {
-          db.ref("news").push(news, function(error) {
-            if(error) {
-              alert("Error al publicar la noticia.");
-              console.error("Error al guardar noticia en Firebase:", error);
-            } else {
-              document.getElementById("newsForm").reset();
-              console.log("Noticia publicada exitosamente.");
-            }
-          });
-        }
+                function postNewsToDb() {
+                    db.ref("news").push(news, function(error) {
+                        if(error) {
+                            alert("Error al publicar la noticia.");
+                            console.error("Error al guardar noticia en Firebase:", error);
+                        } else {
+                            document.getElementById("newsForm").reset();
+                            console.log("Noticia publicada exitosamente.");
+                        }
+                    });
+                }
 
-        if(newsFileInput.files && newsFileInput.files[0]){
-          const file = newsFileInput.files[0];
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            news.imageData = e.target.result;
-            postNewsToDb();
-          };
-          reader.readAsDataURL(file);
-        } else {
-          postNewsToDb();
-        }
-      });
+                if(newsFileInput.files && newsFileInput.files[0]){
+                    const file = newsFileInput.files[0];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        news.imageData = e.target.result;
+                        postNewsToDb();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    postNewsToDb();
+                }
+            });
 
-      /*****************************
-       * Cargar Noticias desde Firebase
-       *****************************/
-      function cargarNoticias() {
-        db.ref("news").orderByChild("timestamp").on("value", function(snapshot) {
-          allNews = [];
-          snapshot.forEach(function(childSnapshot) {
-            let newsItem = childSnapshot.val();
-            newsItem.key = childSnapshot.key;
-            allNews.push(newsItem);
-          });
-          console.log("Noticias cargadas:", allNews.length);
-          displayNoticias(allNews);
-        }, function(error) {
-          console.error("Error al cargar noticias de Firebase:", error);
-        });
-      }
+            /*****************************
+             * Cargar Noticias desde Firebase
+             *****************************/
+            function cargarNoticias() {
+                db.ref("news").orderByChild("timestamp").on("value", function(snapshot) {
+                    allNews = [];
+                    snapshot.forEach(function(childSnapshot) {
+                        let newsItem = childSnapshot.val();
+                        newsItem.key = childSnapshot.key;
+                        allNews.push(newsItem);
+                    });
+                    console.log("Noticias cargadas:", allNews.length);
+                    displayNoticias(allNews);
+                }, function(error) {
+                    console.error("Error al cargar noticias de Firebase:", error);
+                });
+            }
 
-      /*****************************
-       * Mostrar Noticias en la Interfaz
-       *****************************/
-      function displayNoticias(newsArray) {
-        newsArray.sort((a, b) => b.timestamp - a.timestamp);
-        const newsDiv = document.getElementById("newsFeed");
-        newsDiv.innerHTML = "";
+            /*****************************
+             * Mostrar Noticias en la Interfaz
+             *****************************/
+            function displayNoticias(newsArray) {
+                newsArray.sort((a, b) => b.timestamp - a.timestamp);
+                const newsDiv = document.getElementById("newsFeed");
+                newsDiv.innerHTML = "";
 
-        newsArray.forEach(function(newsItem) {
-          const newsElem = document.createElement("div");
-          newsElem.className = "newsItem";
+                newsArray.forEach(function(newsItem) {
+                    const newsElem = document.createElement("div");
+                    newsElem.className = "newsItem";
 
-          const titleElem = document.createElement("h3");
-          titleElem.textContent = newsItem.title;
-          newsElem.appendChild(titleElem);
+                    const titleElem = document.createElement("h3");
+                    titleElem.textContent = newsItem.title;
+                    newsElem.appendChild(titleElem);
 
-          const contentElem = document.createElement("p");
-          contentElem.textContent = newsItem.content;
-          newsElem.appendChild(contentElem);
+                    const contentElem = document.createElement("p");
+                    contentElem.textContent = newsItem.content;
+                    newsElem.appendChild(contentElem);
 
-          if(newsItem.imageData) {
-            const img = document.createElement("img");
-            img.src = newsItem.imageData;
-            newsElem.appendChild(img);
-          }
+                    if(newsItem.imageData) {
+                        const img = document.createElement("img");
+                        img.src = newsItem.imageData;
+                        newsElem.appendChild(img);
+                    }
 
-          const dateElem = document.createElement("div");
-          dateElem.className = "newsTimestamp";
-          dateElem.textContent = "Publicado: " + new Date(newsItem.timestamp).toLocaleString();
-          newsElem.appendChild(dateElem);
+                    const dateElem = document.createElement("div");
+                    dateElem.className = "newsTimestamp";
+                    dateElem.textContent = "Publicado: " + new Date(newsItem.timestamp).toLocaleString();
+                    newsElem.appendChild(dateElem);
 
-          // Botones Like/Dislike para la noticia (voto único por usuario)
-          const actionsDiv = document.createElement("div");
-          actionsDiv.className = "news-actions";
+                    // Botones Like/Dislike para la noticia (voto único por usuario)
+                    const actionsDiv = document.createElement("div");
+                    actionsDiv.className = "news-actions";
 
-          const likeBtn = document.createElement("button");
-          likeBtn.className = "news-like-btn";
-          likeBtn.textContent = "👍 Like";
-          likeBtn.onclick = function() {
-            if(!currentUser) {
-              alert("Debes iniciar sesión para votar.");
-              return;
-            }
-            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
-              .then(function(snap) {
-                if(snap.exists()){
-                  alert("Ya has votado en esta noticia.");
-                  console.log("Usuario", currentUser, "ya votó en noticia", newsItem.key);
-                } else {
-                  let currentLikes = newsItem.likes || 0;
-                  db.ref("news").child(newsItem.key).update({ likes: currentLikes + 1 });
-                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("like");
-                  console.log("Like agregado por", currentUser, "a noticia:", newsItem.key);
-                }
-              }).catch(function(error) {
-                console.error("Error al registrar voto 'like':", error);
-              });
-          };
-          actionsDiv.appendChild(likeBtn);
+                    const likeBtn = document.createElement("button");
+                    likeBtn.className = "news-like-btn";
+                    likeBtn.textContent = "👍 Like";
+                    likeBtn.onclick = function() {
+                        if(!currentUser) {
+                            alert("Debes iniciar sesión para votar.");
+                            return;
+                        }
+                        db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
+                            .then(function(snap) {
+                                if(snap.exists()){
+                                    alert("Ya has votado en esta noticia.");
+                                    console.log("Usuario", currentUser, "ya votó en noticia", newsItem.key);
+                                } else {
+                                    let currentLikes = newsItem.likes || 0;
+                                    db.ref("news").child(newsItem.key).update({ likes: currentLikes + 1 });
+                                    db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("like");
+                                    console.log("Like agregado por", currentUser, "a noticia:", newsItem.key);
+                                }
+                            }).catch(function(error) {
+                                console.error("Error al registrar voto 'like':", error);
+                            });
+                    };
+                    actionsDiv.appendChild(likeBtn);
 
-          const likeCount = document.createElement("span");
-          likeCount.className = "news-like-count";
-          likeCount.textContent = (newsItem.likes || 0);
-          actionsDiv.appendChild(likeCount);
+                    const likeCount = document.createElement("span");
+                    likeCount.className = "news-like-count";
+                    likeCount.textContent = (newsItem.likes || 0);
+                    actionsDiv.appendChild(likeCount);
 
 
-          const dislikeBtn = document.createElement("button");
-          dislikeBtn.className = "news-dislike-btn";
-          dislikeBtn.textContent = "👎 Dislike";
-          dislikeBtn.onclick = function() {
-            if(!currentUser) {
-              alert("Debes iniciar sesión para votar.");
-              return;
-            }
-            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
-              .then(function(snap) {
-                if(snap.exists()){
-                  alert("Ya has votado en esta noticia.");
-                  console.log("Usuario", currentUser, "ya votó en noticia", newsItem.key);
-                } else {
-                  let currentDislikes = newsItem.dislikes || 0;
-                  db.ref("news").child(newsItem.key).update({ dislikes: currentDislikes + 1 });
-                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("dislike");
-                  console.log("Dislike agregado por", currentUser, "a noticia:", newsItem.key);
-                }
-              }).catch(function(error) {
-                console.error("Error al registrar voto 'dislike':", error);
-              });
-          };
-          actionsDiv.appendChild(dislikeBtn);
+                    const dislikeBtn = document.createElement("button");
+                    dislikeBtn.className = "news-dislike-btn";
+                    dislikeBtn.textContent = "👎 Dislike";
+                    dislikeBtn.onclick = function() {
+                        if(!currentUser) {
+                            alert("Debes iniciar sesión para votar.");
+                            return;
+                        }
+                        db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
+                            .then(function(snap) {
+                                if(snap.exists()){
+                                    alert("Ya has votado en esta noticia.");
+                                    console.log("Usuario", currentUser, "ya votó en noticia", newsItem.key);
+                                } else {
+                                    let currentDislikes = newsItem.dislikes || 0;
+                                    db.ref("news").child(newsItem.key).update({ dislikes: currentDislikes + 1 });
+                                    db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("dislike");
+                                    console.log("Dislike agregado por", currentUser, "a noticia:", newsItem.key);
+                                }
+                            }).catch(function(error) {
+                                console.error("Error al registrar voto 'dislike':", error);
+                            });
+                    };
+                    actionsDiv.appendChild(dislikeBtn);
 
-          const dislikeCount = document.createElement("span");
-          dislikeCount.className = "news-dislike-count";
-          dislikeCount.textContent = (newsItem.dislikes || 0);
-          actionsDiv.appendChild(dislikeCount);
+                    const dislikeCount = document.createElement("span");
+                    dislikeCount.className = "news-dislike-count";
+                    dislikeCount.textContent = (newsItem.dislikes || 0);
+                    actionsDiv.appendChild(dislikeCount);
 
-          newsElem.appendChild(actionsDiv); // Añadir el div de acciones al elemento de noticia
-          newsDiv.appendChild(newsElem);
-        });
-      }
-    });
-  </script>
+                    newsElem.appendChild(actionsDiv);
+                    newsDiv.appendChild(newsElem);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
