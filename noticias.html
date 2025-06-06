@@ -168,7 +168,7 @@
       text-align: center;
       margin-bottom: 10px;
     }
-    /* Formulario de Noticias, visible solo para Admin */
+    /* Formulario para publicar noticias (solo visible para Admin) */
     #newsFormContainer {
       display: none;
       margin-bottom: 20px;
@@ -312,7 +312,7 @@
     </div>
   </div>
 
-      <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>   <script>
@@ -330,13 +330,15 @@
         appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
         measurementId: "G-LLK0GLWS1G"
       };
-      // Asegúrate de que Firebase se inicialice una sola vez
+
+      // Inicializa Firebase SOLO si no ha sido inicializado antes
       if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
         console.log("Firebase inicializado correctamente.");
       } else {
-        console.log("Firebase ya estaba inicializado.");
+        console.log("Firebase ya estaba inicializado (evitando doble inicialización).");
       }
+
       const db = firebase.database();
       // const storage = firebase.storage(); // Descomentar si usas Firebase Storage para imágenes
 
@@ -347,20 +349,21 @@
       let currentUserIsAdmin = false;
       let allNews = [];
 
-      // Reestablece sesión si existe en localStorage
+      // Reestablece sesión si existe en localStorage al cargar la página
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
       if(storedUser) {
         currentUser = storedUser;
         currentUserIsAdmin = storedIsAdmin === "true";
-        onLoginSuccess();
-        console.log("Sesión restaurada desde localStorage. Usuario:", currentUser, "Admin:", currentUserIsAdmin);
+        onLoginSuccess(); // Llama a esta función para actualizar la UI
+        console.log("Sesión restaurada desde localStorage para:", currentUser, "Admin:", currentUserIsAdmin);
       }
 
       cargarNoticias(); // Cargar noticias al iniciar la página
 
       /*****************************
        * Función onLoginSuccess
+       * Actualiza la interfaz de usuario después de un inicio de sesión exitoso.
        *****************************/
       function onLoginSuccess() {
         localStorage.setItem("currentUser", currentUser);
@@ -370,7 +373,7 @@
         document.getElementById("registerModal").style.display = "none";
         document.getElementById("userInfo").style.display = "block";
         document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
-        // Mostrar el formulario de noticias solo si es Admin
+        // Mostrar u ocultar el formulario de noticias basado en el rol de administrador
         if(currentUserIsAdmin) {
           document.getElementById("newsFormContainer").style.display = "block";
           console.log("Usuario es administrador. Formulario de noticias visible.");
@@ -398,28 +401,28 @@
        * Apertura y Cierre de Modales
        *****************************/
       document.getElementById("openLogin").addEventListener("click", function() {
-        console.log("Abrir modal de Iniciar Sesión");
+        console.log("Clic en Iniciar Sesión. Mostrando modal de login.");
         document.getElementById("loginModal").style.display = "block";
       });
       document.getElementById("openRegister").addEventListener("click", function() {
-        console.log("Abrir modal de Registro");
+        console.log("Clic en Registrarse. Mostrando modal de registro.");
         document.getElementById("registerModal").style.display = "block";
       });
       document.getElementById("loginClose").addEventListener("click", function() {
-        console.log("Cerrar modal de Iniciar Sesión");
+        console.log("Cerrando modal de Iniciar Sesión.");
         document.getElementById("loginModal").style.display = "none";
       });
       document.getElementById("registerClose").addEventListener("click", function() {
-        console.log("Cerrar modal de Registro");
+        console.log("Cerrando modal de Registro.");
         document.getElementById("registerModal").style.display = "none";
       });
       window.addEventListener("click", function(event) {
         if(event.target == document.getElementById("loginModal")) {
-          console.log("Clic fuera del modal de Iniciar Sesión");
+          console.log("Clic fuera del modal de Iniciar Sesión.");
           document.getElementById("loginModal").style.display = "none";
         }
         if(event.target == document.getElementById("registerModal")) {
-          console.log("Clic fuera del modal de Registro");
+          console.log("Clic fuera del modal de Registro.");
           document.getElementById("registerModal").style.display = "none";
         }
       });
@@ -431,61 +434,64 @@
         e.preventDefault();
         const username = document.getElementById("regUsername").value.trim();
         const password = document.getElementById("regPassword").value;
-        console.log("Intento de registro para:", username);
+        console.log("Intentando registrar usuario:", username);
 
         if(password.length < 8) {
           alert("La contraseña debe tener al menos 8 caracteres.");
           return;
         }
 
+        // Verifica si el usuario ya existe antes de registrar
         db.ref("users/" + username).get().then(function(snapshot) {
           if(snapshot.exists()){
             alert("El nombre de usuario ya está en uso. Elige otro.");
-            console.warn("Registro fallido: Nombre de usuario ya existe.");
+            console.warn("Registro fallido: Nombre de usuario", username, "ya existe.");
           } else {
+            // Guarda el nuevo usuario en la base de datos
             db.ref("users/" + username).set({ password: password })
               .then(function(){
                 alert("Registro exitoso. Ahora puedes iniciar sesión.");
                 document.getElementById("registerForm").reset();
                 document.getElementById("registerModal").style.display = "none";
-                console.log("Registro exitoso para:", username);
+                console.log("Usuario", username, "registrado exitosamente.");
               })
               .catch(function(error){
                 alert("Error en el registro: " + error.message);
-                console.error("Error en el registro de Firebase:", error);
+                console.error("Error de Firebase al registrar:", error);
               });
           }
         }).catch(function(error) {
-          console.error("Error al verificar usuario existente en Firebase:", error);
-          alert("Error al verificar usuario. Consulta la consola.");
+          console.error("Error al verificar la existencia del usuario:", error);
+          alert("Error al procesar el registro. Inténtalo de nuevo más tarde.");
         });
       });
 
       /*****************************
-       * Inicio de Sesión (Admin y Usuario)
+       * Inicio de Sesión (Admin y Usuario Normal)
        *****************************/
       document.getElementById("loginForm").addEventListener("submit", function(e) {
         e.preventDefault();
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value;
-        console.log("Intento de inicio de sesión para:", username);
+        console.log("Intentando iniciar sesión con usuario:", username);
 
-        // Credenciales fijas para Admin
+        // Credenciales fijas para el Administrador
         if(username === "ChamoProgramador" && password === "29072024"){
           currentUser = username;
           currentUserIsAdmin = true;
           onLoginSuccess();
           console.log("Inicio de sesión de administrador exitoso.");
         } else {
+          // Intenta iniciar sesión como usuario normal desde Firebase Database
           db.ref("users/" + username).get().then(function(snapshot) {
             if(snapshot.exists()){
               const userData = snapshot.val();
-              console.log("Usuario encontrado en DB:", userData);
+              console.log("Datos de usuario recuperados:", userData);
               if(userData.password === password) {
                 currentUser = username;
                 currentUserIsAdmin = false;
                 onLoginSuccess();
-                console.log("Inicio de sesión de usuario regular exitoso.");
+                console.log("Inicio de sesión de usuario normal exitoso para:", username);
               } else {
                 alert("Contraseña incorrecta.");
                 console.warn("Inicio de sesión fallido: Contraseña incorrecta para", username);
@@ -495,7 +501,7 @@
               console.warn("Inicio de sesión fallido: Usuario", username, "no encontrado en la base de datos.");
             }
           }).catch(function(error){
-            console.error("Error en la conexión a la base de datos o en la lectura del usuario:", error);
+            console.error("Error de Firebase en el inicio de sesión:", error);
             alert("Error al iniciar sesión. Por favor, revisa la consola para más detalles.");
           });
         }
@@ -508,6 +514,7 @@
         e.preventDefault();
         if(!currentUserIsAdmin) {
           alert("Solo el administrador puede publicar noticias.");
+          console.warn("Intento de publicación de noticia por usuario no administrador.");
           return;
         }
         const newsTitle = document.getElementById("newsTitle").value.trim();
@@ -516,13 +523,14 @@
         const news = {
           title: newsTitle,
           content: newsContent,
-          imageData: null,
+          imageData: null, // Para almacenar la imagen en Base64
           timestamp: Date.now(),
           likes: 0,
           dislikes: 0,
-          votes: {}
+          votes: {} // Para registrar los votos de cada usuario
         };
-        function postNews() {
+
+        function postNewsToDb() {
           db.ref("news").push(news, function(error) {
             if(error) {
               alert("Error al publicar la noticia.");
@@ -533,45 +541,48 @@
             }
           });
         }
+
         if(newsFileInput.files && newsFileInput.files[0]){
           const file = newsFileInput.files[0];
           const reader = new FileReader();
           reader.onload = function(e) {
-            news.imageData = e.target.result;
-            postNews();
+            news.imageData = e.target.result; // Almacena la imagen como Base64
+            postNewsToDb();
           };
           reader.readAsDataURL(file);
         } else {
-          postNews();
+          postNewsToDb();
         }
       });
 
       /*****************************
-       * Cargar Noticias
+       * Cargar Noticias desde Firebase
        *****************************/
       function cargarNoticias() {
+        // Escucha cambios en el nodo 'news'
         db.ref("news").orderByChild("timestamp").on("value", function(snapshot) {
           allNews = [];
           snapshot.forEach(function(childSnapshot) {
             let newsItem = childSnapshot.val();
-            newsItem.key = childSnapshot.key;
+            newsItem.key = childSnapshot.key; // Guarda la clave única de Firebase
             allNews.push(newsItem);
           });
           console.log("Noticias cargadas:", allNews.length);
-          displayNoticias(allNews);
+          displayNoticias(allNews); // Actualiza la visualización de noticias
         }, function(error) {
           console.error("Error al cargar noticias de Firebase:", error);
         });
       }
 
       /*****************************
-       * Mostrar Noticias
+       * Mostrar Noticias en la Interfaz
        *****************************/
       function displayNoticias(newsArray) {
         // Ordenar de más reciente a más antigua
         newsArray.sort((a, b) => b.timestamp - a.timestamp);
         const newsDiv = document.getElementById("newsFeed");
-        newsDiv.innerHTML = "";
+        newsDiv.innerHTML = ""; // Limpia el feed antes de agregar nuevas noticias
+
         newsArray.forEach(function(newsItem) {
           const newsElem = document.createElement("div");
           newsElem.className = "newsItem";
@@ -595,7 +606,7 @@
           dateElem.textContent = "Publicado: " + new Date(newsItem.timestamp).toLocaleString();
           newsElem.appendChild(dateElem);
 
-          // Botones Like/Dislike para la noticia (voto único)
+          // Botones Like/Dislike para la noticia (voto único por usuario)
           const likeBtn = document.createElement("button");
           likeBtn.className = "news-like-btn";
           likeBtn.textContent = "Like";
@@ -604,16 +615,17 @@
               alert("Debes iniciar sesión para votar.");
               return;
             }
-            // Verifica si el usuario ya votó
+            // Verifica si el usuario ya votó en esta noticia
             db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
               .then(function(snap) {
                 if(snap.exists()){
                   alert("Ya has votado en esta noticia.");
+                  console.log("Usuario", currentUser, "ya votó en noticia", newsItem.key);
                 } else {
                   let currentLikes = newsItem.likes || 0;
                   db.ref("news").child(newsItem.key).update({ likes: currentLikes + 1 });
                   db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("like");
-                  console.log("Like agregado a noticia:", newsItem.key);
+                  console.log("Like agregado por", currentUser, "a noticia:", newsItem.key);
                 }
               }).catch(function(error) {
                 console.error("Error al registrar voto 'like':", error);
@@ -629,16 +641,17 @@
               alert("Debes iniciar sesión para votar.");
               return;
             }
-            // Verifica si el usuario ya votó
+            // Verifica si el usuario ya votó en esta noticia
             db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
               .then(function(snap) {
                 if(snap.exists()){
                   alert("Ya has votado en esta noticia.");
+                  console.log("Usuario", currentUser, "ya votó en noticia", newsItem.key);
                 } else {
                   let currentDislikes = newsItem.dislikes || 0;
                   db.ref("news").child(newsItem.key).update({ dislikes: currentDislikes + 1 });
                   db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("dislike");
-                  console.log("Dislike agregado a noticia:", newsItem.key);
+                  console.log("Dislike agregado por", currentUser, "a noticia:", newsItem.key);
                 }
               }).catch(function(error) {
                 console.error("Error al registrar voto 'dislike':", error);
