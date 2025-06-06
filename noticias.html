@@ -75,7 +75,7 @@
       background-color: #e6c200;
     }
     /* ===============================
-       Modales para Login y Registro
+       Modales de Autenticación
        =============================== */
     .modal {
       display: none;
@@ -168,7 +168,7 @@
       text-align: center;
       margin-bottom: 10px;
     }
-    /* Formulario de Noticias (solo Admin) */
+    /* Formulario de Noticias, visible solo para Admin */
     #newsFormContainer {
       display: none;
       margin-bottom: 20px;
@@ -273,8 +273,8 @@
         <span class="close" id="loginClose">&times;</span>
         <h2>Iniciar Sesión</h2>
         <form id="loginForm" class="authForm">
-          <input type="text" id="loginUsername" placeholder="Nombre de usuario" required />
-          <input type="password" id="loginPassword" placeholder="Contraseña" required />
+          <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+          <input type="password" id="loginPassword" placeholder="Contraseña" required>
           <button type="submit">Iniciar Sesión</button>
         </form>
       </div>
@@ -286,8 +286,8 @@
         <span class="close" id="registerClose">&times;</span>
         <h2>Registrarse</h2>
         <form id="registerForm" class="authForm">
-          <input type="text" id="regUsername" placeholder="Nombre de usuario" required />
-          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required />
+          <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
+          <input type="password" id="regPassword" placeholder="Contraseña (mín. 8 caracteres)" required>
           <button type="submit">Registrarse</button>
         </form>
       </div>
@@ -302,15 +302,15 @@
     <!-- APARTADO DE NOTICIAS -->
     <div id="newsSection">
       <h2>Noticias</h2>
-      <!-- Formulario para publicar noticias (aparece solo para Admin) -->
+      <!-- Formulario para publicar noticias (solo visible para Admin) -->
       <div id="newsFormContainer" style="display:none;">
         <form id="newsForm">
           <label for="newsTitle">Título de la Noticia:</label>
-          <input type="text" id="newsTitle" placeholder="Título de la noticia" required />
+          <input type="text" id="newsTitle" placeholder="Título de la noticia" required>
           <label for="newsContent">Contenido:</label>
           <textarea id="newsContent" placeholder="Escribe el contenido de la noticia" required></textarea>
           <label for="newsImage">Imagen (opcional):</label>
-          <input type="file" id="newsImage" accept="image/*" />
+          <input type="file" id="newsImage" accept="image/*">
           <button type="submit">Publicar Noticia</button>
         </form>
       </div>
@@ -324,17 +324,16 @@
       /*****************************
        * CONFIGURACIÓN DE FIREBASE
        *****************************/
-      // Reemplaza estos valores con los de tu proyecto de Firebase (Tus apps)
-     const firebaseConfig = {
-  apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
-  authDomain: "innovaccionunefa.firebaseapp.com",
-  databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
-  projectId: "innovaccionunefa",
-  storageBucket: "innovaccionunefa.firebasestorage.app",
-  messagingSenderId: "613542800676",
-  appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
-  measurementId: "G-LLK0GLWS1G"
-};
+      const firebaseConfig = {
+        apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+        authDomain: "innovaccionunefa.firebaseapp.com",
+        databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
+        projectId: "innovaccionunefa",
+        storageBucket: "innovaccionunefa.firebasestorage.app",
+        messagingSenderId: "613542800676",
+        appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
+        measurementId: "G-LLK0GLWS1G"
+      };
       firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
 
@@ -345,10 +344,10 @@
       let currentUserIsAdmin = false;
       let allNews = [];
 
-      // Reestablecer sesión mediante localStorage
+      // Reestablece sesión si existe en localStorage
       const storedUser = localStorage.getItem("currentUser");
       const storedIsAdmin = localStorage.getItem("currentUserIsAdmin");
-      if (storedUser) {
+      if(storedUser) {
         currentUser = storedUser;
         currentUserIsAdmin = storedIsAdmin === "true";
         onLoginSuccess();
@@ -366,7 +365,7 @@
         document.getElementById("registerModal").style.display = "none";
         document.getElementById("userInfo").style.display = "block";
         document.getElementById("welcomeMsg").textContent = "Bienvenido, " + currentUser;
-        // Mostrar formulario de noticias solo si es Admin
+        // Mostrar el formulario de noticias solo si es Admin
         if(currentUserIsAdmin) {
           document.getElementById("newsFormContainer").style.display = "block";
         }
@@ -386,7 +385,7 @@
       });
 
       /*****************************
-       * Apertura y cierre de modales
+       * Apertura y Cierre de Modales
        *****************************/
       document.getElementById("openLogin").addEventListener("click", function() {
         console.log("Se hizo clic en Iniciar Sesión");
@@ -402,10 +401,10 @@
         document.getElementById("registerModal").style.display = "none";
       });
       window.addEventListener("click", function(event) {
-        if (event.target == document.getElementById("loginModal")) {
+        if(event.target == document.getElementById("loginModal")) {
           document.getElementById("loginModal").style.display = "none";
         }
-        if (event.target == document.getElementById("registerModal")) {
+        if(event.target == document.getElementById("registerModal")) {
           document.getElementById("registerModal").style.display = "none";
         }
       });
@@ -417,21 +416,21 @@
         e.preventDefault();
         const username = document.getElementById("regUsername").value.trim();
         const password = document.getElementById("regPassword").value;
-        if (password.length < 8) {
+        if(password.length < 8) {
           alert("La contraseña debe tener al menos 8 caracteres.");
           return;
         }
         db.ref("users/" + username).get().then(function(snapshot) {
-          if (snapshot.exists()) {
+          if(snapshot.exists()){
             alert("El nombre de usuario ya está en uso. Elige otro.");
           } else {
             db.ref("users/" + username).set({ password: password })
-              .then(function() {
+              .then(function(){
                 alert("Registro exitoso. Ahora puedes iniciar sesión.");
                 document.getElementById("registerForm").reset();
                 document.getElementById("registerModal").style.display = "none";
               })
-              .catch(function(error) {
+              .catch(function(error){
                 alert("Error en el registro: " + error.message);
               });
           }
@@ -446,15 +445,15 @@
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value;
         // Credenciales fijas para Admin
-        if (username === "ChamoProgramador" && password === "29072024") {
+        if(username === "ChamoProgramador" && password === "29072024"){
           currentUser = username;
           currentUserIsAdmin = true;
           onLoginSuccess();
         } else {
           db.ref("users/" + username).get().then(function(snapshot) {
-            if (snapshot.exists()) {
+            if(snapshot.exists()){
               const userData = snapshot.val();
-              if (userData.password === password) {
+              if(userData.password === password) {
                 currentUser = username;
                 currentUserIsAdmin = false;
                 onLoginSuccess();
@@ -464,7 +463,7 @@
             } else {
               alert("El usuario no está registrado.");
             }
-          }).catch(function(error) {
+          }).catch(function(error){
             console.error("Error en el inicio de sesión:", error);
           });
         }
@@ -475,7 +474,7 @@
        *****************************/
       document.getElementById("newsForm").addEventListener("submit", function(e) {
         e.preventDefault();
-        if (!currentUserIsAdmin) {
+        if(!currentUserIsAdmin) {
           alert("Solo el administrador puede publicar noticias.");
           return;
         }
@@ -493,14 +492,14 @@
         };
         function postNews() {
           db.ref("news").push(news, function(error) {
-            if (error) {
+            if(error) {
               alert("Error al publicar la noticia.");
             } else {
               document.getElementById("newsForm").reset();
             }
           });
         }
-        if (newsFileInput.files && newsFileInput.files[0]) {
+        if(newsFileInput.files && newsFileInput.files[0]){
           const file = newsFileInput.files[0];
           const reader = new FileReader();
           reader.onload = function(e) {
@@ -548,6 +547,74 @@
           contentElem.textContent = newsItem.content;
           newsElem.appendChild(contentElem);
 
-          if (newsItem.imageData) {
+          if(newsItem.imageData) {
             const img = document.createElement("img");
-           
+            img.src = newsItem.imageData;
+            newsElem.appendChild(img);
+          }
+
+          const dateElem = document.createElement("div");
+          dateElem.className = "newsTimestamp";
+          dateElem.textContent = "Publicado: " + new Date(newsItem.timestamp).toLocaleString();
+          newsElem.appendChild(dateElem);
+
+          // Botones Like/Dislike para la noticia (voto único)
+          const likeBtn = document.createElement("button");
+          likeBtn.className = "news-like-btn";
+          likeBtn.textContent = "Like";
+          likeBtn.onclick = function() {
+            if(!currentUser) {
+              alert("Debes iniciar sesión para votar.");
+              return;
+            }
+            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
+              .then(function(snap) {
+                if(snap.exists()){
+                  alert("Ya has votado en esta noticia.");
+                } else {
+                  let currentLikes = newsItem.likes || 0;
+                  db.ref("news").child(newsItem.key).update({ likes: currentLikes + 1 });
+                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("like");
+                }
+              });
+          };
+          newsElem.appendChild(likeBtn);
+
+          const dislikeBtn = document.createElement("button");
+          dislikeBtn.className = "news-dislike-btn";
+          dislikeBtn.textContent = "Dislike";
+          dislikeBtn.onclick = function() {
+            if(!currentUser) {
+              alert("Debes iniciar sesión para votar.");
+              return;
+            }
+            db.ref("news/" + newsItem.key + "/votes/" + currentUser).once("value")
+              .then(function(snap) {
+                if(snap.exists()){
+                  alert("Ya has votado en esta noticia.");
+                } else {
+                  let currentDislikes = newsItem.dislikes || 0;
+                  db.ref("news").child(newsItem.key).update({ dislikes: currentDislikes + 1 });
+                  db.ref("news").child(newsItem.key).child("votes").child(currentUser).set("dislike");
+                }
+              });
+          };
+          newsElem.appendChild(dislikeBtn);
+
+          const likeCount = document.createElement("span");
+          likeCount.className = "news-like-count";
+          likeCount.textContent = "Likes: " + (newsItem.likes || 0);
+          newsElem.appendChild(likeCount);
+
+          const dislikeCount = document.createElement("span");
+          dislikeCount.className = "news-dislike-count";
+          dislikeCount.textContent = "Dislikes: " + (newsItem.dislikes || 0);
+          newsElem.appendChild(dislikeCount);
+
+          newsDiv.appendChild(newsElem);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
