@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     /* ------------------------------
-       Reset y estilos generales
+       Reset y Estilos Generales
        ------------------------------ */
     * {
       margin: 0;
@@ -15,12 +15,14 @@
     }
     body {
       font-family: Arial, sans-serif;
-      /* Fondo con la bandera de Venezuela */
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_Venezuela.svg/2560px-Flag_of_Venezuela.svg.png');
-      background-size: cover;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      background-position: center;
+      /* Fondo tricolor: amarillo, azul y rojo en franjas iguales */
+      background: linear-gradient(to bottom,
+         yellow 0%, 
+         yellow 33.33%, 
+         blue 33.33%, 
+         blue 66.66%, 
+         red 66.66%, 
+         red 100%);
       color: #eee;
     }
     /* ------------------------------
@@ -29,12 +31,13 @@
     #container {
       max-width: 1200px;
       margin: 20px auto;
-      background-color: rgba(34, 34, 34, 0.9);
+      background-color: rgba(34,34,34,0.9);
       border-radius: 8px;
       overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
     }
     /* ------------------------------
-       Header y Navegación
+       Header y Navegación (con borde negro en nav)
        ------------------------------ */
     header {
       background-color: #8B0000;
@@ -47,7 +50,6 @@
       margin-bottom: 10px;
       color: #fff;
     }
-    /* Menú de navegación con borde negro */
     nav {
       background-color: #333;
       display: inline-flex;
@@ -63,7 +65,7 @@
       font-size: 18px;
       padding: 8px 16px;
       border-radius: 4px;
-      transition: background-color 0.3s;
+      transition: background 0.3s;
     }
     nav a:hover {
       background-color: rgba(255, 255, 255, 0.2);
@@ -72,12 +74,12 @@
        Hero Section
        ------------------------------ */
     .hero {
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0,0,0,0.4);
       padding: 100px 20px;
       text-align: center;
     }
     .hero h2 {
-      font-size: 48px;
+      font-size: 36px;
       color: #ffd700;
       text-shadow: 2px 2px 4px #000;
       margin-bottom: 20px;
@@ -103,7 +105,7 @@
       line-height: 1.5;
     }
     /* ------------------------------
-       Sección de Contacto (decorativa)
+       Sección de Contacto (Decorativa)
        ------------------------------ */
     #contacto {
       background-color: #333;
@@ -136,7 +138,7 @@
         font-size: 32px;
       }
       .hero h2 {
-        font-size: 36px;
+        font-size: 28px;
       }
       nav a {
         padding: 8px 16px;
@@ -150,7 +152,6 @@
     <!-- HEADER -->
     <header>
       <h1>InnovAccionUNEFA</h1>
-      <!-- MENÚ DE NAVEGACIÓN -->
       <nav>
         <a href="foro.html">Foro</a>
         <a href="noticias.html">Noticias</a>
@@ -161,7 +162,7 @@
 
     <!-- HERO SECTION -->
     <section class="hero">
-      <h2>Impulsando la Innovación</h2>
+      <h2>Este Proyecto está hecho para agregar apartados que no están disponibles en la página UNEFA centrándose en la retroalimentación general.</h2>
       <p>Bienvenido a la plataforma oficial de InnovAccionUNEFA</p>
     </section>
 
@@ -169,7 +170,7 @@
     <section id="presentacion">
       <h2>Bienvenido</h2>
       <p>
-        Descubre nuestro Foro, mantente actualizado con las Noticias y comparte tus Sugerencias para seguir creciendo como comunidad.
+        Descubre nuestros apartados: Foro, Noticias, y Sugerencias. Explora el contenido y comparte tus ideas para seguir creciendo como comunidad.
       </p>
     </section>
 
