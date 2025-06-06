@@ -4,13 +4,18 @@
   <meta charset="UTF-8">
   <title>InnovAccionUNEFA - Inicio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Fondo global con la bandera de Venezuela -->
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    /* ------------------------------
+       Reset y estilos generales
+       ------------------------------ */
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      /* Fondo con la bandera de Venezuela */
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_Venezuela.svg/2560px-Flag_of_Venezuela.svg.png');
       background-size: cover;
       background-attachment: fixed;
@@ -18,14 +23,15 @@
       background-position: center;
       color: #eee;
     }
-    /* Contenedor principal con fondo semitransparente para facilitar la lectura */
+    /* ------------------------------
+       Contenedor Principal
+       ------------------------------ */
     #container {
       max-width: 1200px;
       margin: 20px auto;
-      background-color: rgba(34, 34, 34, 0.95);
+      background-color: rgba(34, 34, 34, 0.9);
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
     }
     /* ------------------------------
        Header y Navegación
@@ -39,12 +45,16 @@
     header h1 {
       font-size: 42px;
       margin-bottom: 10px;
+      color: #fff;
     }
+    /* Menú de navegación con borde negro */
     nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
+      background-color: #333;
+      display: inline-flex;
       gap: 15px;
+      padding: 10px;
+      border: 2px solid #000;
+      border-radius: 8px;
       margin-bottom: 20px;
     }
     nav a {
@@ -59,10 +69,10 @@
       background-color: rgba(255, 255, 255, 0.2);
     }
     /* ------------------------------
-       Sección Hero
+       Hero Section
        ------------------------------ */
     .hero {
-      background: rgba(0,0,0,0.4);
+      background: rgba(0, 0, 0, 0.4);
       padding: 100px 20px;
       text-align: center;
     }
@@ -77,28 +87,28 @@
       color: #eee;
     }
     /* ------------------------------
-       Secciones de Contenido
+       Sección de Presentación
        ------------------------------ */
-    section {
+    #presentacion {
       padding: 40px 20px;
       text-align: center;
     }
-    .section-title {
+    #presentacion h2 {
       font-size: 32px;
       color: #8B0000;
       margin-bottom: 20px;
     }
-    .section-content {
+    #presentacion p {
       font-size: 18px;
       line-height: 1.5;
     }
     /* ------------------------------
-       Sección de Contacto
-       (Actualmente decorativa)
+       Sección de Contacto (decorativa)
        ------------------------------ */
     #contacto {
       background-color: #333;
       padding: 40px 20px;
+      text-align: center;
     }
     #contacto h2 {
       font-size: 32px;
@@ -129,6 +139,7 @@
         font-size: 36px;
       }
       nav a {
+        padding: 8px 16px;
         font-size: 16px;
       }
     }
@@ -139,6 +150,7 @@
     <!-- HEADER -->
     <header>
       <h1>InnovAccionUNEFA</h1>
+      <!-- MENÚ DE NAVEGACIÓN -->
       <nav>
         <a href="foro.html">Foro</a>
         <a href="noticias.html">Noticias</a>
@@ -153,17 +165,15 @@
       <p>Bienvenido a la plataforma oficial de InnovAccionUNEFA</p>
     </section>
 
-    <!-- SECCIÓN DE PRESENTACIÓN (Puede ser adaptada) -->
+    <!-- SECCIÓN DE PRESENTACIÓN -->
     <section id="presentacion">
-      <h2 class="section-title">Bienvenido</h2>
-      <div class="section-content">
-        <p>
-          Descubre nuestro foro, conoce las últimas noticias y comparte tus sugerencias para seguir mejorando.
-        </p>
-      </div>
+      <h2>Bienvenido</h2>
+      <p>
+        Descubre nuestro Foro, mantente actualizado con las Noticias y comparte tus Sugerencias para seguir creciendo como comunidad.
+      </p>
     </section>
 
-    <!-- SECCIÓN CONTACTO (Decorativa, se puede expandir con el tiempo) -->
+    <!-- SECCIÓN DE CONTACTO (DECORATIVA) -->
     <section id="contacto">
       <h2>Contacto</h2>
       <p>
@@ -173,7 +183,7 @@
 
     <!-- FOOTER -->
     <footer>
-      <p>&copy; 2025 InnovAccionUNEFA. Todos los derechos reservados.</p>
+      <p>Creadores: Jesus Luis Eduardo D-2 Ingeniería de Sistemas</p>
     </footer>
   </div>
 </body>
