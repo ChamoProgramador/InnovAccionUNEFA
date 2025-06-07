@@ -2,132 +2,105 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Sugerencias - Modelo Moderno</title>
+  <title>Sugerencias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Reset y configuración general */
+    /* Reset básico */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    body { 
-      background-color: black; 
-      color: white; 
-      font-family: Arial, sans-serif; 
-      text-align: center;
+    body {
+      background-color: #f0f0f0; /* Gris claro */
+      color: #333;
+      font-family: Arial, sans-serif;
       padding: 20px;
+      text-align: center;
     }
-    /* Contenedor principal centrado */
+    /* Contenedor principal */
     .container {
       max-width: 800px;
       margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    /* Estilos de las tarjetas */
+    /* Botones de navegación */
+    .nav-buttons {
+      margin-bottom: 20px;
+    }
+    .nav-buttons button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .nav-buttons button:hover {
+      background-color: #555;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    /* Estilo de las tarjetas (cards) */
     .card {
       background-color: black;
-      padding: 20px;
-      margin: 15px;
-      border-radius: 8px;
-      border: 2px solid white;
-      transition: transform 0.3s, box-shadow 0.3s;
       color: white;
+      border: 2px solid white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
     .card:hover {
-      transform: scale(1.05);
+      transform: scale(1.02);
       box-shadow: 0 0 10px white;
     }
     .card h2 {
+      font-size: 22px;
       margin-bottom: 10px;
-      font-size: 24px;
     }
     .card p {
       font-size: 16px;
-      margin-bottom: 10px;
     }
-    /* Estilo para el input de archivo */
-    input[type="file"] {
-      margin-top: 10px;
+    .card a {
       color: white;
-      background: #222;
-      border: 1px solid white;
-      padding: 10px;
-      border-radius: 4px;
-    }
-    /* Botón */
-    button {
-      background-color: white;
-      color: black;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover { 
-      background-color: #ddd; 
-    }
-    /* Mensaje de resultado */
-    #resultMessage {
-      margin-top: 10px;
-      font-size: 16px;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Envíanos tu Sugerencia</h1>
+    <!-- Botones de navegación -->
+    <div class="nav-buttons">
+      <button onclick="history.back();">Regresar</button>
+      <button onclick="window.location.href='index.html';">Inicio</button>
+    </div>
     
-    <!-- Tarjeta para subir imagen o video -->
+    <h1>Sugerencias</h1>
+    
+    <!-- Tarjeta para la opción de correo electrónico -->
     <div class="card">
-      <h2>🎥 Adjunta Imagen o Video</h2>
-      <p>Sube una imagen o un video (solo se permiten videos de hasta 30 segundos).</p>
-      <input id="mediaInput" type="file" accept="image/*, video/*">
-      <br>
-      <button onclick="enviarFile()">Enviar</button>
-      <p id="resultMessage"></p>
+      <h2>Correo Electrónico</h2>
+      <p>
+        Envía tu sugerencia a: 
+        <a href="mailto:innovaccionunefa2007@gmail.com">innovaccionunefa2007@gmail.com</a>
+      </p>
+    </div>
+    
+    <!-- Tarjeta para la opción de teléfono -->
+    <div class="card">
+      <h2>Teléfono</h2>
+      <p>
+        Este canal estará disponible próximamente.
+      </p>
     </div>
   </div>
-
-  <script>
-    function enviarFile() {
-      var input = document.getElementById("mediaInput");
-      var result = document.getElementById("resultMessage");
-      var file = input.files[0];
-
-      if (!file) {
-        result.innerHTML = "<strong>Error:</strong> Debes seleccionar un archivo.";
-        return;
-      }
-
-      if (file.type.startsWith("video/")) {
-        // Creamos un elemento de video temporal para comprobar la duración
-        var video = document.createElement("video");
-        video.preload = "metadata";
-
-        video.onloadedmetadata = function() {
-          window.URL.revokeObjectURL(video.src);
-          if (video.duration > 30) {
-            result.innerHTML = "<strong>Error:</strong> El video supera los 30 segundos.";
-            input.value = ""; // Limpiar campo
-          } else {
-            result.innerHTML = "<strong>¡Éxito!</strong> Tu video se ha enviado correctamente.";
-            input.value = "";
-          }
-        };
-
-        video.onerror = function() {
-          result.innerHTML = "<strong>Error:</strong> No se pudo procesar el video.";
-          input.value = "";
-        };
-
-        video.src = URL.createObjectURL(file);
-      } else if (file.type.startsWith("image/")) {
-        result.innerHTML = "<strong>¡Éxito!</strong> Tu imagen se ha enviado correctamente.";
-        input.value = "";
-      } else {
-        result.innerHTML = "<strong>Error:</strong> Tipo de archivo no soportado.";
-      }
-    }
-  </script>
 </body>
 </html>
