@@ -2,57 +2,71 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Sugerencias - Modelo 2</title>
+  <title>Sugerencias - Modelo Moderno</title>
   <style>
-    /* Configuración general del body */
-    body { 
-      background-color: #8B0000; 
-      color: white; 
-      font-family: Arial, sans-serif; 
-      text-align: center; 
-      margin: 0; 
+    /* Resetear márgenes y paddings */
+    * {
+      margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
-    /* Contenedor principal para centrar el contenido */
-    .container { 
-      max-width: 800px; 
-      margin: 30px auto; 
+    /* Fondo fuerte morado moderno para el body */
+    body {
+      background-color: #6A0DAD; /* Morado fuerte */
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
       padding: 20px;
     }
-    /* Estilos para las "tarjetas" de sugerencias */
-    .card { 
-      background-color: #660099; 
-      padding: 20px; 
-      margin: 15px; 
-      border-radius: 8px; 
-      transition: transform 0.3s; 
+    /* Contenedor principal centrado */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
     }
-    .card:hover { 
-      transform: scale(1.05); 
+    /* Estilos para las tarjetas: fondo negro, texto blanco y borde blanco */
+    .card {
+      background-color: black;
+      padding: 20px;
+      margin: 15px;
+      border-radius: 8px;
+      border: 2px solid white;
+      transition: transform 0.3s, box-shadow 0.3s;
+      color: white;
     }
-    /* Estilos para los botones */
-    button { 
-      background-color: black; 
-      color: white; 
-      padding: 10px 20px; 
-      border: none; 
-      border-radius: 4px; 
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px white;
+    }
+    .card h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    .card p {
+      font-size: 16px;
+    }
+    /* Área de texto para comentarios */
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      margin-top: 10px;
+      resize: none;
+    }
+    /* Botón con contraste: fondo blanco, texto negro */
+    button {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
       margin-top: 10px;
     }
-    button:hover { 
-      background-color: #333; 
-    }
-    /* Estilo para el textarea */
-    textarea { 
-      width: 80%; 
-      height: 100px; 
-      padding: 10px; 
-      font-size: 16px; 
-      border-radius: 4px; 
-      border: none; 
-      resize: none;
-      margin-top: 10px;
+    button:hover {
+      background-color: #ddd;
     }
   </style>
 </head>
@@ -68,13 +82,13 @@
       <button>Enviar</button>
     </div>
     
-    <!-- Tarjeta informativa para correo electrónico -->
+    <!-- Tarjeta informativa para el envío por correo electrónico -->
     <div class="card">
       <h2>📧 Correo Electrónico</h2>
       <p>Pronto activaremos esta opción.</p>
     </div>
     
-    <!-- Tarjeta informativa para el teléfono -->
+    <!-- Tarjeta informativa para el canal telefónico -->
     <div class="card">
       <h2>📞 Teléfono</h2>
       <p>Este canal estará disponible próximamente.</p>
