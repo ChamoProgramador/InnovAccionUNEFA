@@ -212,7 +212,7 @@
   
   <!-- Modal Login -->
   <div id="loginModal" class="modal">
-    <!-- Ahora usamos username en lugar de email -->
+    <!-- Se utiliza username en lugar de email -->
     <input type="text" id="loginUsername" placeholder="Username">
     <input type="password" id="loginPassword" placeholder="Password">
     <button onclick="login()">Iniciar Sesión</button>
@@ -221,7 +221,7 @@
   
   <!-- Modal Registro -->
   <div id="registerModal" class="modal">
-    <!-- Usamos username -->
+    <!-- Se utiliza username -->
     <input type="text" id="registerUsername" placeholder="Username">
     <input type="password" id="registerPassword" placeholder="Password">
     <button onclick="register()">Registrarse</button>
@@ -276,17 +276,17 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   
   <script>
-    // CONFIGURACIÓN DE FIREBASE: reemplaza estos valores por los de tu proyecto
+    // CONFIGURACIÓN DE FIREBASE: Usamos la configuración proporcionada
     const firebaseConfig = {
       apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
-  authDomain: "innovaccionunefa.firebaseapp.com",
-  databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
-  projectId: "innovaccionunefa",
-  storageBucket: "innovaccionunefa.firebasestorage.app",
-  messagingSenderId: "613542800676",
-  appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
-  measurementId: "G-LLK0GLWS1G"
-};
+      authDomain: "innovaccionunefa.firebaseapp.com",
+      databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
+      projectId: "innovaccionunefa",
+      storageBucket: "innovaccionunefa.firebasestorage.app",
+      messagingSenderId: "613542800676",
+      appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
+      measurementId: "G-LLK0GLWS1G"
+    };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
@@ -295,7 +295,8 @@
     // Autenticación: escucha de cambios en el estado de usuario
     auth.onAuthStateChanged(user => {
       if (user) {
-        document.getElementById("userStatus").textContent = user.displayName || (user.email.split("@")[0]);
+        // Se muestra el displayName o se extrae del correo ficticio
+        document.getElementById("userStatus").textContent = user.displayName || user.email.split("@")[0];
         document.getElementById("loginBtn").style.display = "none";
         document.getElementById("registerBtn").style.display = "none";
         document.getElementById("logoutBtn").style.display = "inline-block";
@@ -349,7 +350,6 @@
       const email = username.toLowerCase() + "@dummy.com";
       auth.createUserWithEmailAndPassword(email, password)
         .then(cred => {
-          // Actualizar el displayName con el username ingresado
           return cred.user.updateProfile({ displayName: username });
         })
         .then(() => hideRegisterForm())
