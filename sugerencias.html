@@ -5,102 +5,178 @@
   <title>Sugerencias</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Reset básico */
+    /* Reset básico y configuración general */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     body {
-      background-color: #f0f0f0; /* Gris claro */
-      color: #333;
+      background-color: #333; /* Gris oscuro */
+      color: white;
       font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
+      margin: 0;
+      padding: 0;
     }
-    /* Contenedor principal */
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    /* Botones de navegación en la esquina superior izquierda (posición fija) */
+    #navButtons {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
     }
-    /* Botones de navegación */
-    .nav-buttons {
-      margin-bottom: 20px;
-    }
-    .nav-buttons button {
-      background-color: #333;
+    #navButtons button {
+      background-color: #555;
       color: white;
       border: none;
-      padding: 10px 20px;
-      margin: 5px;
+      padding: 8px 12px;
+      margin-right: 5px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
     }
-    .nav-buttons button:hover {
-      background-color: #555;
+    #navButtons button:hover {
+      background-color: #777;
     }
-    h1 {
-      margin-bottom: 20px;
-      font-size: 28px;
-    }
-    /* Estilo de las tarjetas (cards) */
-    .card {
+    /* Contenedor principal (minicuadro) */
+    .container {
+      max-width: 600px;
+      margin: 80px auto 20px; /* Deja espacio arriba para los botones fijos */
       background-color: black;
-      color: white;
       border: 2px solid white;
       border-radius: 8px;
       padding: 20px;
-      margin-bottom: 20px;
-      transition: transform 0.3s, box-shadow 0.3s;
+      text-align: center;
     }
-    .card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 10px white;
+    .container h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    /* Estilo de las tarjetas (opción de correo y teléfono) */
+    .card {
+      background-color: #222;
+      border: 1px solid white;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      text-align: left;
     }
     .card h2 {
-      font-size: 22px;
+      font-size: 20px;
       margin-bottom: 10px;
     }
     .card p {
       font-size: 16px;
+      margin-bottom: 5px;
     }
     .card a {
       color: white;
       text-decoration: underline;
     }
+    /* Sección de comentarios */
+    .comment-section {
+      text-align: left;
+      margin-top: 20px;
+    }
+    .section-title {
+      font-size: 22px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid white;
+      padding-bottom: 5px;
+    }
+    .comment-section input[type="text"] {
+      width: 75%;
+      padding: 8px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      margin-right: 5px;
+      font-size: 14px;
+    }
+    .comment-section button {
+      padding: 8px 12px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .comment-section button:hover {
+      background-color: #777;
+    }
+    .comment-list {
+      list-style: none;
+      margin-top: 15px;
+      padding: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid #555;
+    }
+    .comment-list li {
+      padding: 8px;
+      border-bottom: 1px solid #555;
+      font-size: 14px;
+    }
+    /* Para que la lista no tenga el último borde */
+    .comment-list li:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 <body>
+  <!-- Botones de navegación en esquina superior izquierda -->
+  <div id="navButtons">
+    <button onclick="history.back();">Regresar</button>
+    <button onclick="window.location.href='index.html';">Inicio</button>
+  </div>
+
+  <!-- Contenedor principal (minicuadro) -->
   <div class="container">
-    <!-- Botones de navegación -->
-    <div class="nav-buttons">
-      <button onclick="history.back();">Regresar</button>
-      <button onclick="window.location.href='index.html';">Inicio</button>
-    </div>
-    
     <h1>Sugerencias</h1>
     
-    <!-- Tarjeta para la opción de correo electrónico -->
+    <!-- Tarjeta: Correo Electrónico -->
     <div class="card">
       <h2>Correo Electrónico</h2>
       <p>
-        Envía tu sugerencia a: 
+        Envía tu sugerencia a:
         <a href="mailto:innovaccionunefa2007@gmail.com">innovaccionunefa2007@gmail.com</a>
       </p>
     </div>
     
-    <!-- Tarjeta para la opción de teléfono -->
+    <!-- Tarjeta: Teléfono -->
     <div class="card">
       <h2>Teléfono</h2>
       <p>
         Este canal estará disponible próximamente.
       </p>
     </div>
+    
+    <!-- Sección de Comentarios -->
+    <div class="comment-section">
+      <div class="section-title">Comentarios</div>
+      <!-- Área para agregar nuevos comentarios -->
+      <div>
+        <input type="text" id="commentInput" placeholder="Escribe tu comentario...">
+        <button onclick="addComment()">Agregar</button>
+      </div>
+      <!-- Lista de comentarios -->
+      <ul class="comment-list" id="commentList">
+        <!-- Se irán agregando elementos aquí -->
+      </ul>
+    </div>
   </div>
+
+  <script>
+    function addComment() {
+      var input = document.getElementById("commentInput");
+      var commentText = input.value.trim();
+      if(commentText !== "") {
+        var li = document.createElement("li");
+        li.innerText = commentText;
+        document.getElementById("commentList").appendChild(li);
+        input.value = "";
+      }
+    }
+  </script>
 </body>
 </html>
