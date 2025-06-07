@@ -11,7 +11,7 @@
       padding: 0;
       box-sizing: border-box;
     }
-    /* Fondo gris oscuro */
+    /* Fondo general: gris oscuro */
     body {
       background-color: #333;
       color: white;
@@ -19,46 +19,88 @@
       padding: 20px;
       position: relative;
     }
-    /* Contenedor de navegación (opcional, se pueden omitir si no se desean más botones) */
-    /* En este caso, no vamos a mostrarlos en el recuadro principal, ya que la consigna es ubicar el recuadro en la esquina superior derecha */
-    
-    /* Contenedor principal (minicuadro) sin borde, posicionado en la esquina superior derecha */
-    .container {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 600px;
-      background-color: black;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
+    /* Botones de navegación fijos en la esquina superior izquierda */
+    #navButtons {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
     }
-    .container h1 {
+    #navButtons button {
+      background-color: #444; /* Negro claro */
+      border: 2px solid black;
+      color: white;
+      padding: 8px 12px;
+      margin-right: 5px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #navButtons button:hover {
+      background-color: #555;
+    }
+    /* Contenedor principal con dos columnas */
+    .main-container {
+      display: flex;
+      gap: 20px;
+      margin-top: 60px;
+    }
+    /* Columna izquierda: caja de sugerencias */
+    .left-sidebar {
+      width: 35%;
+      background-color: #222;
+      padding: 10px;
+      border-radius: 4px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .left-sidebar h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .left-sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .left-sidebar li {
+      padding: 8px;
+      border-bottom: 1px solid #444;
+      cursor: pointer;
+    }
+    .left-sidebar li:hover {
+      background-color: #444;
+    }
+    /* Columna derecha: recuadro para enviar sugerencias */
+    .right-container {
+      width: 65%;
+      background-color: black;
+      padding: 20px;
+      border-radius: 4px;
+    }
+    .right-container h1 {
+      text-align: center;
       margin-bottom: 20px;
       font-size: 28px;
     }
-    /* Sección de entrada de sugerencia */
-    .input-section {
-      margin-top: 10px;
-      text-align: left;
-    }
-    .input-section textarea {
+    .suggestion-input input[type="text"],
+    .suggestion-input textarea {
       width: 100%;
       padding: 8px;
-      font-size: 14px;
-      border: none;
+      margin-bottom: 10px;
+      border: 1px solid #555;
       border-radius: 4px;
-      resize: vertical;
+      font-size: 14px;
     }
-    .input-section label {
+    .suggestion-input label {
       display: block;
       margin: 10px 0 5px;
       font-size: 14px;
     }
-    .input-section input[type="file"] {
+    .suggestion-input input[type="file"] {
       margin-bottom: 10px;
     }
-    .input-section button {
+    .suggestion-input button {
       background-color: #444;
       color: white;
       border: none;
@@ -67,47 +109,80 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .input-section button:hover {
+    .suggestion-input button:hover {
       background-color: #555;
     }
     .message {
       margin-top: 10px;
       font-size: 16px;
+      text-align: center;
+    }
+    /* Filtro debajo del recuadro derecho */
+    .filter-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .filter-section select {
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background-color: #222;
+      color: white;
+    }
+    .filter-section .view-count {
+      margin-left: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <!-- Contenedor principal posicionado en la esquina superior derecha -->
-  <div class="container">
-     <h1>Sugerencias</h1>
-     
-     <div class="input-section">
-       <!-- Campo de comentario -->
-       <textarea id="commentInput" placeholder="Escribe tu sugerencia..." rows="3"></textarea>
-       
-       <!-- Campo de archivo para video -->
-       <label for="videoInput">Adjunta un video (máx. 30 segundos):</label>
-       <input type="file" id="videoInput" accept="video/*">
-       
-       <!-- Campo de archivo para imágenes (hasta 3) -->
-       <label for="imageInput">Adjunta hasta 3 imágenes:</label>
-       <input type="file" id="imageInput" accept="image/*" multiple>
-       
-       <!-- Botón para enviar la sugerencia -->
-       <button onclick="enviarSugerencia()">Enviar Sugerencia</button>
-       
-       <!-- Mensaje (resultado o error) -->
-       <div class="message" id="message"></div>
-     </div>
+  <!-- Botones de navegación fijos arriba a la izquierda -->
+  <div id="navButtons">
+    <button onclick="history.back()">Regresar</button>
+    <button onclick="window.location.href='index.html'">Inicio</button>
   </div>
   
-  <!-- Firebase scripts (usamos la versión compat para simplificar la integración) -->
+  <div class="main-container">
+    <!-- Caja de comentarios (lista de sugerencias) -->
+    <div class="left-sidebar">
+      <h2>Comentarios</h2>
+      <ul id="suggestionList">
+        <!-- Aquí se cargarán las sugerencias desde Firebase -->
+      </ul>
+    </div>
+    
+    <!-- Recuadro para nueva sugerencia -->
+    <div class="right-container">
+      <h1>Nueva Sugerencia</h1>
+      <div class="suggestion-input">
+        <input type="text" id="suggestionTitle" placeholder="Título de la sugerencia">
+        <textarea id="suggestionText" rows="3" placeholder="Escribe tu sugerencia..."></textarea>
+        <label>Adjunta un video (máx. 30 segundos):</label>
+        <input type="file" id="videoInput" accept="video/*">
+        <label>Adjunta hasta 3 imágenes:</label>
+        <input type="file" id="imageInput" accept="image/*" multiple>
+        <button onclick="submitSuggestion()">Enviar Sugerencia</button>
+        <div class="message" id="message"></div>
+      </div>
+      <div class="filter-section">
+        <select id="filterSelect" onchange="applyFilter()">
+          <option value="recent">Recientes</option>
+          <option value="favorites">Favoritos</option>
+          <option value="mostViewed">Más Vistos</option>
+        </select>
+        <span class="view-count" id="viewCount">👁 0</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Firebase scripts (Compat para facilitar la migración) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   
   <script>
-    // Configuración de Firebase (reemplaza con tus datos reales)
+    // CONFIGURACIÓN DE FIREBASE: reemplaza los siguientes valores con los de tu proyecto
     const firebaseConfig = {
       apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
   authDomain: "innovaccionunefa.firebaseapp.com",
@@ -122,16 +197,19 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
     
-    // Función que sube un archivo a Storage y retorna la URL
+    // Simulación de autenticación: variable que determina si el usuario es admin
+    const isAdmin = false; // Cambia a true para probar la vista de admin
+    
+    // Función para subir archivos a Firebase Storage
     async function uploadFile(file, path) {
       const storageRef = storage.ref(path);
       await storageRef.put(file);
       return await storageRef.getDownloadURL();
     }
     
-    // Función para validar la duración del video (máximo 30 segundos)
+    // Función para validar que el video dure máximo 30 segundos
     function validateVideoDuration(file) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const video = document.createElement("video");
         video.preload = "metadata";
         video.onloadedmetadata = function() {
@@ -145,45 +223,39 @@
       });
     }
     
-    async function enviarSugerencia() {
+    // Función para enviar una nueva sugerencia
+    async function submitSuggestion() {
+      const title = document.getElementById("suggestionTitle").value.trim();
+      const text = document.getElementById("suggestionText").value.trim();
+      const videoFile = document.getElementById("videoInput").files[0];
+      const imageFiles = document.getElementById("imageInput").files;
       const messageDiv = document.getElementById("message");
       messageDiv.textContent = "";
       
-      const comment = document.getElementById("commentInput").value.trim();
-      const videoFile = document.getElementById("videoInput").files[0];
-      const imageFiles = document.getElementById("imageInput").files;
-      
-      // Validación: al menos un comentario o archivo debe estar presente
-      if (!comment && !videoFile && imageFiles.length === 0) {
-        messageDiv.textContent = "Debes proporcionar una sugerencia o adjuntar archivos.";
+      if (!title || !text) {
+        messageDiv.textContent = "El título y la sugerencia son obligatorios.";
         return;
       }
       
-      // Validación: máximo 3 imágenes
       if (imageFiles.length > 3) {
         messageDiv.textContent = "Puedes adjuntar hasta 3 imágenes.";
         return;
       }
       
-      // Si hay video, validar su duración
       if (videoFile) {
-        const validVideo = await validateVideoDuration(videoFile);
-        if (!validVideo) {
+        const valid = await validateVideoDuration(videoFile);
+        if (!valid) {
           messageDiv.textContent = "El video debe durar máximo 30 segundos.";
           return;
         }
       }
       
-      // Variables para almacenar URLs de archivos subidos
       let videoURL = "";
       let imageURLs = [];
-      
       try {
-        // Si hay video, subirlo
         if (videoFile) {
           videoURL = await uploadFile(videoFile, `sugerencias/videos/${Date.now()}_${videoFile.name}`);
         }
-        // Subir imágenes (hasta 3)
         if (imageFiles.length > 0) {
           const imagesArray = Array.from(imageFiles);
           for (let i = 0; i < imagesArray.length; i++) {
@@ -194,22 +266,100 @@
         
         // Guardar la sugerencia en Firestore
         await db.collection("sugerencias").add({
-          comment: comment,
+          title: title,
+          text: text,
           videoURL: videoURL,
           imageURLs: imageURLs,
+          viewCount: 0,
+          // Para reacciones usaremos campos objeto: likes (para usuario no admin)
+          // Y favorites (para admin)
+          likes: {},
+          favorites: {},
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-        
         messageDiv.textContent = "Sugerencia enviada exitosamente.";
-        // Limpiar los campos
-        document.getElementById("commentInput").value = "";
+        // Limpiar campos
+        document.getElementById("suggestionTitle").value = "";
+        document.getElementById("suggestionText").value = "";
         document.getElementById("videoInput").value = "";
         document.getElementById("imageInput").value = "";
+        loadSuggestions();
       } catch (error) {
         console.error("Error al enviar la sugerencia:", error);
         messageDiv.textContent = "Ocurrió un error al enviar la sugerencia.";
       }
     }
+    
+    // Función para cargar las sugerencias y mostrarlas en la caja de comentarios (columna izquierda)
+    async function loadSuggestions() {
+      const list = document.getElementById("suggestionList");
+      list.innerHTML = "";
+      const snapshot = await db.collection("sugerencias").orderBy("timestamp", "desc").get();
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        // Mostramos título, texto resumido y vista (ícono ojo y viewCount)
+        li.innerHTML = `<strong>${data.title}</strong><br>${data.text}<br>👁 ${data.viewCount || 0}`;
+        
+        // Según el tipo de usuario, se mostrarán acciones distintas
+        if (isAdmin) {
+          // Admin puede marcar favorito (con una estrella) o dar dislike
+          li.innerHTML += ` <button onclick="markFavorite('${doc.id}')">★</button> <button onclick="markDislike('${doc.id}')">Dislike</button>`;
+        } else {
+          // Usuarios no admin solo pueden dar like o dislike
+          li.innerHTML += ` <button onclick="likeSuggestion('${doc.id}')">Like</button> <button onclick="dislikeSuggestion('${doc.id}')">Dislike</button>`;
+        }
+        // Al hacer click en el elemento, se incrementa la vista (1 vista por usuario, simulada con localStorage)
+        li.onclick = () => incrementView(doc.id);
+        list.appendChild(li);
+      });
+    }
+    
+    // Funciones para reacciones:
+    async function likeSuggestion(id) {
+      const userId = localStorage.getItem("userId") || "user123";
+      const suggestionRef = db.collection("sugerencias").doc(id);
+      await suggestionRef.update({ [`likes.${userId}`]: true });
+      loadSuggestions();
+    }
+    async function dislikeSuggestion(id) {
+      const userId = localStorage.getItem("userId") || "user123";
+      const suggestionRef = db.collection("sugerencias").doc(id);
+      await suggestionRef.update({ [`likes.${userId}`]: false });
+      loadSuggestions();
+    }
+    async function markFavorite(id) {
+      const suggestionRef = db.collection("sugerencias").doc(id);
+      await suggestionRef.update({ [`favorites.admin`]: true });
+      loadSuggestions();
+    }
+    async function markDislike(id) {
+      const suggestionRef = db.collection("sugerencias").doc(id);
+      await suggestionRef.update({ [`favorites.admin`]: false });
+      loadSuggestions();
+    }
+    
+    // Incrementar el conteo de vistas, asegurando 1 vista por perfil (simulado con localStorage)
+    async function incrementView(id) {
+      const userId = localStorage.getItem("userId") || "user123";
+      let viewed = JSON.parse(localStorage.getItem("viewedSuggestions") || "[]");
+      if (!viewed.includes(id)) {
+        viewed.push(id);
+        localStorage.setItem("viewedSuggestions", JSON.stringify(viewed));
+        const suggestionRef = db.collection("sugerencias").doc(id);
+        await suggestionRef.update({ viewCount: firebase.firestore.FieldValue.increment(1) });
+        loadSuggestions();
+      }
+    }
+    
+    // Aplicar filtro (este es un ejemplo; en un entorno real, modificarías la consulta a Firestore)
+    function applyFilter() {
+      // Por ahora recargamos las sugerencias; podrías expandir esto para ordenar en función del filtro seleccionado.
+      loadSuggestions();
+    }
+    
+    // Cargar sugerencias al iniciar la página
+    loadSuggestions();
   </script>
 </body>
 </html>
