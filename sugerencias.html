@@ -11,12 +11,12 @@
       padding: 0;
       box-sizing: border-box;
     }
-    /* Usamos una fuente monoespaciada para emular el estilo "ASCII" */
     body {
       background-color: #333; /* Gris oscuro */
       color: white;
-      font-family: monospace;
-      padding: 20px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
     }
     /* Botones de navegación fijos en la esquina superior izquierda */
     #navButtons {
@@ -26,21 +26,23 @@
       z-index: 1000;
     }
     #navButtons button {
-      background-color: #555;
-      border: none;
-      padding: 5px 10px;
+      background-color: #444; /* Negro claro */
+      border: 2px solid black; /* Borde negro */
+      padding: 8px 12px;
       margin-right: 5px;
-      font-size: 14px;
+      border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
       color: white;
+      font-weight: bold;
     }
     #navButtons button:hover {
-      background-color: #777;
+      background-color: #555; /* Apenas un ligero cambio al pasar el cursor */
     }
-    /* Contenedor principal (minicuadro) centrado */
+    /* Contenedor principal (minicuadro) */
     .container {
       width: 600px;
-      margin: 80px auto 20px; /* espacio arriba para dejar lugar a los botones fijos */
+      margin: 80px auto 20px; /* espacio arriba para los botones fijos */
       border: 2px solid white;
       background-color: black;
       padding: 20px;
@@ -50,7 +52,7 @@
       margin-bottom: 20px;
       font-size: 28px;
     }
-    /* Estilo para las tarjetas (cada uno se parece a una "caja" del diagrama ASCII) */
+    /* Tarjetas (cards) */
     .card {
       border: 2px solid white;
       margin: 10px 0;
@@ -69,7 +71,7 @@
       color: white;
       text-decoration: underline;
     }
-    /* Sección de comentarios con estilo de lista */
+    /* Sección de comentarios estilo lista */
     .comment-section {
       margin-top: 20px;
       text-align: left;
@@ -123,12 +125,12 @@
   </style>
 </head>
 <body>
-  <!-- Botones de navegación fijos -->
+  <!-- Botones de navegación fijos en la esquina superior izquierda -->
   <div id="navButtons">
     <button onclick="history.back()">Regresar</button>
     <button onclick="window.location.href='index.html'">Inicio</button>
   </div>
-
+  
   <!-- Contenedor principal (minicuadro) -->
   <div class="container">
     <h1>Sugerencias</h1>
@@ -145,10 +147,12 @@
     <!-- Tarjeta: Teléfono -->
     <div class="card">
       <h2>Teléfono</h2>
-      <p>Este canal estará disponible próximamente.</p>
+      <p>
+        Este canal estará disponible próximamente.
+      </p>
     </div>
     
-    <!-- Sección: Comentarios (estilo lista) -->
+    <!-- Sección de Comentarios (lista) -->
     <div class="card comment-section">
       <h2>Comentarios</h2>
       <div class="comment-input-area">
@@ -160,13 +164,13 @@
       </ul>
     </div>
   </div>
-
+  
   <script>
     function addComment() {
-      const input = document.getElementById("commentInput");
-      const commentText = input.value.trim();
+      var input = document.getElementById("commentInput");
+      var commentText = input.value.trim();
       if (commentText !== "") {
-        const li = document.createElement("li");
+        var li = document.createElement("li");
         li.textContent = commentText;
         document.getElementById("commentList").appendChild(li);
         input.value = "";
