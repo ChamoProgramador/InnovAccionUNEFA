@@ -265,7 +265,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 
   <script>
-    // Tu configuración de Firebase:
+    
     const firebaseConfig = {
   apiKey: "AIzaSyCOy5Gp1owFTLE78pz7RaKX48KnE0q5_3g",
   authDomain: "innovaccionunefa-b651f.firebaseapp.com",
@@ -274,9 +274,9 @@
   messagingSenderId: "1072624735711",
   appId: "1:1072624735711:web:bfaa90d76a46840fc9a06a"
 };
-    // Inicializar Firebase si no ha sido inicializado
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
     }
     
     const auth = firebase.auth();
