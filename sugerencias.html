@@ -239,8 +239,8 @@
     <div class="modal-content">
         <span class="modal-close" onclick="hideLoginForm()">&times;</span>
         <h2>Iniciar Sesión</h2>
-        <input type="text" id="loginUsername" placeholder="Username">
-        <input type="password" id="loginPassword" placeholder="Password">
+        <input type="text" id="loginUsername" placeholder="Usuario">
+        <input type="password" id="loginPassword" placeholder="Contraseña">
         <button onclick="login()">Iniciar Sesión</button>
     </div>
   </div>
@@ -249,8 +249,8 @@
     <div class="modal-content">
         <span class="modal-close" onclick="hideRegisterForm()">&times;</span>
         <h2>Registrarse</h2>
-        <input type="text" id="registerUsername" placeholder="Username">
-        <input type="password" id="registerPassword" placeholder="Password">
+        <input type="text" id="registerUsername" placeholder="Usuario">
+        <input type="password" id="registerPassword" placeholder="Contraseña">
         <button onclick="register()">Registrarse</button>
     </div>
   </div>
@@ -335,8 +335,8 @@
         loginBtn.style.display = "none";
         registerBtn.style.display = "none";
         logoutBtn.style.display = "inline-block";
-        // Asumiendo que el admin es "chamoprogramador" (case insensitive)
-        window.isAdmin = name.toLowerCase() === "chamoprogramador"; 
+        // Asumiendo que el admin es "ChamoProgramador2007" (case insensitive)
+        window.isAdmin = name.toLowerCase() === "chamoprogramador2007"; 
       } else {
         status.textContent = "No autenticado";
         loginBtn.style.display = "inline-block";
@@ -359,24 +359,23 @@
       if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
       
       // Credenciales fijas para el administrador
-      if (u === "ChamoProgramador" && p === "29072024") {
+      if (u === "ChamoProgramador2007" && p === "20072024") { // <--- ¡Nuevas credenciales de administrador!
           try {
-              // Intenta iniciar sesión con un email dummy para ChamoProgramador
-              await auth.signInWithEmailAndPassword("chamoprogramador@dummy.com", p);
+              // Intenta iniciar sesión con un email dummy para ChamoProgramador2007
+              await auth.signInWithEmailAndPassword("chamoprogramador2007@dummy.com", p);
               // Si no existe, lo crea. Esto es para que Firebase Auth lo reconozca.
-              // Asegúrate de que el displayName se establezca si es un usuario nuevo.
               if (!auth.currentUser.displayName) {
-                  await auth.currentUser.updateProfile({displayName: "ChamoProgramador"});
+                  await auth.currentUser.updateProfile({displayName: "ChamoProgramador2007"});
               }
               hideLoginForm();
               alert("Inicio de sesión de administrador exitoso.");
           } catch (e) {
               // Si el error es por usuario no encontrado o contraseña incorrecta para el dummy,
-              // intentamos registrarlo, ya que ChamoProgramador es una cuenta "fija".
+              // intentamos registrarlo, ya que ChamoProgramador2007 es una cuenta "fija".
               if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
                   try {
-                      const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
-                      await cred.user.updateProfile({displayName: "ChamoProgramador"});
+                      const cred = await auth.createUserWithEmailAndPassword("chamoprogramador2007@dummy.com", p);
+                      await cred.user.updateProfile({displayName: "ChamoProgramador2007"});
                       hideLoginForm();
                       alert("Administrador creado e iniciado sesión.");
                   } catch (createError) {
