@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     /* ------------------------------
-       Reset y Estilos Generales
+       Reset y estilos generales
        ------------------------------ */
     * {
       margin: 0;
@@ -22,25 +22,20 @@
          red 66.66%, red 100%);
       color: #eee;
     }
-    /* ------------------------------
-       Contenedor Principal
-       ------------------------------ */
+    /* Contenedor principal */
     #container {
       max-width: 1200px;
       margin: 20px auto;
-      background-color: rgba(34,34,34,0.9);
+      background-color: rgba(34, 34, 34, 0.9);
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
     }
-    /* ------------------------------
-       Header y Navegación
-       ------------------------------ */
+    /* Header y navegación */
     header {
       background-color: #8B0000;
       padding: 20px;
       text-align: center;
-      position: relative;
     }
     header h1 {
       font-size: 42px;
@@ -67,9 +62,7 @@
     nav a:hover {
       background-color: rgba(255,255,255,0.2);
     }
-    /* ------------------------------
-       Hero Section
-       ------------------------------ */
+    /* Hero Section */
     .hero {
       background: rgba(0,0,0,0.4);
       padding: 100px 20px;
@@ -85,41 +78,50 @@
       font-size: 20px;
       color: #eee;
     }
-    /* ------------------------------
-       Sección de Presentación
-       ------------------------------ */
-    #presentacion {
-      padding: 40px 20px;
-      text-align: center;
+    /* Sección de Sugerencias Integrada en el Index */
+    .suggestions-section {
+      padding: 20px;
+      border: 2px solid #8B0000;
+      margin: 20px;
+      border-radius: 6px;
+      background-color: #1a1a1a;
     }
-    #presentacion h2 {
-      font-size: 32px;
+    .suggestions-section h2 {
+      margin-bottom: 10px;
       color: #8B0000;
-      margin-bottom: 20px;
     }
-    #presentacion p {
-      font-size: 18px;
-      line-height: 1.5;
+    .suggestions-section h3 {
+      margin-top: 15px;
+      font-size: 20px;
+      color: #ccc;
     }
-    /* ------------------------------
-       Sección de Contacto (Decorativa)
-       ------------------------------ */
-    #contacto {
+    .suggestions-section textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #555;
+      resize: vertical;
+      font-size: 16px;
       background-color: #333;
-      padding: 40px 20px;
-      text-align: center;
+      color: #eee;
     }
-    #contacto h2 {
-      font-size: 32px;
-      color: #ffd700;
-      margin-bottom: 20px;
+    .suggestions-section button {
+      background-color: #660099;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
     }
-    #contacto p {
-      font-size: 18px;
+    .suggestions-section button:hover {
+      background-color: #550088;
     }
-    /* ------------------------------
-       Footer
-       ------------------------------ */
+    .suggestions-section p#suggestionResult {
+      margin-top: 10px;
+    }
+    /* Footer */
     footer {
       background-color: #111;
       text-align: center;
@@ -127,20 +129,11 @@
       font-size: 14px;
       color: #ccc;
     }
-    /* ------------------------------
-       Responsive
-       ------------------------------ */
+    /* Responsive */
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 32px;
-      }
-      .hero h2 {
-        font-size: 28px;
-      }
-      nav a {
-        padding: 8px 16px;
-        font-size: 16px;
-      }
+      header h1 { font-size: 32px; }
+      nav a { font-size: 16px; padding: 8px 16px; }
+      .hero h2 { font-size: 28px; }
     }
   </style>
 </head>
@@ -150,41 +143,50 @@
     <header>
       <h1>InnovAccionUNEFA</h1>
       <nav>
-        <a href="foro.html">Foro</a>
+        <a href="index.html">Inicio</a>
         <a href="noticias.html">Noticias</a>
+        <a href="foro.html">Foro</a>
         <a href="sugerencias.html">Sugerencias</a>
-        <a href="#contacto">Contacto</a>
+        <a href="contacto.html">Contacto</a>
       </nav>
     </header>
 
     <!-- HERO SECTION -->
     <section class="hero">
       <h2>Impulsando la Innovación</h2>
-      <p>
-        Este Proyecto está hecho para agregar apartados que no están disponibles en la página UNEFA centrándose en la retroalimentación general.
-      </p>
+      <p>Bienvenido a la plataforma oficial de InnovAccionUNEFA</p>
     </section>
 
-    <!-- SECCIÓN DE PRESENTACIÓN -->
-    <section id="presentacion">
-      <h2>Bienvenido</h2>
-      <p>
-        Descubre nuestros apartados: Foro, Noticias y Sugerencias. Explora el contenido y comparte tus ideas para seguir creciendo como comunidad.
-      </p>
+    <!-- SECCIÓN: SUGERENCIAS -->
+    <section class="suggestions-section">
+      <h2>Envía tu Sugerencia</h2>
+      
+      <!-- Opción A: Comentario -->
+      <h3>1️⃣ Deja un comentario</h3>
+      <textarea id="suggestionInput" placeholder="Escribe tu sugerencia aquí..."></textarea>
+      <button onclick="mostrarSugerencia()">Enviar</button>
+      <p id="suggestionResult"></p>
+      
+      <!-- Opción B: Enviar por correo -->
+      <h3>2️⃣ Enviar por correo electrónico</h3>
+      <p>Próximamente podrás enviar tu sugerencia a través de correo electrónico.</p>
+      
+      <!-- Opción C: Enviar por teléfono -->
+      <h3>3️⃣ Enviar por teléfono</h3>
+      <p>En el futuro se habilitará un número telefónico para que envíes tus sugerencias.</p>
     </section>
-
-    <!-- SECCIÓN DE CONTACTO (DECORATIVA) -->
-    <section id="contacto">
-      <h2>Contacto</h2>
-      <p>
-        Próximamente agregaremos un formulario de contacto interactivo. ¡Mantente atento!
-      </p>
-    </section>
-
+    
     <!-- FOOTER -->
     <footer>
       <p>&copy; 2025 InnovAccionUNEFA. Todos los derechos reservados. Creadores: Jesus Luis Eduardo D-2 Ingeniería de Sistemas</p>
     </footer>
   </div>
+
+  <script>
+    function mostrarSugerencia() {
+      var suggestion = document.getElementById('suggestionInput').value;
+      document.getElementById('suggestionResult').innerHTML = "<strong>Tu sugerencia:</strong> " + suggestion;
+    }
+  </script>
 </body>
 </html>
