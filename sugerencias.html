@@ -19,7 +19,7 @@
       padding: 20px;
       position: relative;
     }
-    /* Botones Regresar e Inicio (esquina superior izquierda) */
+    /* Botones Regresar & Inicio (esquina superior izquierda) */
     #navButtons {
       position: fixed;
       top: 10px;
@@ -64,7 +64,7 @@
     #authSection button:hover {
       background-color: #555;
     }
-    /* Formularios de Login / Registro (modales simples) */
+    /* Modales para Login / Registro */
     .modal {
       display: none;
       position: fixed;
@@ -89,13 +89,13 @@
       color: white;
       cursor: pointer;
     }
-    /* Contenedor principal con dos columnas */
+    /* Contenedor principal: dos columnas */
     .main-container {
       display: flex;
       gap: 20px;
       margin-top: 60px; /* Espacio para los botones fijos */
     }
-    /* Columna izquierda: lista de sugerencias (caja de comentarios) */
+    /* Columna izquierda: listado de sugerencias (caja de comentarios) */
     .left-sidebar {
       width: 60%;
       background-color: #222;
@@ -121,7 +121,7 @@
     .left-sidebar li:hover {
       background-color: #444;
     }
-    /* Columna derecha: recuadro (más pequeño) para nueva sugerencia */
+    /* Columna derecha: recuadro para nueva sugerencia (más pequeño) */
     .right-container {
       width: 35%;
       background-color: black;
@@ -167,7 +167,7 @@
       font-size: 14px;
       text-align: center;
     }
-    /* Filtro: debajo del recuadro derecho */
+    /* Filtro: debajo del recuadro derecho (sin ícono de ojo) */
     .filter-section {
       margin-top: 20px;
       text-align: center;
@@ -179,10 +179,6 @@
       border-radius: 4px;
       background-color: #222;
       color: white;
-    }
-    .filter-section .view-count {
-      margin-left: 10px;
-      font-size: 14px;
     }
     /* Área para información extra de Firebase (placeholder) */
     #firebase-section {
@@ -228,12 +224,11 @@
   
   <!-- Contenedor principal con dos columnas -->
   <div class="main-container">
-
     <!-- Columna izquierda: listado de sugerencias -->
     <div class="left-sidebar">
       <h2>Comentarios</h2>
       <ul id="suggestionList">
-        <!-- Las sugerencias se cargarán desde Firebase -->
+        <!-- Se cargarán las sugerencias desde Firebase -->
       </ul>
     </div>
     
@@ -257,7 +252,6 @@
           <option value="recent">Recientes</option>
           <option value="old">Antiguos</option>
         </select>
-        <span class="view-count" id="totalViewCount">👁 0</span>
       </div>
     </div>
   </div>
@@ -267,14 +261,14 @@
     <p><strong>Firebase:</strong> Integración en curso...</p>
   </div>
   
-  <!-- Firebase scripts (Compat para facilitar la integración) -->
+  <!-- Firebase scripts (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   
   <script>
-    // CONFIGURACIÓN DE FIREBASE: (reemplaza con los datos de tu proyecto)
+    // CONFIGURACIÓN DE FIREBASE (reemplaza con los datos de tu proyecto):
     const firebaseConfig = {
       apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
       authDomain: "innovaccionunefa.firebaseapp.com",
@@ -290,10 +284,10 @@
     const storage = firebase.storage();
     const auth = firebase.auth();
     
-    // Autenticación: escucha de cambios en estado de usuario
+    // Escucha de cambios en la autenticación
     auth.onAuthStateChanged(user => {
       if (user) {
-        // Se muestra el displayName o se obtiene del nombre ficticio
+        // Usa el displayName si existe; si no, extrae del email
         document.getElementById("userStatus").textContent = user.displayName || user.email.split("@")[0];
         document.getElementById("loginBtn").style.display = "none";
         document.getElementById("registerBtn").style.display = "none";
@@ -311,7 +305,7 @@
       }
     });
     
-    // Mostrar/Ocultar formularios de Login/Registro
+    // Mostrar/Ocultar formularios
     function showLoginForm() {
       document.getElementById("loginModal").style.display = "block";
     }
@@ -325,7 +319,7 @@
       document.getElementById("registerModal").style.display = "none";
     }
     
-    // Funciones de autenticación usando username y contraseña (con creación de correo ficticio)
+    // Funciones de autenticación usando username y contraseña.
     function login() {
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value;
@@ -333,16 +327,25 @@
         alert("Debes ingresar el usuario y la contraseña.");
         return;
       }
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        alert("El nombre de usuario sólo puede contener letras, números y guiones bajos.");
+        return;
+      }
       const email = username.toLowerCase() + "@dummy.com";
       auth.signInWithEmailAndPassword(email, password)
         .then(() => hideLoginForm())
         .catch(error => alert(error.message));
     }
+    
     function register() {
       const username = document.getElementById("registerUsername").value.trim();
       const password = document.getElementById("registerPassword").value;
       if (!username || !password) {
         alert("Debes ingresar el usuario y la contraseña.");
+        return;
+      }
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        alert("El nombre de usuario sólo puede contener letras, números y guiones bajos.");
         return;
       }
       const email = username.toLowerCase() + "@dummy.com";
@@ -353,6 +356,7 @@
         .then(() => hideRegisterForm())
         .catch(error => alert(error.message));
     }
+    
     function logout() {
       auth.signOut();
     }
@@ -364,7 +368,7 @@
       return await storageRef.getDownloadURL();
     }
     
-    // Validar que el video tenga máximo 30 segundos
+    // Función para validar que el video no supere los 30 segundos
     function validateVideoDuration(file) {
       return new Promise(resolve => {
         const video = document.createElement("video");
@@ -407,7 +411,6 @@
       
       let videoURL = "";
       let imageURLs = [];
-      
       try {
         if (videoFile) {
           videoURL = await uploadFile(videoFile, `sugerencias/videos/${Date.now()}_${videoFile.name}`);
@@ -443,91 +446,7 @@
       }
     }
     
-    // Cargar las sugerencias en la caja de comentarios (columna izquierda)
+    // Cargar sugerencias en la caja de comentarios (columna izquierda)
     async function loadSuggestions() {
       const suggestionList = document.getElementById("suggestionList");
-      suggestionList.innerHTML = "";
-      const filter = document.getElementById("filterSelect").value;
-      let query = db.collection("sugerencias");
-      if (filter === "mostViewed") {
-        query = query.orderBy("viewCount", "desc");
-      } else if (filter === "recent") {
-        query = query.orderBy("timestamp", "desc");
-      } else if (filter === "old") {
-        query = query.orderBy("timestamp", "asc");
-      }
-      const snapshot = await query.get();
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const li = document.createElement("li");
-        li.innerHTML = `<strong>${data.title}</strong><br>${data.text}<br>👁 ${data.viewCount || 0}`;
-        if (window.isAdmin) {
-          li.innerHTML += ` <button onclick="markFavorite('${doc.id}')">★</button> <button onclick="markDislike('${doc.id}')">Dislike</button>`;
-        } else {
-          li.innerHTML += ` <button onclick="likeSuggestion('${doc.id}')">Like</button> <button onclick="dislikeSuggestion('${doc.id}')">Dislike</button>`;
-        }
-        li.onclick = () => incrementView(doc.id);
-        suggestionList.appendChild(li);
-      });
-      
-      // Sumar vistas totales
-      let totalViews = 0;
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        totalViews += d.viewCount || 0;
-      });
-      document.getElementById("totalViewCount").textContent = `👁 ${totalViews}`;
-    }
-    
-    // Funciones de reacciones y para incrementar vistas
-    async function incrementView(id) {
-      const userId = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2,9);
-      localStorage.setItem("userId", userId);
-      let viewed = JSON.parse(localStorage.getItem("viewedSuggestions") || "[]");
-      if (!viewed.includes(id)) {
-        viewed.push(id);
-        localStorage.setItem("viewedSuggestions", JSON.stringify(viewed));
-        const docRef = db.collection("sugerencias").doc(id);
-        await docRef.update({ viewCount: firebase.firestore.FieldValue.increment(1) });
-        loadSuggestions();
-      }
-    }
-    
-    async function likeSuggestion(id) {
-      const userId = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2,9);
-      localStorage.setItem("userId", userId);
-      const docRef = db.collection("sugerencias").doc(id);
-      await docRef.update({ [`likes.${userId}`]: true });
-      loadSuggestions();
-    }
-    
-    async function dislikeSuggestion(id) {
-      const userId = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2,9);
-      localStorage.setItem("userId", userId);
-      const docRef = db.collection("sugerencias").doc(id);
-      await docRef.update({ [`likes.${userId}`]: false });
-      loadSuggestions();
-    }
-    
-    async function markFavorite(id) {
-      const docRef = db.collection("sugerencias").doc(id);
-      await docRef.update({ [`favorites.admin`]: true });
-      loadSuggestions();
-    }
-    
-    async function markDislike(id) {
-      const docRef = db.collection("sugerencias").doc(id);
-      await docRef.update({ [`favorites.admin`]: false });
-      loadSuggestions();
-    }
-    
-    function applyFilter() {
-      loadSuggestions();
-    }
-    
-    document.getElementById("filterSelect").addEventListener("change", applyFilter);
-    
-    loadSuggestions();
-  </script>
-</body>
-</html>
+      suggestion
