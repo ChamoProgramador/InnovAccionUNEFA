@@ -5,7 +5,143 @@
   <title>Sugerencias</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    /* ... (Tu CSS permanece igual) ... */
+    /* RESET BÁSICO */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#333; color:#fff; font-family:Arial,sans-serif;
+      padding:20px; position:relative;
+      min-height: 100vh; /* Asegura que el cuerpo ocupe toda la altura */
+    }
+    /* Navegación superior izquierda */
+    #navButtons {
+      position:fixed; top:10px; left:10px; z-index:1000;
+    }
+    #navButtons button {
+      background:#444; border:2px solid #000; color:#fff;
+      padding:8px 12px; margin-right:5px; border-radius:4px;
+      font-weight:bold; cursor:pointer;
+      transition: background 0.3s ease;
+    }
+    #navButtons button:hover { background:#555; }
+    /* Auth superior derecha */
+    #authSection {
+      position:fixed; top:10px; right:10px; z-index:1000;
+      display: flex; align-items: center;
+    }
+    #authSection span { margin-right:10px; font-size:14px; color: #ccc; }
+    #authSection button {
+      background:#444; border:2px solid #000; color:#fff;
+      padding:6px 10px; margin-right:5px; border-radius:4px;
+      cursor:pointer;
+      transition: background 0.3s ease;
+    }
+    #authSection button:hover { background:#555; }
+    /* Modales login/registro */
+    .modal {
+      display:none; position:fixed;
+      top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.7);
+      z-index:1001;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+        background:#282828;
+        border:2px solid #000; padding:20px;
+        border-radius:8px;
+        width: 90%; max-width: 300px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        position: relative;
+    }
+    .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #aaa;
+    }
+    .modal-close:hover {
+        color: #fff;
+    }
+    .modal h2 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #eee;
+    }
+    .modal input {
+      display:block; width:calc(100% - 20px); margin:10px auto; padding:8px 10px;
+      border:1px solid #555; border-radius:4px; background:#333; color:#fff;
+    }
+    .modal button {
+      display:block; width:calc(100% - 20px); margin:10px auto;
+      background:#555; border:none; color:#fff; cursor:pointer;
+      padding:10px 15px; border-radius:4px;
+      transition: background 0.3s ease;
+    }
+    .modal button:hover { background:#666; }
+    /* Layout dos columnas */
+    .main-container {
+      display:flex; gap:20px; margin-top:60px;
+      flex-wrap: wrap;
+    }
+    /* Izquierda: lista */
+    .left-sidebar {
+      flex: 1;
+      min-width: 300px;
+      background:#222; padding:10px;
+      border-radius:4px; max-height:calc(100vh - 100px);
+      overflow-y:auto;
+      border: 1px solid #000;
+    }
+    .left-sidebar h2 { text-align:center; margin-bottom:10px; color: #eee; }
+    .left-sidebar ul { list-style:none; }
+    .left-sidebar li {
+      background: #333;
+      padding:12px; border-bottom:1px solid #444;
+      font-size:14px; cursor:pointer;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+      position: relative;
+    }
+    .left-sidebar li:last-child { border-bottom: none; }
+    .left-sidebar li:hover { background:#444; }
+    .suggestion-meta {
+        font-size: 0.8em;
+        color: #bbb;
+        margin-top: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .suggestion-actions {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #444;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+    .suggestion-actions button {
+        background: #555;
+        border: none;
+        color: #fff;
+        padding: 5px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.7em;
+        transition: background 0.3s ease;
+        flex-grow: 1;
+        min-width: 60px;
+    }
+    .suggestion-actions button:hover {
+        background: #777;
+    }
+    .suggestion-actions button.active {
+        background-color: #007bff;
+    }
     /* Estilos específicos para botones de administrador */
     .admin-action-btn {
         background-color: #8B0000; /* Vinotinto para eliminar */
@@ -19,9 +155,132 @@
     .admin-action-btn.favorite:hover {
         background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
     }
+
+    /* Derecha: formulario */
+    .right-container {
+      flex: 1;
+      min-width: 300px;
+      background:#000; padding:20px;
+      border-radius:4px;
+      border: 1px solid #222;
+    }
+    .right-container h1 {
+      text-align:center; margin-bottom:20px; font-size:24px; color: #eee;
+    }
+    .suggestion-input input[type="text"],
+    .suggestion-input textarea {
+      width:calc(100% - 16px); padding:8px; margin-bottom:10px;
+      border:1px solid #555; border-radius:4px; font-size:14px;
+      background:#222; color:#fff;
+    }
+    .suggestion-input label { margin:10px 0 5px; display:block; color: #ccc; }
+    .suggestion-input input[type="file"] { margin-bottom:10px; background:#222; padding:5px; border-radius:4px; border:1px solid #555; }
+    .suggestion-input button {
+      background:#007bff;
+      color:#fff; border:none;
+      border-radius:44px; padding:10px 20px;
+      cursor:pointer; font-size:14px;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+    .suggestion-input button:hover { background:#0056b3; }
+    .message { margin-top:10px; font-size:14px; text-align:center; color: yellow; }
+    /* Filtro */
+    .filter-section {
+      margin-top:20px; text-align:center;
+      padding-top: 20px;
+      border-top: 1px solid #222;
+    }
+    .filter-section select {
+      padding:8px; font-size:14px;
+      border:1px solid #555; border-radius:4px;
+      background:#222; color:#fff;
+      width: 100%; max-width: 200px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .main-container {
+            flex-direction: column;
+        }
+        .left-sidebar, .right-container {
+            width: 100%;
+            min-width: unset;
+        }
+        #navButtons, #authSection {
+            position: static;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        #authSection {
+            margin-top: 10px;
+        }
+        body { padding: 10px; }
+        .main-container { margin-top: 20px; }
+    }
   </style>
 </head>
 <body>
+
+  <div id="navButtons">
+    <button onclick="history.back()">Regresar</button>
+    <button onclick="window.location.href='index.html'">Inicio</button>
+  </div>
+
+  <div id="authSection">
+    <span id="userStatus">No autenticado</span>
+    <button id="loginBtn" onclick="showLoginForm()">Iniciar Sesión</button>
+    <button id="registerBtn" onclick="showRegisterForm()">Registrarse</button>
+    <button id="logoutBtn" onclick="logout()" style="display:none;">Cerrar Sesión</button>
+  </div>
+
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="hideLoginForm()">&times;</span>
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="loginUsername" placeholder="Username">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button onclick="login()">Iniciar Sesión</button>
+    </div>
+  </div>
+
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="hideRegisterForm()">&times;</span>
+        <h2>Registrarse</h2>
+        <input type="text" id="registerUsername" placeholder="Username">
+        <input type="password" id="registerPassword" placeholder="Password">
+        <button onclick="register()">Registrarse</button>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="left-sidebar">
+      <h2>Comentarios</h2>
+      <ul id="suggestionList"></ul>
+    </div>
+    <div class="right-container">
+      <h1>Nueva Sugerencia</h1>
+      <div class="suggestion-input">
+        <input type="text" id="suggestionTitle" placeholder="Título de la sugerencia">
+        <textarea id="suggestionText" rows="3" placeholder="Escribe tu sugerencia..."></textarea>
+        <label>Adjunta un video (máx. 30 segundos):</label>
+        <input type="file" id="videoInput" accept="video/*">
+        <label>Adjunta hasta 3 imágenes:</label>
+        <input type="file" id="imageInput" accept="image/*" multiple>
+        <button onclick="submitSuggestion()">Enviar Sugerencia</button>
+        <div class="message" id="message"></div>
+      </div>
+      <div class="filter-section">
+        <select id="filterSelect" onchange="applyFilter()">
+          <option value="mostViewed" selected>Más Vistos</option>
+          <option value="recent">Recientes</option>
+          <option value="old">Antiguos</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -31,10 +290,10 @@
   <script>
     // Tu configuración de Firebase:
     const firebaseConfig = {
-      apiKey: "AIzaSyCOy5Gp1owFTLE78pz7RaKX48KnE0q5_3g",
-      authDomain: "innovaccionunefa-b651f.firebaseapp.com",
-      projectId: "innovaccionunefa-b651f",
-      storageBucket: "innovaccionunefa-b651f.firebasestorage.app",
+      apiKey: "AIzaSyCOy5Gp1owFTLE78pz7RaKX48KnE0q5_3g", // <-- Verifica que este sea tu API Key de Firebase
+      authDomain: "innovaccionunefa-b651f.firebaseapp.com", // <-- Verifica que este sea tu Auth Domain
+      projectId: "innovaccionunefa-b651f", // <-- Verifica que este sea tu Project ID
+      storageBucket: "innovaccionunefa-b651f.firebasestorage.app", // <-- Verifica que este sea tu Storage Bucket
       messagingSenderId: "1072624735711",
       appId: "1:1072624735711:web:bfaa90d76a46840fc9a06a"
     };
@@ -49,17 +308,217 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // ... (El resto de tu JavaScript permanece igual) ...
-    // Asegúrate de que las funciones likeSuggestion, dislikeSuggestion, markFavorite, markDislike, y deleteSuggestion
-    // tengan la lógica y los botones de administrador que habíamos añadido previamente en la respuesta anterior.
-    // También, ten en cuenta que tus funciones de admin markFavorite y markDislike para el admin
-    // tienen el mismo comportamiento que los likes/dislikes de usuario, lo cual es redundante.
-    // Para el admin, solo necesitas `markFavorite` (que alterna el estado de favorito) y `deleteSuggestion`.
+    // Referencias a elementos del DOM
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginModal = document.getElementById("loginModal");
+    const registerModal = document.getElementById("registerModal");
+    const loginUsername = document.getElementById("loginUsername");
+    const loginPassword = document.getElementById("loginPassword");
+    const registerUsername = document.getElementById("registerUsername");
+    const registerPassword = document.getElementById("registerPassword");
+    const suggestionTitle = document.getElementById("suggestionTitle");
+    const suggestionText = document.getElementById("suggestionText");
+    const videoInput = document.getElementById("videoInput");
+    const imageInput = document.getElementById("imageInput");
+    const message = document.getElementById("message");
+    const suggestionList = document.getElementById("suggestionList");
+    const filterSelect = document.getElementById("filterSelect");
 
-    // **REVISIÓN DE BOTONES DE ADMIN EN loadSuggestions**:
-    // En el archivo "sugerencias (1).html", los botones de admin han cambiado de nuevo.
-    // Volvamos a la versión anterior que tenía los botones de Eliminar y Favorito correctos,
-    // y solo necesitamos una función para marcar/desmarcar Favorito.
+    // Monitorear estado de autenticación
+    auth.onAuthStateChanged(user => {
+      const status = document.getElementById("userStatus");
+      if (user) {
+        const name = user.displayName || user.email.split("@")[0];
+        status.textContent = `Bienvenido, ${name}`;
+        loginBtn.style.display = "none";
+        registerBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+        // Asumiendo que el admin es "chamoprogramador" (case insensitive)
+        window.isAdmin = name.toLowerCase() === "chamoprogramador"; 
+      } else {
+        status.textContent = "No autenticado";
+        loginBtn.style.display = "inline-block";
+        registerBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+        window.isAdmin = false;
+      }
+      loadSuggestions(); // Recargar sugerencias para actualizar la UI según el rol
+    });
+
+    // Mostrar/ocultar modales
+    function showLoginForm(){ loginModal.style.display="flex"; }
+    function hideLoginForm(){ loginModal.style.display="none"; }
+    function showRegisterForm(){ registerModal.style.display="flex"; }
+    function hideRegisterForm(){ registerModal.style.display="none"; }
+
+    // Autenticación user/pass simulada con email dummy
+    async function login(){
+      const u = loginUsername.value.trim(), p = loginPassword.value;
+      if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
+      
+      // Credenciales fijas para el administrador
+      if (u === "ChamoProgramador" && p === "29072024") {
+          try {
+              // Intenta iniciar sesión con un email dummy para ChamoProgramador
+              await auth.signInWithEmailAndPassword("chamoprogramador@dummy.com", p);
+              // Si no existe, lo crea. Esto es para que Firebase Auth lo reconozca.
+              // Asegúrate de que el displayName se establezca si es un usuario nuevo.
+              if (!auth.currentUser.displayName) {
+                  await auth.currentUser.updateProfile({displayName: "ChamoProgramador"});
+              }
+              hideLoginForm();
+              alert("Inicio de sesión de administrador exitoso.");
+          } catch (e) {
+              // Si el error es por usuario no encontrado o contraseña incorrecta para el dummy,
+              // intentamos registrarlo, ya que ChamoProgramador es una cuenta "fija".
+              if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
+                  try {
+                      const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
+                      await cred.user.updateProfile({displayName: "ChamoProgramador"});
+                      hideLoginForm();
+                      alert("Administrador creado e iniciado sesión.");
+                  } catch (createError) {
+                      alert("Error al crear o iniciar sesión como administrador: " + createError.message);
+                      console.error("Admin create/login error:", createError);
+                  }
+              } else {
+                  alert("Error al iniciar sesión como administrador: " + e.message);
+                  console.error("Admin login error:", e);
+              }
+          }
+          return; // Salir de la función después de intentar el login del admin
+      }
+
+      // Lógica para usuarios normales (no admin)
+      const email = u.toLowerCase()+"@dummy.com"; // Usamos un email dummy para Firebase Auth
+      try {
+        await auth.signInWithEmailAndPassword(email,p);
+        hideLoginForm();
+        alert("Inicio de sesión exitoso.");
+      } catch(e) {
+        alert("Error al iniciar sesión: " + e.message);
+        console.error("Login error:", e);
+      }
+    }
+
+    async function register(){
+      const u = registerUsername.value.trim(), p = registerPassword.value;
+      if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
+      if(p.length < 6) { return alert("La contraseña debe tener al menos 6 caracteres."); } // Firebase Auth min password length
+      const email = u.toLowerCase()+"@dummy.com"; // Usamos un email dummy para Firebase Auth
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email,p);
+        await cred.user.updateProfile({displayName:u}); // Guarda el nombre de usuario
+        hideRegisterForm();
+        alert("Registro exitoso. Ahora puedes iniciar sesión.");
+      } catch(e) {
+        alert("Error al registrar: " + e.message);
+        console.error("Register error:", e);
+      }
+    }
+
+    function logout(){ 
+        auth.signOut().then(() => {
+            alert("Sesión cerrada.");
+        }).catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+            alert("Error al cerrar sesión.");
+        });
+    }
+
+    // Subir archivo a Storage
+    async function uploadFile(file,path){
+      const ref = storage.ref(path);
+      const snapshot = await ref.put(file);
+      return snapshot.ref.getDownloadURL();
+    }
+
+    // Eliminar archivo de Storage
+    async function deleteFile(url) {
+        if (!url) return;
+        try {
+            const ref = storage.refFromURL(url);
+            await ref.delete();
+            console.log("Archivo eliminado de Storage:", url);
+        } catch (error) {
+            console.warn("No se pudo eliminar el archivo de Storage (puede que no exista o no haya permisos):", url, error);
+        }
+    }
+
+    // Validar duración del video
+    function validateVideoDuration(file){
+      return new Promise(res=>{
+        const v=document.createElement("video");
+        v.preload="metadata";
+        v.onloadedmetadata=()=>{ 
+          URL.revokeObjectURL(v.src); 
+          res(v.duration <= 30); 
+        };
+        v.onerror=()=>{ res(false); }; // Manejar error al cargar el video
+        v.src=URL.createObjectURL(file);
+      });
+    }
+
+    // Enviar sugerencia
+    async function submitSuggestion(){
+      if (!auth.currentUser) {
+          message.textContent = "Debes iniciar sesión para enviar una sugerencia.";
+          return;
+      }
+
+      const t=suggestionTitle.value.trim(),
+            txt=suggestionText.value.trim(),
+            vid=videoInput.files[0],
+            imgs=imageInput.files;
+            
+      message.textContent=""; // Limpiar mensajes anteriores
+
+      if(!t||!txt){ 
+        message.textContent="Título y texto son obligatorios."; 
+        return; 
+      }
+      if(imgs.length > 3){ 
+        message.textContent="Máximo 3 imágenes permitidas."; 
+        return; 
+      }
+      if(vid && !(await validateVideoDuration(vid))){
+        message.textContent="El video debe durar como máximo 30 segundos.";
+        return;
+      }
+      
+      let videoURL="", imageURLs=[];
+      try{
+        if(vid) videoURL=await uploadFile(vid,`sugerencias/videos/${Date.now()}_${vid.name}`);
+        for(let i=0; i < imgs.length; i++){
+          imageURLs.push(await uploadFile(imgs[i],`sugerencias/imagenes/${Date.now()}_${imgs[i].name}`));
+        }
+        await db.collection("sugerencias").add({
+          title:t, 
+          text:txt, 
+          videoURL, 
+          imageURLs,
+          viewCount:0, 
+          likes: {}, // Mapeo de userID a true/false para likes/dislikes
+          favorites: {}, // Para que el admin marque favoritos
+          timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+          authorId: auth.currentUser.uid, // ID del autor
+          authorName: auth.currentUser.displayName || auth.currentUser.email.split("@")[0] // Nombre del autor
+        });
+        message.textContent="¡Sugerencia enviada con éxito!";
+        suggestionTitle.value=""; 
+        suggestionText.value="";
+        videoInput.value=""; 
+        imageInput.value="";
+        loadSuggestions(); // Recargar la lista para mostrar la nueva sugerencia
+      }catch(e){
+        console.error("Error al enviar sugerencia:", e);
+        message.textContent="Error al enviar la sugerencia: " + e.message;
+      }
+    }
+
+    // Cargar y mostrar sugerencias
     async function loadSuggestions(){
       const ul=suggestionList;
       ul.innerHTML="";
@@ -97,12 +556,12 @@
           // Botones para usuarios normales
           if (auth.currentUser && !window.isAdmin) {
               const likeBtn = document.createElement("button");
-              likeBtn.textContent = "👍 Like"; // Añadimos icono
+              likeBtn.textContent = "👍 Like";
               likeBtn.onclick = (e) => { e.stopPropagation(); likeSuggestion(doc.id); };
               actionsDiv.appendChild(likeBtn);
 
               const dislikeBtn = document.createElement("button");
-              dislikeBtn.textContent = "👎 Dislike"; // Añadimos icono
+              dislikeBtn.textContent = "👎 Dislike";
               dislikeBtn.onclick = (e) => { e.stopPropagation(); dislikeSuggestion(doc.id); };
               actionsDiv.appendChild(dislikeBtn);
 
@@ -119,7 +578,7 @@
               favBtn.onclick = (e) => { e.stopPropagation(); markFavorite(doc.id); };
               // Opcional: mostrar visualmente si el admin ya lo marcó
               if (d.favorites && d.favorites.admin === true) {
-                  favBtn.classList.add('active'); // O una clase diferente para favorito
+                  favBtn.classList.add('active');
               }
               actionsDiv.appendChild(favBtn);
 
@@ -139,18 +598,110 @@
         ul.innerHTML = '<li style="text-align: center; color: red;">Error al cargar las sugerencias.</li>';
       }
     }
-    
-    // Y asegúrate de tener la función deleteFile y deleteSuggestion
-    // que se añadió en la respuesta anterior para que el botón de eliminar funcione:
-    async function deleteFile(url) {
-        if (!url) return;
-        try {
-            const ref = storage.refFromURL(url);
-            await ref.delete();
-            console.log("Archivo eliminado de Storage:", url);
-        } catch (error) {
-            console.warn("No se pudo eliminar el archivo de Storage (puede que no exista o no haya permisos):", url, error);
+
+    // Actualiza el estado visual de los botones de like/dislike
+    function updateReactionUI(suggestionId, likeBtn, dislikeBtn, likesMap) {
+        const userId = auth.currentUser ? auth.currentUser.uid : null;
+        if (!userId) return;
+
+        likeBtn.classList.remove('active');
+        dislikeBtn.classList.remove('active');
+
+        if (likesMap && likesMap[userId] === true) {
+            likeBtn.classList.add('active');
+        } else if (likesMap && likesMap[userId] === false) {
+            dislikeBtn.classList.add('active');
         }
+    }
+
+    // Vistas/Reacciones
+    async function incrementView(id){
+      let uid = auth.currentUser ? auth.currentUser.uid : localStorage.getItem("tempUserId");
+      if(!uid){ 
+        uid="anon_"+Math.random().toString(36).substr(2,9); 
+        localStorage.setItem("tempUserId",uid); 
+      }
+      
+      let viewedSuggestions = JSON.parse(localStorage.getItem("viewedSuggestions_" + uid) || "[]");
+      
+      if(!viewedSuggestions.includes(id)){
+        viewedSuggestions.push(id); 
+        localStorage.setItem("viewedSuggestions_" + uid, JSON.stringify(viewedSuggestions));
+        try {
+          await db.collection("sugerencias").doc(id)
+                  .update({viewCount:firebase.firestore.FieldValue.increment(1)});
+          loadSuggestions(); // Recargar para actualizar el contador de vistas
+        } catch (e) {
+            console.error("Error al incrementar vista:", e);
+        }
+      }
+    }
+    
+    // Funciones de Like/Dislike para usuarios
+    async function likeSuggestion(id){
+      if (!auth.currentUser) {
+          alert("Debes iniciar sesión para votar.");
+          return;
+      }
+      const userId = auth.currentUser.uid;
+      try {
+          // Comprobar si ya votó
+          const docRef = db.collection("sugerencias").doc(id);
+          const docSnap = await docRef.get();
+          const currentLikes = docSnap.data().likes || {};
+
+          if (currentLikes[userId] === true) { // Si ya le dio like, desmarcar
+              await docRef.update({ [`likes.${userId}`]: firebase.firestore.FieldValue.delete() });
+          } else { // Si no ha votado o dio dislike, dar like
+              await docRef.update({ [`likes.${userId}`]: true });
+          }
+          loadSuggestions(); // Recargar para actualizar la UI
+      } catch (e) {
+          console.error("Error al dar like:", e);
+          alert("Error al dar like: " + e.message);
+      }
+    }
+
+    async function dislikeSuggestion(id){
+      if (!auth.currentUser) {
+          alert("Debes iniciar sesión para votar.");
+          return;
+      }
+      const userId = auth.currentUser.uid;
+      try {
+          const docRef = db.collection("sugerencias").doc(id);
+          const docSnap = await docRef.get();
+          const currentLikes = docSnap.data().likes || {};
+
+          if (currentLikes[userId] === false) { // Si ya le dio dislike, desmarcar
+              await docRef.update({ [`likes.${userId}`]: firebase.firestore.FieldValue.delete() });
+          } else { // Si no ha votado o dio like, dar dislike
+              await docRef.update({ [`likes.${userId}`]: false });
+          }
+          loadSuggestions();
+      } catch (e) {
+          console.error("Error al dar dislike:", e);
+          alert("Error al dar dislike: " + e.message);
+      }
+    }
+
+    // Funciones de admin
+    async function markFavorite(id){
+      if (!window.isAdmin) { return alert("Acceso denegado: solo el administrador puede marcar como favorito."); }
+      try {
+        const docRef = db.collection("sugerencias").doc(id);
+        const docSnap = await docRef.get();
+        const currentFavorites = docSnap.data().favorites || {};
+        if (currentFavorites.admin === true) { // Si ya es favorito, quitarlo
+            await docRef.update({ 'favorites.admin': firebase.firestore.FieldValue.delete() });
+        } else { // Si no es favorito, marcarlo
+            await docRef.update({ 'favorites.admin': true });
+        }
+        loadSuggestions();
+      } catch (e) {
+        console.error("Error al marcar como favorito:", e);
+        alert("Error al marcar como favorito: " + e.message);
+      }
     }
 
     async function deleteSuggestion(id, videoURL, imageURLs){
@@ -181,85 +732,6 @@
         }
       }
     }
-
-    // La función markDislike para el admin ya no es necesaria si solo tienes un botón de "Favorito" que alterna.
-    // Si quieres un botón "No Favorito" separado, lo podrías reintroducir, pero generalmente "Favorito" se alterna.
-    // Por simplicidad y funcionalidad, el `markFavorite` ya debería alternar el estado.
-    // Tu función `markDislike` para el admin del archivo "sugerencias (1).html" es:
-    /*
-    async function markDislike(id){
-      if (!window.isAdmin) { return alert("Acceso denegado: solo el administrador puede marcar como no favorito."); }
-      try {
-        const docRef = db.collection("sugerencias").doc(id);
-        const docSnap = await docRef.get();
-        const currentFavorites = docSnap.data().favorites || {};
-        if (currentFavorites.admin === false) { // Si ya es no favorito, quitarlo
-            await docRef.update({ 'favorites.admin': firebase.firestore.FieldValue.delete() });
-        } else { // Si no es no favorito, marcarlo
-            await docRef.update({ 'favorites.admin': false });
-        }
-        loadSuggestions();
-      } catch (e) {
-        console.error("Error al marcar como no favorito:", e);
-        alert("Error al marcar como no favorito: " + e.message);
-      }
-    }
-    */
-    // Puedes eliminarla si prefieres que el botón de favorito simplemente alterne true/false/delete.
-    // Si la mantienes, asegúrate de añadirle los estilos `admin-action-btn` como al botón de favorito.
-
-    // **IMPORTANTE: AUTENTICACIÓN DE ADMINISTRADOR**
-    // El código en el archivo "sugerencias (1).html" NO incluye la lógica para que el usuario "ChamoProgramador"
-    // con la contraseña "29072024" se registre o inicie sesión con esas credenciales fijas y se le asigne el rol de admin.
-    // Esa lógica SÍ estaba en la respuesta anterior. Debes reintroducirla en la función `login()`.
-
-    async function login(){
-      const u = loginUsername.value.trim(), p = loginPassword.value;
-      if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
-      
-      // Credenciales fijas para el administrador
-      if (u === "ChamoProgramador" && p === "29072024") {
-          try {
-              // Intenta iniciar sesión con un email dummy para ChamoProgramador
-              await auth.signInWithEmailAndPassword("chamoprogramador@dummy.com", p);
-              // Si no existe, lo crea. Esto es para que Firebase Auth lo reconozca.
-              if (!auth.currentUser.displayName) {
-                  await auth.currentUser.updateProfile({displayName: "ChamoProgramador"});
-              }
-              hideLoginForm();
-              alert("Inicio de sesión de administrador exitoso.");
-          } catch (e) {
-              // Si el usuario chamoprogramador@dummy.com no existe, lo crea
-              if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
-                  try {
-                      const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
-                      await cred.user.updateProfile({displayName: "ChamoProgramador"});
-                      hideLoginForm();
-                      alert("Administrador creado e iniciado sesión.");
-                  } catch (createError) {
-                      alert("Error al crear o iniciar sesión como administrador: " + createError.message);
-                      console.error("Admin create/login error:", createError);
-                  }
-              } else {
-                  alert("Error al iniciar sesión como administrador: " + e.message);
-                  console.error("Admin login error:", e);
-              }
-          }
-          return; // Salir de la función después de intentar el login del admin
-      }
-
-      // Lógica para usuarios normales (no admin)
-      const email = u.toLowerCase()+"@dummy.com"; // Usamos un email dummy para Firebase Auth
-      try {
-        await auth.signInWithEmailAndPassword(email,p);
-        hideLoginForm();
-        alert("Inicio de sesión exitoso.");
-      } catch(e) {
-        alert("Error al iniciar sesión: " + e.message);
-        console.error("Login error:", e);
-      }
-    }
-
 
     function applyFilter(){ loadSuggestions(); }
 
