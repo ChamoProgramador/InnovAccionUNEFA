@@ -2,187 +2,83 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>InnovAccionUNEFA - Inicio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sugerencias - Modelo 2</title>
   <style>
-    /* ------------------------------
-       Reset y estilos generales
-       ------------------------------ */
-    * {
-      margin: 0;
+    /* Configuración general del body */
+    body { 
+      background-color: #8B0000; 
+      color: white; 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      margin: 0; 
       padding: 0;
-      box-sizing: border-box;
     }
-    body {
-      font-family: Arial, sans-serif;
-      /* Fondo tricolor en franjas horizontales: amarillo, azul y rojo */
-      background: linear-gradient(to bottom, 
-         yellow 0%, yellow 33.33%, 
-         blue 33.33%, blue 66.66%, 
-         red 66.66%, red 100%);
-      color: #eee;
-    }
-    /* ------------------------------
-       Contenedor Principal
-       ------------------------------ */
-    #container {
-      max-width: 1200px;
-      margin: 20px auto;
-      background-color: rgba(34, 34, 34, 0.9);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
-    }
-    /* ------------------------------
-       Header y navegación
-       ------------------------------ */
-    header {
-      background-color: #8B0000;
+    /* Contenedor principal para centrar el contenido */
+    .container { 
+      max-width: 800px; 
+      margin: 30px auto; 
       padding: 20px;
-      text-align: center;
     }
-    header h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-      color: #fff;
+    /* Estilos para las "tarjetas" de sugerencias */
+    .card { 
+      background-color: #660099; 
+      padding: 20px; 
+      margin: 15px; 
+      border-radius: 8px; 
+      transition: transform 0.3s; 
     }
-    nav {
-      background-color: #333;
-      display: inline-flex;
-      gap: 15px;
-      padding: 10px;
-      border: 2px solid #000; /* Borde negro */
-      border-radius: 8px;
-      margin-bottom: 20px;
+    .card:hover { 
+      transform: scale(1.05); 
     }
-    nav a {
-      text-decoration: none;
-      color: #eee;
-      font-size: 18px;
-      padding: 8px 16px;
-      border-radius: 4px;
-      transition: background-color 0.3s;
+    /* Estilos para los botones */
+    button { 
+      background-color: black; 
+      color: white; 
+      padding: 10px 20px; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer;
+      margin-top: 10px;
     }
-    nav a:hover {
-      background-color: rgba(255,255,255,0.2);
+    button:hover { 
+      background-color: #333; 
     }
-    /* ------------------------------
-       Hero Section
-       ------------------------------ */
-    .hero {
-      background: rgba(0,0,0,0.4);
-      padding: 100px 20px;
-      text-align: center;
-    }
-    .hero h2 {
-      font-size: 36px;
-      color: #ffd700;
-      text-shadow: 2px 2px 4px #000;
-      margin-bottom: 10px;
-    }
-    .hero p {
-      font-size: 20px;
-      color: #eee;
-    }
-    /* ------------------------------
-       Sección de Presentación
-       ------------------------------ */
-    #presentacion {
-      padding: 40px 20px;
-      text-align: center;
-    }
-    #presentacion h2 {
-      font-size: 32px;
-      color: #8B0000;
-      margin-bottom: 20px;
-    }
-    #presentacion p {
-      font-size: 18px;
-      line-height: 1.5;
-    }
-    /* ------------------------------
-       Sección de Contacto (Decorativa)
-       ------------------------------ */
-    #contacto {
-      background-color: #333;
-      padding: 40px 20px;
-      text-align: center;
-    }
-    #contacto h2 {
-      font-size: 32px;
-      color: #ffd700;
-      margin-bottom: 20px;
-    }
-    #contacto p {
-      font-size: 18px;
-    }
-    /* ------------------------------
-       Footer
-       ------------------------------ */
-    footer {
-      background-color: #111;
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      color: #ccc;
-    }
-    /* ------------------------------
-       Responsive
-       ------------------------------ */
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 32px;
-      }
-      nav a {
-        font-size: 16px;
-        padding: 8px 16px;
-      }
-      .hero h2 {
-        font-size: 28px;
-      }
+    /* Estilo para el textarea */
+    textarea { 
+      width: 80%; 
+      height: 100px; 
+      padding: 10px; 
+      font-size: 16px; 
+      border-radius: 4px; 
+      border: none; 
+      resize: none;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div id="container">
-    <!-- HEADER -->
-    <header>
-      <h1>InnovAccionUNEFA</h1>
-      <nav>
-        <a href="index.html">Inicio</a>
-        <a href="noticias.html">Noticias</a>
-        <a href="foro.html">Foro</a>
-        <a href="sugerencias.html">Sugerencias</a>
-        <a href="contacto.html">Contacto</a>
-      </nav>
-    </header>
-
-    <!-- HERO SECTION -->
-    <section class="hero">
-      <h2>Impulsando la Innovación</h2>
-      <p>Bienvenido a la plataforma oficial de InnovAccionUNEFA</p>
-    </section>
-
-    <!-- SECCIÓN DE PRESENTACIÓN -->
-    <section id="presentacion">
-      <h2>Bienvenido</h2>
-      <p>
-        Descubre nuestros apartados: Foro, Noticias, Sugerencias y Contacto. Explora el contenido y comparte tus ideas para seguir creciendo como comunidad.
-      </p>
-    </section>
-
-    <!-- SECCIÓN DE CONTACTO (DECORATIVA) -->
-    <section id="contacto">
-      <h2>Contacto</h2>
-      <p>
-        Próximamente agregaremos un formulario de contacto interactivo. ¡Mantente atento!
-      </p>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-      <p>&copy; 2025 InnovAccionUNEFA. Todos los derechos reservados. Creadores: Jesus Martinez Luis Delgado Eduardo Quintana D-2 Ingeniería de Sistemas</p>
-    </footer>
+  <div class="container">
+    <h1>Envíanos tu Sugerencia</h1>
+    
+    <!-- Tarjeta para dejar un comentario -->
+    <div class="card">
+      <h2>💬 Comentario</h2>
+      <textarea placeholder="Escribe tu sugerencia..."></textarea>
+      <br>
+      <button>Enviar</button>
+    </div>
+    
+    <!-- Tarjeta informativa para correo electrónico -->
+    <div class="card">
+      <h2>📧 Correo Electrónico</h2>
+      <p>Pronto activaremos esta opción.</p>
+    </div>
+    
+    <!-- Tarjeta informativa para el teléfono -->
+    <div class="card">
+      <h2>📞 Teléfono</h2>
+      <p>Este canal estará disponible próximamente.</p>
+    </div>
   </div>
 </body>
 </html>
