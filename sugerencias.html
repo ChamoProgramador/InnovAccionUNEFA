@@ -11,14 +11,15 @@
       padding: 0;
       box-sizing: border-box;
     }
+    /* Fondo de la página: gris oscuro */
     body {
-      background-color: #333; /* Gris oscuro */
+      background-color: #333;
       color: white;
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
+      padding: 20px;
+      position: relative;
     }
-    /* Botones de navegación fijos en la esquina superior izquierda */
+    /* Botones de navegación en la esquina superior izquierda */
     #navButtons {
       position: fixed;
       top: 10px;
@@ -26,61 +27,64 @@
       z-index: 1000;
     }
     #navButtons button {
-      background-color: #444; /* Negro claro */
-      border: 2px solid black; /* Borde negro */
+      background-color: #444;        /* Fondo negro claro */
+      border: 2px solid black;         /* Borde negro */
+      color: white;
       padding: 8px 12px;
       margin-right: 5px;
       border-radius: 4px;
-      cursor: pointer;
       font-size: 14px;
-      color: white;
       font-weight: bold;
+      cursor: pointer;
     }
     #navButtons button:hover {
-      background-color: #555; /* Apenas un ligero cambio al pasar el cursor */
+      background-color: #555;
     }
     /* Contenedor principal (minicuadro) */
     .container {
       width: 600px;
-      margin: 80px auto 20px; /* espacio arriba para los botones fijos */
+      margin: 80px auto 20px;  /* Espaciado superior para no tapar los botones fijos */
       border: 2px solid white;
       background-color: black;
+      border-radius: 8px;
       padding: 20px;
       text-align: center;
     }
     .container h1 {
       margin-bottom: 20px;
       font-size: 28px;
+      text-align: center;
     }
-    /* Tarjetas (cards) */
+    /* Tarjetas (cajas estilo ASCII) */
     .card {
       border: 2px solid white;
-      margin: 10px 0;
+      border-radius: 6px;
       padding: 10px;
+      margin: 10px 0;
       text-align: left;
     }
     .card h2 {
       font-size: 20px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .card p {
       font-size: 16px;
-      margin: 5px 0;
+      margin: 4px 0;
     }
     .card a {
       color: white;
       text-decoration: underline;
     }
-    /* Sección de comentarios estilo lista */
+    /* Sección de comentarios */
     .comment-section {
       margin-top: 20px;
       text-align: left;
     }
     .comment-section h2 {
       font-size: 20px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
       border-bottom: 1px solid white;
-      padding-bottom: 5px;
     }
     .comment-input-area {
       margin-bottom: 10px;
@@ -108,11 +112,11 @@
     }
     .comment-list {
       list-style: none;
+      margin-top: 10px;
       padding: 0;
       max-height: 200px;
       overflow-y: auto;
       border-top: 1px solid #555;
-      margin-top: 10px;
     }
     .comment-list li {
       padding: 5px;
@@ -125,13 +129,13 @@
   </style>
 </head>
 <body>
-  <!-- Botones de navegación fijos en la esquina superior izquierda -->
+  <!-- Botones de navegación fijos -->
   <div id="navButtons">
     <button onclick="history.back()">Regresar</button>
     <button onclick="window.location.href='index.html'">Inicio</button>
   </div>
   
-  <!-- Contenedor principal (minicuadro) -->
+  <!-- Contenedor principal (minicuadro central) -->
   <div class="container">
     <h1>Sugerencias</h1>
     
@@ -139,7 +143,7 @@
     <div class="card">
       <h2>Correo Electrónico</h2>
       <p>
-        Envía tu sugerencia a: 
+        Envía tu sugerencia a:
         <a href="mailto:innovaccionunefa2007@gmail.com">innovaccionunefa2007@gmail.com</a>
       </p>
     </div>
@@ -147,12 +151,10 @@
     <!-- Tarjeta: Teléfono -->
     <div class="card">
       <h2>Teléfono</h2>
-      <p>
-        Este canal estará disponible próximamente.
-      </p>
+      <p>Este canal estará disponible próximamente.</p>
     </div>
     
-    <!-- Sección de Comentarios (lista) -->
+    <!-- Sección: Comentarios (estilo lista) -->
     <div class="card comment-section">
       <h2>Comentarios</h2>
       <div class="comment-input-area">
@@ -160,7 +162,7 @@
         <button onclick="addComment()">Agregar</button>
       </div>
       <ul class="comment-list" id="commentList">
-        <!-- Los comentarios se agregarán aquí -->
+        <!-- Aquí se agregarán los comentarios -->
       </ul>
     </div>
   </div>
