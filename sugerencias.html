@@ -11,7 +11,7 @@
       padding: 0;
       box-sizing: border-box;
     }
-    /* Fondo de la página: gris oscuro */
+    /* Fondo gris oscuro */
     body {
       background-color: #333;
       color: white;
@@ -19,32 +19,15 @@
       padding: 20px;
       position: relative;
     }
-    /* Botones de navegación en la esquina superior izquierda */
-    #navButtons {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-    }
-    #navButtons button {
-      background-color: #444;        /* Fondo negro claro */
-      border: 2px solid black;         /* Borde negro */
-      color: white;
-      padding: 8px 12px;
-      margin-right: 5px;
-      border-radius: 4px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #navButtons button:hover {
-      background-color: #555;
-    }
-    /* Contenedor principal (minicuadro) */
+    /* Contenedor de navegación (opcional, se pueden omitir si no se desean más botones) */
+    /* En este caso, no vamos a mostrarlos en el recuadro principal, ya que la consigna es ubicar el recuadro en la esquina superior derecha */
+    
+    /* Contenedor principal (minicuadro) sin borde, posicionado en la esquina superior derecha */
     .container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
       width: 600px;
-      margin: 80px auto 20px;  /* Espaciado superior para no tapar los botones fijos */
-      border: 2px solid white;
       background-color: black;
       border-radius: 8px;
       padding: 20px;
@@ -53,129 +36,178 @@
     .container h1 {
       margin-bottom: 20px;
       font-size: 28px;
-      text-align: center;
     }
-    /* Tarjetas (cajas estilo ASCII) */
-    .card {
-      border: 2px solid white;
-      border-radius: 6px;
-      padding: 10px;
-      margin: 10px 0;
+    /* Sección de entrada de sugerencia */
+    .input-section {
+      margin-top: 10px;
       text-align: left;
     }
-    .card h2 {
-      font-size: 20px;
-      margin-bottom: 8px;
+    .input-section textarea {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      resize: vertical;
     }
-    .card p {
-      font-size: 16px;
-      margin: 4px 0;
+    .input-section label {
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 14px;
     }
-    .card a {
-      color: white;
-      text-decoration: underline;
-    }
-    /* Sección de comentarios */
-    .comment-section {
-      margin-top: 20px;
-      text-align: left;
-    }
-    .comment-section h2 {
-      font-size: 20px;
-      margin-bottom: 6px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid white;
-    }
-    .comment-input-area {
+    .input-section input[type="file"] {
       margin-bottom: 10px;
     }
-    .comment-input-area input[type="text"] {
-      width: 70%;
-      padding: 5px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      margin-right: 5px;
-      font-size: 14px;
-      color: #333;
-    }
-    .comment-input-area button {
-      padding: 5px 10px;
-      background-color: #555;
+    .input-section button {
+      background-color: #444;
       color: white;
       border: none;
       border-radius: 4px;
+      padding: 10px 20px;
       cursor: pointer;
       font-size: 14px;
     }
-    .comment-input-area button:hover {
-      background-color: #777;
+    .input-section button:hover {
+      background-color: #555;
     }
-    .comment-list {
-      list-style: none;
+    .message {
       margin-top: 10px;
-      padding: 0;
-      max-height: 200px;
-      overflow-y: auto;
-      border-top: 1px solid #555;
-    }
-    .comment-list li {
-      padding: 5px;
-      border-bottom: 1px solid #555;
-      font-size: 14px;
-    }
-    .comment-list li:last-child {
-      border-bottom: none;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <!-- Botones de navegación fijos -->
-  <div id="navButtons">
-    <button onclick="history.back()">Regresar</button>
-    <button onclick="window.location.href='index.html'">Inicio</button>
+  <!-- Contenedor principal posicionado en la esquina superior derecha -->
+  <div class="container">
+     <h1>Sugerencias</h1>
+     
+     <div class="input-section">
+       <!-- Campo de comentario -->
+       <textarea id="commentInput" placeholder="Escribe tu sugerencia..." rows="3"></textarea>
+       
+       <!-- Campo de archivo para video -->
+       <label for="videoInput">Adjunta un video (máx. 30 segundos):</label>
+       <input type="file" id="videoInput" accept="video/*">
+       
+       <!-- Campo de archivo para imágenes (hasta 3) -->
+       <label for="imageInput">Adjunta hasta 3 imágenes:</label>
+       <input type="file" id="imageInput" accept="image/*" multiple>
+       
+       <!-- Botón para enviar la sugerencia -->
+       <button onclick="enviarSugerencia()">Enviar Sugerencia</button>
+       
+       <!-- Mensaje (resultado o error) -->
+       <div class="message" id="message"></div>
+     </div>
   </div>
   
-  <!-- Contenedor principal (minicuadro central) -->
-  <div class="container">
-    <h1>Sugerencias</h1>
-    
-    <!-- Tarjeta: Correo Electrónico -->
-    <div class="card">
-      <h2>Correo Electrónico</h2>
-      <p>
-        Envía tu sugerencia a:
-        <a href="mailto:innovaccionunefa2007@gmail.com">innovaccionunefa2007@gmail.com</a>
-      </p>
-    </div>
-    
-    <!-- Tarjeta: Teléfono -->
-    <div class="card">
-      <h2>Teléfono</h2>
-      <p>Este canal estará disponible próximamente.</p>
-    </div>
-    
-    <!-- Sección: Comentarios (estilo lista) -->
-    <div class="card comment-section">
-      <h2>Comentarios</h2>
-      <div class="comment-input-area">
-        <input type="text" id="commentInput" placeholder="Escribe tu comentario...">
-        <button onclick="addComment()">Agregar</button>
-      </div>
-      <ul class="comment-list" id="commentList">
-        <!-- Aquí se agregarán los comentarios -->
-      </ul>
-    </div>
-  </div>
+  <!-- Firebase scripts (usamos la versión compat para simplificar la integración) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   
   <script>
-    function addComment() {
-      var input = document.getElementById("commentInput");
-      var commentText = input.value.trim();
-      if (commentText !== "") {
-        var li = document.createElement("li");
-        li.textContent = commentText;
-        document.getElementById("commentList").appendChild(li);
-        input.value = "";
+    // Configuración de Firebase (reemplaza con tus datos reales)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+  authDomain: "innovaccionunefa.firebaseapp.com",
+  databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com",
+  projectId: "innovaccionunefa",
+  storageBucket: "innovaccionunefa.firebasestorage.app",
+  messagingSenderId: "613542800676",
+  appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
+  measurementId: "G-LLK0GLWS1G"
+};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    
+    // Función que sube un archivo a Storage y retorna la URL
+    async function uploadFile(file, path) {
+      const storageRef = storage.ref(path);
+      await storageRef.put(file);
+      return await storageRef.getDownloadURL();
+    }
+    
+    // Función para validar la duración del video (máximo 30 segundos)
+    function validateVideoDuration(file) {
+      return new Promise((resolve) => {
+        const video = document.createElement("video");
+        video.preload = "metadata";
+        video.onloadedmetadata = function() {
+          window.URL.revokeObjectURL(video.src);
+          resolve(video.duration <= 30);
+        };
+        video.onerror = function() {
+          resolve(false);
+        };
+        video.src = URL.createObjectURL(file);
+      });
+    }
+    
+    async function enviarSugerencia() {
+      const messageDiv = document.getElementById("message");
+      messageDiv.textContent = "";
+      
+      const comment = document.getElementById("commentInput").value.trim();
+      const videoFile = document.getElementById("videoInput").files[0];
+      const imageFiles = document.getElementById("imageInput").files;
+      
+      // Validación: al menos un comentario o archivo debe estar presente
+      if (!comment && !videoFile && imageFiles.length === 0) {
+        messageDiv.textContent = "Debes proporcionar una sugerencia o adjuntar archivos.";
+        return;
+      }
+      
+      // Validación: máximo 3 imágenes
+      if (imageFiles.length > 3) {
+        messageDiv.textContent = "Puedes adjuntar hasta 3 imágenes.";
+        return;
+      }
+      
+      // Si hay video, validar su duración
+      if (videoFile) {
+        const validVideo = await validateVideoDuration(videoFile);
+        if (!validVideo) {
+          messageDiv.textContent = "El video debe durar máximo 30 segundos.";
+          return;
+        }
+      }
+      
+      // Variables para almacenar URLs de archivos subidos
+      let videoURL = "";
+      let imageURLs = [];
+      
+      try {
+        // Si hay video, subirlo
+        if (videoFile) {
+          videoURL = await uploadFile(videoFile, `sugerencias/videos/${Date.now()}_${videoFile.name}`);
+        }
+        // Subir imágenes (hasta 3)
+        if (imageFiles.length > 0) {
+          const imagesArray = Array.from(imageFiles);
+          for (let i = 0; i < imagesArray.length; i++) {
+            const url = await uploadFile(imagesArray[i], `sugerencias/imagenes/${Date.now()}_${imagesArray[i].name}`);
+            imageURLs.push(url);
+          }
+        }
+        
+        // Guardar la sugerencia en Firestore
+        await db.collection("sugerencias").add({
+          comment: comment,
+          videoURL: videoURL,
+          imageURLs: imageURLs,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        messageDiv.textContent = "Sugerencia enviada exitosamente.";
+        // Limpiar los campos
+        document.getElementById("commentInput").value = "";
+        document.getElementById("videoInput").value = "";
+        document.getElementById("imageInput").value = "";
+      } catch (error) {
+        console.error("Error al enviar la sugerencia:", error);
+        messageDiv.textContent = "Ocurrió un error al enviar la sugerencia.";
       }
     }
   </script>
