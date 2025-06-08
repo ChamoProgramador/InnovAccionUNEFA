@@ -287,15 +287,13 @@
 
   <script>
     // Tu configuración de Firebase:
+    // ** ¡MUY IMPORTANTE!: Asegúrate de que estos valores sean EXACTAMENTE los de tu proyecto de Firebase! **
     const firebaseConfig = {
-      apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
-      authDomain: "innovaccionunefa.firebaseapp.com",
-      databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com", 
-      projectId: "innovaccionunefa",
-      storageBucket: "innovaccionunefa.firebasestorage.app", // Mantener el bucket
-      messagingSenderId: "613542800676",
-      appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
-      measurementId: "G-LLK0GLWS1G" 
+      apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M", // <-- VERIFICA ESTE
+      authDomain: "innovaccionunefa.firebaseapp.com", // <-- VERIFICA ESTE
+      projectId: "innovaccionunefa", // <-- VERIFICA ESTE
+      storageBucket: "innovaccionunefa.firebasestorage.app", 
+      appId: "1:613542800676:web:82dd0a37ddb8de750a97b1" 
     };
 
     // Inicializar Firebase si no ha sido inicializado
@@ -369,7 +367,7 @@
           } catch (e) {
               // Si el error es por usuario no encontrado o contraseña incorrecta para el dummy,
               // intentamos registrarlo, ya que ChamoProgramador es una cuenta "fija".
-              if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') { // 'invalid-credential' es más genérico
+              if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') { 
                   try {
                       const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
                       await cred.user.updateProfile({displayName: "ChamoProgramador"});
