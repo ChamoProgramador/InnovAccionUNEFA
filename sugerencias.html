@@ -288,18 +288,19 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 
   <script>
-    // Tu configuración de Firebase:
+    // Tu configuración de Firebase (¡ACTUALIZADA AQUÍ!):
     const firebaseConfig = {
-      apiKey: "AIzaSyCOy5Gp1owFTLE78pz7RaKX48KnE0q5_3g", // <-- Verifica que este sea tu API Key de Firebase
-      authDomain: "innovaccionunefa-b651f.firebaseapp.com", // <-- Verifica que este sea tu Auth Domain
-      projectId: "innovaccionunefa-b651f", // <-- Verifica que este sea tu Project ID
-      storageBucket: "innovaccionunefa-b651f.firebasestorage.app", // <-- Verifica que este sea tu Storage Bucket
-      messagingSenderId: "1072624735711",
-      appId: "1:1072624735711:web:bfaa90d76a46840fc9a06a"
+      apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
+      authDomain: "innovaccionunefa.firebaseapp.com",
+      databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com", // Aunque no lo usamos directamente en este código, lo dejamos por si acaso.
+      projectId: "innovaccionunefa",
+      storageBucket: "innovaccionunefa.firebasestorage.app",
+      messagingSenderId: "613542800676",
+      appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
+      measurementId: "G-LLK0GLWS1G" // No lo usamos en este código, pero lo dejamos por si acaso.
     };
 
     // Inicializar Firebase si no ha sido inicializado
-    // Esta es la forma CORRECTA de inicializar con las SDKs "compat"
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
@@ -335,8 +336,8 @@
         loginBtn.style.display = "none";
         registerBtn.style.display = "none";
         logoutBtn.style.display = "inline-block";
-        // Asumiendo que el admin es "ChamoProgramador2007" (case insensitive)
-        window.isAdmin = name.toLowerCase() === "chamoprogramador2007"; 
+        // Asumiendo que el admin es "ChamoProgramador" (case insensitive para el correo, pero el display name es exacto)
+        window.isAdmin = name.toLowerCase() === "chamoprogramador"; 
       } else {
         status.textContent = "No autenticado";
         loginBtn.style.display = "inline-block";
@@ -359,30 +360,32 @@
       if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
       
       // Credenciales fijas para el administrador
-      if (u === "ChamoProgramador2007" && p === "20072024") { // <--- ¡Nuevas credenciales de administrador!
+      if (u === "ChamoProgramador" && p === "29072024") { // <--- ¡Credenciales de administrador configuradas aquí!
           try {
-              // Intenta iniciar sesión con un email dummy para ChamoProgramador2007
-              await auth.signInWithEmailAndPassword("chamoprogramador2007@dummy.com", p);
+              // Intenta iniciar sesión con un email dummy para ChamoProgramador
+              await auth.signInWithEmailAndPassword("chamoprogramador@dummy.com", p);
               // Si no existe, lo crea. Esto es para que Firebase Auth lo reconozca.
               if (!auth.currentUser.displayName) {
-                  await auth.currentUser.updateProfile({displayName: "ChamoProgramador2007"});
+                  await auth.currentUser.updateProfile({displayName: "ChamoProgramador"});
               }
               hideLoginForm();
               alert("Inicio de sesión de administrador exitoso.");
           } catch (e) {
               // Si el error es por usuario no encontrado o contraseña incorrecta para el dummy,
-              // intentamos registrarlo, ya que ChamoProgramador2007 es una cuenta "fija".
-              if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
+              // intentamos registrarlo, ya que ChamoProgramador es una cuenta "fija".
+              if (e.code === 'auth/user-not-found') { // Si el usuario no existe, créalo
                   try {
-                      const cred = await auth.createUserWithEmailAndPassword("chamoprogramador2007@dummy.com", p);
-                      await cred.user.updateProfile({displayName: "ChamoProgramador2007"});
+                      const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
+                      await cred.user.updateProfile({displayName: "ChamoProgramador"});
                       hideLoginForm();
                       alert("Administrador creado e iniciado sesión.");
                   } catch (createError) {
                       alert("Error al crear o iniciar sesión como administrador: " + createError.message);
                       console.error("Admin create/login error:", createError);
                   }
-              } else {
+              } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials') { // Si la contraseña es incorrecta para un usuario existente
+                  alert("Error al iniciar sesión como administrador: Contraseña incorrecta. Por favor, verifica la contraseña o restablécela en Firebase.");
+              } else { // Otros errores
                   alert("Error al iniciar sesión como administrador: " + e.message);
                   console.error("Admin login error:", e);
               }
