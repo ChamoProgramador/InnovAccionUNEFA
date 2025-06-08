@@ -265,8 +265,6 @@
       <div class="suggestion-input">
         <input type="text" id="suggestionTitle" placeholder="Título de la sugerencia">
         <textarea id="suggestionText" rows="3" placeholder="Escribe tu sugerencia..."></textarea>
-        <label>Adjunta un video (máx. 30 segundos):</label>
-        <input type="file" id="videoInput" accept="video/*">
         <label>Adjunta hasta 3 imágenes:</label>
         <input type="file" id="imageInput" accept="image/*" multiple>
         <button onclick="submitSuggestion()">Enviar Sugerencia</button>
@@ -288,16 +286,16 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 
   <script>
-    // Tu configuración de Firebase (¡ACTUALIZADA AQUÍ!):
+    // Tu configuración de Firebase:
     const firebaseConfig = {
       apiKey: "AIzaSyBeYqGEf_JRCtjHDz5xY3VJ30SJVBqjS8M",
       authDomain: "innovaccionunefa.firebaseapp.com",
-      databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com", // Aunque no lo usamos directamente en este código, lo dejamos por si acaso.
+      databaseURL: "https://innovaccionunefa-default-rtdb.firebaseio.com", 
       projectId: "innovaccionunefa",
-      storageBucket: "innovaccionunefa.firebasestorage.app",
+      storageBucket: "innovaccionunefa.firebasestorage.app", // Mantener el bucket
       messagingSenderId: "613542800676",
       appId: "1:613542800676:web:82dd0a37ddb8de750a97b1",
-      measurementId: "G-LLK0GLWS1G" // No lo usamos en este código, pero lo dejamos por si acaso.
+      measurementId: "G-LLK0GLWS1G" 
     };
 
     // Inicializar Firebase si no ha sido inicializado
@@ -307,7 +305,7 @@
     
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
+    const storage = firebase.storage(); // Mantener Storage
 
     // Referencias a elementos del DOM
     const loginBtn = document.getElementById("loginBtn");
@@ -321,8 +319,8 @@
     const registerPassword = document.getElementById("registerPassword");
     const suggestionTitle = document.getElementById("suggestionTitle");
     const suggestionText = document.getElementById("suggestionText");
-    const videoInput = document.getElementById("videoInput");
-    const imageInput = document.getElementById("imageInput");
+    // const videoInput = document.getElementById("videoInput"); // Eliminado
+    const imageInput = document.getElementById("imageInput"); // Mantener
     const message = document.getElementById("message");
     const suggestionList = document.getElementById("suggestionList");
     const filterSelect = document.getElementById("filterSelect");
@@ -360,7 +358,7 @@
       if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
       
       // Credenciales fijas para el administrador
-      if (u === "ChamoProgramador" && p === "29072024") { // <--- ¡Credenciales de administrador configuradas aquí!
+      if (u === "ChamoProgramador" && p === "29072024") {
           try {
               // Intenta iniciar sesión con un email dummy para ChamoProgramador
               await auth.signInWithEmailAndPassword("chamoprogramador@dummy.com", p);
@@ -373,7 +371,7 @@
           } catch (e) {
               // Si el error es por usuario no encontrado o contraseña incorrecta para el dummy,
               // intentamos registrarlo, ya que ChamoProgramador es una cuenta "fija".
-              if (e.code === 'auth/user-not-found') { // Si el usuario no existe, créalo
+              if (e.code === 'auth/user-not-found') {
                   try {
                       const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
                       await cred.user.updateProfile({displayName: "ChamoProgramador"});
@@ -383,18 +381,18 @@
                       alert("Error al crear o iniciar sesión como administrador: " + createError.message);
                       console.error("Admin create/login error:", createError);
                   }
-              } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials') { // Si la contraseña es incorrecta para un usuario existente
+              } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials') {
                   alert("Error al iniciar sesión como administrador: Contraseña incorrecta. Por favor, verifica la contraseña o restablécela en Firebase.");
-              } else { // Otros errores
+              } else {
                   alert("Error al iniciar sesión como administrador: " + e.message);
                   console.error("Admin login error:", e);
               }
           }
-          return; // Salir de la función después de intentar el login del admin
+          return;
       }
 
       // Lógica para usuarios normales (no admin)
-      const email = u.toLowerCase()+"@dummy.com"; // Usamos un email dummy para Firebase Auth
+      const email = u.toLowerCase()+"@dummy.com";
       try {
         await auth.signInWithEmailAndPassword(email,p);
         hideLoginForm();
@@ -405,342 +403,4 @@
       }
     }
 
-    async function register(){
-      const u = registerUsername.value.trim(), p = registerPassword.value;
-      if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
-      if(p.length < 6) { return alert("La contraseña debe tener al menos 6 caracteres."); } // Firebase Auth min password length
-      const email = u.toLowerCase()+"@dummy.com"; // Usamos un email dummy para Firebase Auth
-      try {
-        const cred = await auth.createUserWithEmailAndPassword(email,p);
-        await cred.user.updateProfile({displayName:u}); // Guarda el nombre de usuario
-        hideRegisterForm();
-        alert("Registro exitoso. Ahora puedes iniciar sesión.");
-      } catch(e) {
-        alert("Error al registrar: " + e.message);
-        console.error("Register error:", e);
-      }
-    }
-
-    function logout(){ 
-        auth.signOut().then(() => {
-            alert("Sesión cerrada.");
-        }).catch((error) => {
-            console.error("Error al cerrar sesión:", error);
-            alert("Error al cerrar sesión.");
-        });
-    }
-
-    // Subir archivo a Storage
-    async function uploadFile(file,path){
-      const ref = storage.ref(path);
-      const snapshot = await ref.put(file);
-      return snapshot.ref.getDownloadURL();
-    }
-
-    // Eliminar archivo de Storage
-    async function deleteFile(url) {
-        if (!url) return;
-        try {
-            const ref = storage.refFromURL(url);
-            await ref.delete();
-            console.log("Archivo eliminado de Storage:", url);
-        } catch (error) {
-            console.warn("No se pudo eliminar el archivo de Storage (puede que no exista o no haya permisos):", url, error);
-        }
-    }
-
-    // Validar duración del video
-    function validateVideoDuration(file){
-      return new Promise(res=>{
-        const v=document.createElement("video");
-        v.preload="metadata";
-        v.onloadedmetadata=()=>{ 
-          URL.revokeObjectURL(v.src); 
-          res(v.duration <= 30); 
-        };
-        v.onerror=()=>{ res(false); }; // Manejar error al cargar el video
-        v.src=URL.createObjectURL(file);
-      });
-    }
-
-    // Enviar sugerencia
-    async function submitSuggestion(){
-      if (!auth.currentUser) {
-          message.textContent = "Debes iniciar sesión para enviar una sugerencia.";
-          return;
-      }
-
-      const t=suggestionTitle.value.trim(),
-            txt=suggestionText.value.trim(),
-            vid=videoInput.files[0],
-            imgs=imageInput.files;
-            
-      message.textContent=""; // Limpiar mensajes anteriores
-
-      if(!t||!txt){ 
-        message.textContent="Título y texto son obligatorios."; 
-        return; 
-      }
-      if(imgs.length > 3){ 
-        message.textContent="Máximo 3 imágenes permitidas."; 
-        return; 
-      }
-      if(vid && !(await validateVideoDuration(vid))){
-        message.textContent="El video debe durar como máximo 30 segundos.";
-        return;
-      }
-      
-      let videoURL="", imageURLs=[];
-      try{
-        if(vid) videoURL=await uploadFile(vid,`sugerencias/videos/${Date.now()}_${vid.name}`);
-        for(let i=0; i < imgs.length; i++){
-          imageURLs.push(await uploadFile(imgs[i],`sugerencias/imagenes/${Date.now()}_${imgs[i].name}`));
-        }
-        await db.collection("sugerencias").add({
-          title:t, 
-          text:txt, 
-          videoURL, 
-          imageURLs,
-          viewCount:0, 
-          likes: {}, // Mapeo de userID a true/false para likes/dislikes
-          favorites: {}, // Para que el admin marque favoritos
-          timestamp:firebase.firestore.FieldValue.serverTimestamp(),
-          authorId: auth.currentUser.uid, // ID del autor
-          authorName: auth.currentUser.displayName || auth.currentUser.email.split("@")[0] // Nombre del autor
-        });
-        message.textContent="¡Sugerencia enviada con éxito!";
-        suggestionTitle.value=""; 
-        suggestionText.value="";
-        videoInput.value=""; 
-        imageInput.value="";
-        loadSuggestions(); // Recargar la lista para mostrar la nueva sugerencia
-      }catch(e){
-        console.error("Error al enviar sugerencia:", e);
-        message.textContent="Error al enviar la sugerencia: " + e.message;
-      }
-    }
-
-    // Cargar y mostrar sugerencias
-    async function loadSuggestions(){
-      const ul=suggestionList;
-      ul.innerHTML="";
-      let q=db.collection("sugerencias");
-      const f=filterSelect.value;
-      
-      if(f==="mostViewed") q=q.orderBy("viewCount","desc");
-      else if(f==="recent") q=q.orderBy("timestamp","desc");
-      else if(f==="old") q=q.orderBy("timestamp","asc");
-
-      try {
-        const snap=await q.get();
-        if (snap.empty) {
-            ul.innerHTML = '<li style="text-align: center; color: #aaa;">No hay sugerencias disponibles.</li>';
-            return;
-        }
-
-        snap.forEach(doc=>{
-          const d=doc.data();
-          const li=document.createElement("li");
-          li.dataset.id = doc.id; // Guarda el ID del documento
-          li.innerHTML=`
-            <strong>${d.title}</strong><br>
-            ${d.text}
-            <div class="suggestion-meta">
-                <span>👁 ${d.viewCount || 0}</span>
-                <span>👍 ${Object.values(d.likes || {}).filter(val => val === true).length}</span>
-                <span>👎 ${Object.values(d.likes || {}).filter(val => val === false).length}</span>
-            </div>
-            <div class="suggestion-actions"></div>
-          `;
-          
-          const actionsDiv = li.querySelector(".suggestion-actions");
-
-          // Botones para usuarios normales
-          if (auth.currentUser && !window.isAdmin) {
-              const likeBtn = document.createElement("button");
-              likeBtn.textContent = "👍 Like";
-              likeBtn.onclick = (e) => { e.stopPropagation(); likeSuggestion(doc.id); };
-              actionsDiv.appendChild(likeBtn);
-
-              const dislikeBtn = document.createElement("button");
-              dislikeBtn.textContent = "👎 Dislike";
-              dislikeBtn.onclick = (e) => { e.stopPropagation(); dislikeSuggestion(doc.id); };
-              actionsDiv.appendChild(dislikeBtn);
-
-              // Actualizar el estado visual de los botones de like/dislike
-              updateReactionUI(doc.id, likeBtn, dislikeBtn, d.likes);
-          }
-          
-          // Botones para administrador
-          if (window.isAdmin) {
-              // Botón de Favorito
-              const favBtn = document.createElement("button");
-              favBtn.textContent = "★ Favorito";
-              favBtn.classList.add('admin-action-btn', 'favorite');
-              favBtn.onclick = (e) => { e.stopPropagation(); markFavorite(doc.id); };
-              // Opcional: mostrar visualmente si el admin ya lo marcó
-              if (d.favorites && d.favorites.admin === true) {
-                  favBtn.classList.add('active');
-              }
-              actionsDiv.appendChild(favBtn);
-
-              // Botón de Eliminar
-              const deleteBtn = document.createElement("button");
-              deleteBtn.textContent = "🗑 Eliminar";
-              deleteBtn.classList.add('admin-action-btn');
-              deleteBtn.onclick = (e) => { e.stopPropagation(); deleteSuggestion(doc.id, d.videoURL, d.imageURLs); };
-              actionsDiv.appendChild(deleteBtn);
-          }
-
-          li.onclick=()=>incrementView(doc.id); // Incrementa la vista al hacer clic
-          ul.appendChild(li);
-        });
-      } catch (e) {
-        console.error("Error al cargar sugerencias:", e);
-        ul.innerHTML = '<li style="text-align: center; color: red;">Error al cargar las sugerencias.</li>';
-      }
-    }
-
-    // Actualiza el estado visual de los botones de like/dislike
-    function updateReactionUI(suggestionId, likeBtn, dislikeBtn, likesMap) {
-        const userId = auth.currentUser ? auth.currentUser.uid : null;
-        if (!userId) return;
-
-        likeBtn.classList.remove('active');
-        dislikeBtn.classList.remove('active');
-
-        if (likesMap && likesMap[userId] === true) {
-            likeBtn.classList.add('active');
-        } else if (likesMap && likesMap[userId] === false) {
-            dislikeBtn.classList.add('active');
-        }
-    }
-
-    // Vistas/Reacciones
-    async function incrementView(id){
-      let uid = auth.currentUser ? auth.currentUser.uid : localStorage.getItem("tempUserId");
-      if(!uid){ 
-        uid="anon_"+Math.random().toString(36).substr(2,9); 
-        localStorage.setItem("tempUserId",uid); 
-      }
-      
-      let viewedSuggestions = JSON.parse(localStorage.getItem("viewedSuggestions_" + uid) || "[]");
-      
-      if(!viewedSuggestions.includes(id)){
-        viewedSuggestions.push(id); 
-        localStorage.setItem("viewedSuggestions_" + uid, JSON.stringify(viewedSuggestions));
-        try {
-          await db.collection("sugerencias").doc(id)
-                  .update({viewCount:firebase.firestore.FieldValue.increment(1)});
-          loadSuggestions(); // Recargar para actualizar el contador de vistas
-        } catch (e) {
-            console.error("Error al incrementar vista:", e);
-        }
-      }
-    }
-    
-    // Funciones de Like/Dislike para usuarios
-    async function likeSuggestion(id){
-      if (!auth.currentUser) {
-          alert("Debes iniciar sesión para votar.");
-          return;
-      }
-      const userId = auth.currentUser.uid;
-      try {
-          // Comprobar si ya votó
-          const docRef = db.collection("sugerencias").doc(id);
-          const docSnap = await docRef.get();
-          const currentLikes = docSnap.data().likes || {};
-
-          if (currentLikes[userId] === true) { // Si ya le dio like, desmarcar
-              await docRef.update({ [`likes.${userId}`]: firebase.firestore.FieldValue.delete() });
-          } else { // Si no ha votado o dio dislike, dar like
-              await docRef.update({ [`likes.${userId}`]: true });
-          }
-          loadSuggestions(); // Recargar para actualizar la UI
-      } catch (e) {
-          console.error("Error al dar like:", e);
-          alert("Error al dar like: " + e.message);
-      }
-    }
-
-    async function dislikeSuggestion(id){
-      if (!auth.currentUser) {
-          alert("Debes iniciar sesión para votar.");
-          return;
-      }
-      const userId = auth.currentUser.uid;
-      try {
-          const docRef = db.collection("sugerencias").doc(id);
-          const docSnap = await docRef.get();
-          const currentLikes = docSnap.data().likes || {};
-
-          if (currentLikes[userId] === false) { // Si ya le dio dislike, desmarcar
-              await docRef.update({ [`likes.${userId}`]: firebase.firestore.FieldValue.delete() });
-          } else { // Si no ha votado o dio like, dar dislike
-              await docRef.update({ [`likes.${userId}`]: false });
-          }
-          loadSuggestions();
-      } catch (e) {
-          console.error("Error al dar dislike:", e);
-          alert("Error al dar dislike: " + e.message);
-      }
-    }
-
-    // Funciones de admin
-    async function markFavorite(id){
-      if (!window.isAdmin) { return alert("Acceso denegado: solo el administrador puede marcar como favorito."); }
-      try {
-        const docRef = db.collection("sugerencias").doc(id);
-        const docSnap = await docRef.get();
-        const currentFavorites = docSnap.data().favorites || {};
-        if (currentFavorites.admin === true) { // Si ya es favorito, quitarlo
-            await docRef.update({ 'favorites.admin': firebase.firestore.FieldValue.delete() });
-        } else { // Si no es favorito, marcarlo
-            await docRef.update({ 'favorites.admin': true });
-        }
-        loadSuggestions();
-      } catch (e) {
-        console.error("Error al marcar como favorito:", e);
-        alert("Error al marcar como favorito: " + e.message);
-      }
-    }
-
-    async function deleteSuggestion(id, videoURL, imageURLs){
-      if (!window.isAdmin) { 
-        alert("Acceso denegado: solo el administrador puede eliminar sugerencias.");
-        return;
-      }
-
-      if (confirm("¿Estás seguro de que quieres eliminar esta sugerencia? Esta acción es irreversible.")) {
-        try {
-          // 1. Eliminar archivos de Storage
-          if (videoURL) {
-              await deleteFile(videoURL);
-          }
-          if (imageURLs && imageURLs.length > 0) {
-              for (const url of imageURLs) {
-                  await deleteFile(url);
-              }
-          }
-
-          // 2. Eliminar el documento de Firestore
-          await db.collection("sugerencias").doc(id).delete();
-          alert("Sugerencia eliminada exitosamente.");
-          loadSuggestions(); // Recargar la lista
-        } catch (e) {
-          console.error("Error al eliminar sugerencia:", e);
-          alert("Error al eliminar la sugerencia: " + e.message);
-        }
-      }
-    }
-
-    function applyFilter(){ loadSuggestions(); }
-
-    // Cargar sugerencias al inicio y cada vez que el estado de autenticación cambie
-    document.addEventListener('DOMContentLoaded', () => {
-        // La carga inicial se maneja en onAuthStateChanged
-    });
-  </script>
-</body>
-</html>
+    async
