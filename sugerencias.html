@@ -305,7 +305,7 @@
     
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage(); // Mantener Storage
+    const storage = firebase.storage();
 
     // Referencias a elementos del DOM
     const loginBtn = document.getElementById("loginBtn");
@@ -319,8 +319,7 @@
     const registerPassword = document.getElementById("registerPassword");
     const suggestionTitle = document.getElementById("suggestionTitle");
     const suggestionText = document.getElementById("suggestionText");
-    // const videoInput = document.getElementById("videoInput"); // Eliminado
-    const imageInput = document.getElementById("imageInput"); // Mantener
+    const imageInput = document.getElementById("imageInput");
     const message = document.getElementById("message");
     const suggestionList = document.getElementById("suggestionList");
     const filterSelect = document.getElementById("filterSelect");
@@ -334,7 +333,6 @@
         loginBtn.style.display = "none";
         registerBtn.style.display = "none";
         logoutBtn.style.display = "inline-block";
-        // Asumiendo que el admin es "ChamoProgramador" (case insensitive para el correo, pero el display name es exacto)
         window.isAdmin = name.toLowerCase() === "chamoprogramador"; 
       } else {
         status.textContent = "No autenticado";
@@ -371,7 +369,7 @@
           } catch (e) {
               // Si el error es por usuario no encontrado o contraseña incorrecta para el dummy,
               // intentamos registrarlo, ya que ChamoProgramador es una cuenta "fija".
-              if (e.code === 'auth/user-not-found') {
+              if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') { // 'invalid-credential' es más genérico
                   try {
                       const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
                       await cred.user.updateProfile({displayName: "ChamoProgramador"});
@@ -381,8 +379,8 @@
                       alert("Error al crear o iniciar sesión como administrador: " + createError.message);
                       console.error("Admin create/login error:", createError);
                   }
-              } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials') {
-                  alert("Error al iniciar sesión como administrador: Contraseña incorrecta. Por favor, verifica la contraseña o restablécela en Firebase.");
+              } else if (e.code === 'auth/wrong-password') {
+                  alert("Error al iniciar sesión como administrador: Contraseña incorrecta.");
               } else {
                   alert("Error al iniciar sesión como administrador: " + e.message);
                   console.error("Admin login error:", e);
@@ -403,4 +401,280 @@
       }
     }
 
-    async
+    async function register(){
+      const u = registerUsername.value.trim(), p = registerPassword.value;
+      if(!u||!p){ return alert("Usuario y contraseña obligatorios."); }
+      if(p.length < 6) { return alert("La contraseña debe tener al menos 6 caracteres."); }
+      const email = u.toLowerCase()+"@dummy.com";
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email,p);
+        await cred.user.updateProfile({displayName:u});
+        hideRegisterForm();
+        alert("Registro exitoso. Ahora puedes iniciar sesión.");
+      } catch(e) {
+        alert("Error al registrar: " + e.message);
+        console.error("Register error:", e);
+      }
+    }
+
+    function logout(){ 
+        auth.signOut().then(() => {
+            alert("Sesión cerrada.");
+        }).catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+            alert("Error al cerrar sesión.");
+        });
+    }
+
+    // Subir archivo a Storage (Solo para imágenes)
+    async function uploadFile(file,path){
+      const ref = storage.ref(path);
+      const snapshot = await ref.put(file);
+      return snapshot.ref.getDownloadURL();
+    }
+
+    // Eliminar archivo de Storage (Solo para imágenes)
+    async function deleteFile(url) {
+        if (!url) return;
+        try {
+            const ref = storage.refFromURL(url);
+            await ref.delete();
+            console.log("Archivo eliminado de Storage:", url);
+        } catch (error) {
+            console.warn("No se pudo eliminar el archivo de Storage (puede que no exista o no haya permisos):", url, error);
+        }
+    }
+
+    // Enviar sugerencia
+    async function submitSuggestion(){
+      if (!auth.currentUser) {
+          message.textContent = "Debes iniciar sesión para enviar una sugerencia.";
+          return;
+      }
+
+      const t=suggestionTitle.value.trim(),
+            txt=suggestionText.value.trim(),
+            imgs=imageInput.files;
+            
+      message.textContent=""; // Limpiar mensajes anteriores
+
+      if(!t||!txt){ 
+        message.textContent="Título y texto son obligatorios."; 
+        return; 
+      }
+      if(imgs.length > 3){ 
+        message.textContent="Máximo 3 imágenes permitidas."; 
+        return; 
+      }
+      
+      let imageURLs=[];
+      try{
+        for(let i=0; i < imgs.length; i++){
+          imageURLs.push(await uploadFile(imgs[i],`sugerencias/imagenes/${Date.now()}_${imgs[i].name}`));
+        }
+        await db.collection("sugerencias").add({
+          title:t, 
+          text:txt, 
+          imageURLs,
+          viewCount:0, 
+          likes: {},
+          favorites: {},
+          timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+          authorId: auth.currentUser.uid,
+          authorName: auth.currentUser.displayName || auth.currentUser.email.split("@")[0]
+        });
+        message.textContent="¡Sugerencia enviada con éxito!";
+        suggestionTitle.value=""; 
+        suggestionText.value="";
+        imageInput.value="";
+        loadSuggestions();
+      }catch(e){
+        console.error("Error al enviar sugerencia:", e);
+        message.textContent="Error al enviar la sugerencia: " + e.message;
+      }
+    }
+
+    // Cargar y mostrar sugerencias
+    async function loadSuggestions(){
+      const ul=suggestionList;
+      ul.innerHTML="";
+      let q=db.collection("sugerencias");
+      const f=filterSelect.value;
+      
+      if(f==="mostViewed") q=q.orderBy("viewCount","desc");
+      else if(f==="recent") q=q.orderBy("timestamp","desc");
+      else if(f==="old") q=q.orderBy("timestamp","asc");
+
+      try {
+        const snap=await q.get();
+        if (snap.empty) {
+            ul.innerHTML = '<li style="text-align: center; color: #aaa;">No hay sugerencias disponibles.</li>';
+            return;
+        }
+
+        snap.forEach(doc=>{
+          const d=doc.data();
+          const li=document.createElement("li");
+          li.dataset.id = doc.id;
+          let mediaContent = '';
+          if (d.imageURLs && d.imageURLs.length > 0) {
+              mediaContent += '<div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;">';
+              d.imageURLs.forEach(url => {
+                  mediaContent += `<img src="${url}" style="max-width:100px; max-height:100px; object-fit:cover; border-radius:4px;">`;
+              });
+              mediaContent += '</div>';
+          }
+
+          const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
+          const userLiked = d.likes && currentUserId ? d.likes[currentUserId] === true : false;
+          const userDisliked = d.likes && currentUserId ? d.likes[currentUserId] === false : false;
+
+          const likeBtnClass = userLiked ? 'active' : '';
+          const dislikeBtnClass = userDisliked ? 'active' : '';
+          const likeCount = Object.values(d.likes || {}).filter(val => val === true).length;
+          const dislikeCount = Object.values(d.likes || {}).filter(val => val === false).length;
+
+          li.innerHTML=`
+            <h3 style="color:#007bff; margin-bottom:5px;">${d.title}</h3>
+            <p style="margin-bottom:10px;">${d.text}</p>
+            ${mediaContent}
+            <div class="suggestion-meta">
+                <span>Vistas: ${d.viewCount || 0}</span>
+                <span>Autor: ${d.authorName || 'Anónimo'}</span>
+                <span>Fecha: ${d.timestamp ? new Date(d.timestamp.toDate()).toLocaleDateString() : 'N/A'}</span>
+            </div>
+            <div class="suggestion-actions">
+                <button onclick="viewSuggestion('${doc.id}')">Ver</button>
+                <button class="${likeBtnClass}" onclick="toggleLike('${doc.id}', true)" ${currentUserId && !window.isAdmin ? '' : 'disabled'}>👍 ${likeCount}</button>
+                <button class="${dislikeBtnClass}" onclick="toggleLike('${doc.id}', false)" ${currentUserId && !window.isAdmin ? '' : 'disabled'}>👎 ${dislikeCount}</button>
+                ${window.isAdmin ? `<button class="admin-action-btn" onclick="deleteSuggestion('${doc.id}', ${JSON.stringify(d.imageURLs || [])})">🗑 Eliminar</button>` : ''}
+                ${window.isAdmin ? `<button class="admin-action-btn favorite" onclick="markFavorite('${doc.id}')">⭐ Favorito</button>` : ''}
+                ${window.isAdmin ? `<button class="admin-action-btn" onclick="markDislike('${doc.id}')">💔 No Favorito</button>` : ''}
+            </div>
+          `;
+          ul.appendChild(li);
+        });
+      }catch(e){
+        console.error("Error al cargar sugerencias:",e);
+        ul.innerHTML = '<li style="text-align: center; color: red;">Error al cargar las sugerencias.</li>';
+      }
+    }
+
+    // Funciones de acción
+    async function viewSuggestion(id){
+      let currentUserId = auth.currentUser ? auth.currentUser.uid : null;
+      if (!currentUserId) {
+          alert("Debes iniciar sesión para ver los detalles y registrar la vista.");
+          return;
+      }
+      try {
+        await db.collection("sugerencias").doc(id)
+                .update({viewCount:firebase.firestore.FieldValue.increment(1)});
+        loadSuggestions(); // Recargar para actualizar el contador de vistas
+        alert("Has visto la sugerencia. El contador de vistas se ha actualizado.");
+      } catch (e) {
+        console.error("Error al registrar vista:", e);
+        alert("Error al registrar la vista: " + e.message);
+      }
+    }
+
+    async function toggleLike(id, isLike) {
+      if (!auth.currentUser) {
+          alert("Debes iniciar sesión para votar.");
+          return;
+      }
+      if (window.isAdmin) {
+          alert("El administrador no puede votar en sugerencias.");
+          return;
+      }
+
+      const currentUserId = auth.currentUser.uid;
+      const docRef = db.collection("sugerencias").doc(id);
+
+      try {
+          const docSnap = await docRef.get();
+          const currentLikes = docSnap.data().likes || {};
+          
+          if (currentLikes[currentUserId] === isLike) {
+              // Si ya votó de la misma manera, quitar el voto
+              await docRef.update({ [`likes.${currentUserId}`]: firebase.firestore.FieldValue.delete() });
+          } else {
+              // Cambiar el voto o establecer el nuevo voto
+              await docRef.update({ [`likes.${currentUserId}`]: isLike });
+          }
+          loadSuggestions(); // Recargar para actualizar contadores y estado visual
+      } catch (e) {
+          console.error("Error al votar:", e);
+          alert("Error al procesar tu voto: " + e.message);
+      }
+    }
+
+    async function deleteSuggestion(id, imageURLs){
+      if (!window.isAdmin) { return alert("Acceso denegado: solo el administrador puede eliminar sugerencias."); }
+      if (!confirm("¿Estás seguro de que quieres eliminar esta sugerencia? Esta acción es irreversible.")) {
+          return;
+      }
+      try {
+          // Eliminar imágenes asociadas de Storage
+          if (imageURLs && imageURLs.length > 0) {
+              for (const url of imageURLs) {
+                  await deleteFile(url);
+              }
+          }
+          // Eliminar el documento de Firestore
+          await db.collection("sugerencias").doc(id).delete();
+          alert("Sugerencia eliminada exitosamente.");
+          loadSuggestions(); // Recargar la lista
+      } catch (e) {
+          console.error("Error al eliminar sugerencia:", e);
+          alert("Error al eliminar la sugerencia: " + e.message);
+      }
+    }
+
+    async function markFavorite(id){
+      if (!window.isAdmin) { return alert("Acceso denegado: solo el administrador puede marcar como favorito."); }
+      try {
+        const docRef = db.collection("sugerencias").doc(id);
+        const docSnap = await docRef.get();
+        const currentFavorites = docSnap.data().favorites || {};
+        // Si ya es favorito, quitarlo; si no, marcarlo
+        if (currentFavorites.admin === true) {
+            await docRef.update({ 'favorites.admin': firebase.firestore.FieldValue.delete() });
+        } else {
+            await docRef.update({ 'favorites.admin': true });
+        }
+        loadSuggestions();
+      } catch (e) {
+        console.error("Error al marcar como favorito:", e);
+        alert("Error al marcar como favorito: " + e.message);
+      }
+    }
+    
+    async function markDislike(id){
+      if (!window.isAdmin) { return alert("Acceso denegado: solo el administrador puede marcar como no favorito."); }
+      try {
+        const docRef = db.collection("sugerencias").doc(id);
+        const docSnap = await docRef.get();
+        const currentFavorites = docSnap.data().favorites || {};
+        // Si ya es no favorito, quitarlo; si no, marcarlo como no favorito
+        if (currentFavorites.admin === false) {
+            await docRef.update({ 'favorites.admin': firebase.firestore.FieldValue.delete() });
+        } else {
+            await docRef.update({ 'favorites.admin': false });
+        }
+        loadSuggestions();
+      } catch (e) {
+        console.error("Error al marcar como no favorito:", e);
+        alert("Error al marcar como no favorito: " + e.message);
+      }
+    }
+
+    function applyFilter(){ loadSuggestions(); }
+
+    // Cargar sugerencias al inicio y cada vez que el estado de autenticación cambie
+    document.addEventListener('DOMContentLoaded', () => {
+        // La carga inicial se maneja en onAuthStateChanged para asegurar que el estado del usuario esté disponible
+    });
+  </script>
+</body>
+</html>
