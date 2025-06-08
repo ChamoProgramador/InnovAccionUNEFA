@@ -222,13 +222,13 @@
             margin-bottom: 15px;
         }
 
-        .news-image, .news-video {
+        .news-image { /* Estilo para la imagen de la noticia */
             max-width: 100%;
             height: auto;
             border-radius: 5px;
             margin-top: 10px;
             margin-bottom: 15px;
-            display: block; /* Asegura que no haya espacio extra debajo de la imagen */
+            display: block;
         }
 
         .news-actions {
@@ -408,6 +408,7 @@
                 <h2>Agregar Nueva Noticia</h2>
                 <input type="text" id="newsTitleInput" placeholder="Título de la Noticia">
                 <textarea id="newsContentInput" rows="5" placeholder="Contenido de la noticia..."></textarea>
+                <label for="newsImageInput">Adjuntar Imagen (Opcional):</label>
                 <input type="file" id="newsImageInput" accept="image/*">
                 <button onclick="addNews()">Publicar Noticia</button>
                 <div class="message" id="addNewsMessage"></div>
@@ -460,7 +461,7 @@
         const addNewsForm = document.getElementById("addNewsForm");
         const newsTitleInput = document.getElementById("newsTitleInput");
         const newsContentInput = document.getElementById("newsContentInput");
-        const newsImageInput = document.getElementById("newsImageInput");
+        const newsImageInput = document.getElementById("newsImageInput"); // Input para la imagen
         const addNewsMessage = document.getElementById("addNewsMessage");
         const newsSection = document.getElementById("newsSection");
 
@@ -516,7 +517,7 @@
                     hideLoginForm();
                     alert("Inicio de sesión de administrador exitoso.");
                 } catch (e) {
-                    if (e.code === 'auth/user-not-found') {
+                    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
                         try {
                             const cred = await auth.createUserWithEmailAndPassword("chamoprogramador@dummy.com", p);
                             await cred.user.updateProfile({displayName: "ChamoProgramador"});
@@ -526,8 +527,8 @@
                             alert("Error al crear o iniciar sesión como administrador: " + createError.message);
                             console.error("Admin create/login error:", createError);
                         }
-                    } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials') {
-                        alert("Error al iniciar sesión como administrador: Contraseña incorrecta. Por favor, verifica la contraseña.");
+                    } else if (e.code === 'auth/wrong-password') {
+                        alert("Error al iniciar sesión como administrador: Contraseña incorrecta.");
                     } else {
                         alert("Error al iniciar sesión como administrador: " + e.message);
                         console.error("Admin login error:", e);
@@ -672,7 +673,7 @@
                         ${newsItem.imageUrl ? `<img src="${newsItem.imageUrl}" alt="${newsItem.title}" class="news-image">` : ''}
                         <div class="news-meta">
                             <span>Publicado por: ${newsItem.authorName || 'Desconocido'}</span>
-                            <span>Fecha: ${new Date(newsItem.timestamp).toLocaleDateString()}</span>
+                            <span>Fecha: ${newsItem.timestamp ? new Date(newsItem.timestamp).toLocaleDateString() : 'N/A'}</span>
                         </div>
                         <div class="news-actions">
                             <button class="like-btn" data-key="${newsItem.key}">👍 Like</button>
